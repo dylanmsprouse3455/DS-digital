@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DS Digital Designs — Under Construction</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg1: #f8fafc;
+      --bg2: #e2e8f0;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #475569;
+      --accent: #2563eb;
+      --radius: 18px;
+      --shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      color: var(--ink);
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      max-width: 520px;
+      width: 100%;
+      padding: 40px 36px;
+      text-align: center;
+      border: 1px solid #e5e7eb;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .divider {
+      width: 60px;
+      height: 4px;
+      background: var(--accent);
+      margin: 24px auto;
+      border-radius: 999px;
+    }
+
+    .footer {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 28px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>DS Digital Designs</h1>
+
+    <div class="divider"></div>
+
+    <p>
+      This site is currently under construction.<br />
+      We’re building tools and systems designed to help businesses run more smoothly and clearly.
+    </p>
+
+    <p>
+      Please check back soon.
+    </p>
+
+    <div class="footer">
+      © <span id="year"></span> DS Digital Designs
+    </div>
+  </div>
+
+  <script>
+    // Auto-update year
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
