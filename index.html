@@ -2,26 +2,28 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>DS Digital Designs</title>
+<title>DS Digital Designs | Websites Built to Convert</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Clean, modern websites for small businesses. Fast, mobile-first, and built to convert visitors into customers. Custom code. No bloat.">
 
 <style>
 :root {
   --blue: #2563eb;
+  --blue-dark: #1d4ed8;
   --dark: #0f172a;
   --muted: #64748b;
   --bg: #f8fafc;
+  --border: #e5e7eb;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
   color: var(--dark);
+  line-height: 1.6;
 }
 
 /* ===== HEADER ===== */
@@ -46,9 +48,11 @@ header {
 .logo {
   font-weight: 700;
   font-size: 18px;
+  color: var(--dark);
+  text-decoration: none;
 }
 
-/* ===== MENU BUTTON ===== */
+/* ===== MENU ===== */
 
 .menu-btn {
   width: 36px;
@@ -56,16 +60,28 @@ header {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background: none;
+  border: none;
   cursor: pointer;
+  padding: 0;
 }
 
 .menu-btn span {
   height: 3px;
   background: var(--dark);
   border-radius: 2px;
+  transition: 0.3s;
 }
 
-/* ===== NAV MENU ===== */
+.menu-btn.active span:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+.menu-btn.active span:nth-child(2) {
+  opacity: 0;
+}
+.menu-btn.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
 
 nav {
   position: fixed;
@@ -74,6 +90,7 @@ nav {
   display: none;
   flex-direction: column;
   padding: 80px 24px;
+  z-index: 9;
 }
 
 nav.active {
@@ -96,13 +113,12 @@ nav a:hover {
 
 .hero {
   max-width: 1200px;
-  margin: 120px auto 80px;
+  margin: 80px auto 60px;
   padding: 0 20px;
 }
 
 .hero h1 {
   font-size: clamp(36px, 5vw, 52px);
-  line-height: 1.1;
   margin-bottom: 20px;
 }
 
@@ -113,7 +129,15 @@ nav a:hover {
   margin-bottom: 40px;
 }
 
-.hero a {
+/* ===== HERO BUTTONS ===== */
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: nowrap;
+}
+
+.btn {
   display: inline-block;
   padding: 16px 34px;
   background: var(--blue);
@@ -121,10 +145,19 @@ nav a:hover {
   text-decoration: none;
   border-radius: 8px;
   font-weight: 600;
+  border: 2px solid var(--blue);
+  transition: 0.2s;
 }
 
-.hero a:hover {
-  background: #1d4ed8;
+.btn.secondary {
+  background: transparent;
+  color: var(--blue);
+}
+
+.btn:hover {
+  background: var(--blue-dark);
+  border-color: var(--blue-dark);
+  color: white;
 }
 
 /* ===== FEATURES ===== */
@@ -140,30 +173,25 @@ nav a:hover {
 
 .feature {
   background: white;
-  border-radius: 14px;
   padding: 32px;
-  border: 1px solid #e5e7eb;
-}
-
-.feature h3 {
-  margin-top: 0;
-  margin-bottom: 12px;
-}
-
-.feature p {
-  color: var(--muted);
-  line-height: 1.5;
+  border-radius: 14px;
+  border: 1px solid var(--border);
 }
 
 /* ===== FOOTER ===== */
 
 footer {
-  background: white;
-  border-top: 1px solid #e5e7eb;
-  padding: 32px 20px;
+  padding: 40px 20px;
   text-align: center;
   font-size: 14px;
   color: var(--muted);
+}
+
+.feature-sub {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--blue);
+  margin-bottom: 10px;
 }
 </style>
 </head>
@@ -172,56 +200,70 @@ footer {
 
 <header>
   <div class="header-inner">
-    <div class="logo">DS Digital Designs</div>
-
-    <div class="menu-btn" onclick="toggleMenu()">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
+    <a href="index.html" class="logo">DS Digital Designs</a>
+    <button class="menu-btn" id="menuBtn">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
 
 <nav id="menu">
   <a href="index.html">Home</a>
-  <a href="about.html">About</a>
   <a href="services.html">Services</a>
   <a href="portfolio.html">Portfolio</a>
+  <a href="quote.html">Get a Quote</a>
   <a href="contact.html">Contact</a>
 </nav>
 
 <main>
   <section class="hero">
-    <h1>Websites built to look good and actually convert</h1>
-    <p>
-      I design clean, modern websites for small businesses that need more
-      visibility, more trust, and more bookings. No bloated builders. No nonsense.
+ <h1>Professional websites designed to drive real business results</h1>
+<p>
+  I design and build modern, high-performance websites for small businesses
+  that need clarity, credibility, and a strong online presence.
+</p>
+
+    <!-- ✅ HERO BUTTONS -->
+    <div class="hero-actions">
+      <a href="quote.html" class="btn">Get a Quote</a>
+      <a href="services.html" class="btn secondary">View Services</a>
+    </div>
+  </section>
+
+<section class="features">
+  <div class="feature">
+    <h3>Custom-Built Websites</h3>
+    <p class="feature-sub">
+      Hand-written code, no templates or page builders.
     </p>
-    <a href="contact.html">Start a Project</a>
-  </section>
+    <p>
+      Every website is built with clean HTML, CSS, and JavaScript for better
+      performance, flexibility, and long-term control.
+    </p>
+  </div>
 
-  <section class="features">
-    <div class="feature">
-      <h3>Custom Code</h3>
-      <p>
-        Hand-written HTML, CSS, and JavaScript for speed, clarity, and control.
-      </p>
-    </div>
+  <div class="feature">
+    <h3>Mobile-First Design</h3>
+    <p class="feature-sub">
+      Designed for phones first, then scaled up.
+    </p>
+    <p>
+      Your site is built to work flawlessly on mobile devices, ensuring a
+      smooth experience for users on phones, tablets, and desktops.
+    </p>
+  </div>
 
-    <div class="feature">
-      <h3>Mobile First</h3>
-      <p>
-        Designed from the ground up to feel great on phones and tablets.
-      </p>
-    </div>
-
-    <div class="feature">
-      <h3>Built to Grow</h3>
-      <p>
-        Easy to expand later without rebuilding everything from scratch.
-      </p>
-    </div>
-  </section>
+  <div class="feature">
+    <h3>Built to Scale</h3>
+    <p class="feature-sub">
+      Easy to expand as your business grows.
+    </p>
+    <p>
+      Whether you need new pages, features, or integrations later, your site
+      is structured to grow without needing a full rebuild.
+    </p>
+  </div>
+</section>
 </main>
 
 <footer>
@@ -229,9 +271,21 @@ footer {
 </footer>
 
 <script>
-function toggleMenu() {
-  document.getElementById("menu").classList.toggle("active");
-}
+const menuBtn = document.getElementById('menuBtn');
+const menu = document.getElementById('menu');
+
+menuBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  menu.classList.toggle('active');
+  menuBtn.classList.toggle('active');
+});
+
+menu.addEventListener('click', e => e.stopPropagation());
+
+document.addEventListener('click', () => {
+  menu.classList.remove('active');
+  menuBtn.classList.remove('active');
+});
 </script>
 
 </body>
