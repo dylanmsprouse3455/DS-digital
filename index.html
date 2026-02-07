@@ -1,157 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>DS Digital Designs</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>DS Digital Designs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #f6f8fb;
-      color: #1f2933;
-    }
+<style>
+:root {
+  --blue: #2563eb;
+  --dark: #0f172a;
+  --muted: #64748b;
+  --bg: #f8fafc;
+}
 
-    header {
-      background: white;
-      border-bottom: 1px solid #e5e7eb;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    .nav {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+}
 
-    .logo {
-      font-weight: 700;
-      font-size: 18px;
-    }
+/* ===== HEADER ===== */
 
-    nav a {
-      margin-left: 20px;
-      text-decoration: none;
-      color: #374151;
-      font-weight: 500;
-    }
+header {
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 3px solid var(--blue);
+}
 
-    nav a:hover {
-      color: #2563eb;
-    }
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-    .hero {
-      max-width: 1100px;
-      margin: 80px auto;
-      padding: 0 20px;
-      text-align: center;
-    }
+.logo {
+  font-weight: 700;
+  font-size: 18px;
+}
 
-    .hero h1 {
-      font-size: 40px;
-      margin-bottom: 20px;
-    }
+/* ===== MENU BUTTON ===== */
 
-    .hero p {
-      font-size: 18px;
-      color: #4b5563;
-      max-width: 700px;
-      margin: 0 auto 40px;
-    }
+.menu-btn {
+  width: 36px;
+  height: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
 
-    .cta {
-      display: inline-block;
-      padding: 14px 28px;
-      background: #2563eb;
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: 600;
-    }
+.menu-btn span {
+  height: 3px;
+  background: var(--dark);
+  border-radius: 2px;
+}
 
-    .cta:hover {
-      background: #1e4ed8;
-    }
+/* ===== NAV MENU ===== */
 
-    .sections {
-      max-width: 1100px;
-      margin: 0 auto 80px;
-      padding: 0 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
-    }
+nav {
+  position: fixed;
+  inset: 0;
+  background: white;
+  display: none;
+  flex-direction: column;
+  padding: 80px 24px;
+}
 
-    .card {
-      background: white;
-      padding: 24px;
-      border-radius: 10px;
-      border: 1px solid #e5e7eb;
-    }
+nav.active {
+  display: flex;
+}
 
-    .card h3 {
-      margin-top: 0;
-    }
+nav a {
+  text-decoration: none;
+  color: var(--dark);
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
 
-    footer {
-      border-top: 1px solid #e5e7eb;
-      background: white;
-      padding: 24px 20px;
-      text-align: center;
-      color: #6b7280;
-      font-size: 14px;
-    }
-  </style>
+nav a:hover {
+  color: var(--blue);
+}
+
+/* ===== HERO ===== */
+
+.hero {
+  max-width: 1200px;
+  margin: 120px auto 80px;
+  padding: 0 20px;
+}
+
+.hero h1 {
+  font-size: clamp(36px, 5vw, 52px);
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  max-width: 640px;
+  font-size: 18px;
+  color: var(--muted);
+  margin-bottom: 40px;
+}
+
+.hero a {
+  display: inline-block;
+  padding: 16px 34px;
+  background: var(--blue);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.hero a:hover {
+  background: #1d4ed8;
+}
+
+/* ===== FEATURES ===== */
+
+.features {
+  max-width: 1200px;
+  margin: 0 auto 120px;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 28px;
+}
+
+.feature {
+  background: white;
+  border-radius: 14px;
+  padding: 32px;
+  border: 1px solid #e5e7eb;
+}
+
+.feature h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.feature p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ===== FOOTER ===== */
+
+footer {
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  padding: 32px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+</style>
 </head>
 
 <body>
 
-  <header>
-    <div class="nav">
-      <div class="logo">DS Digital Designs</div>
-      <nav>
-        <a href="about.html">About</a>
-        <a href="services.html">Services</a>
-        <a href="portfolio.html">Portfolio</a>
-        <a href="contact.html">Contact</a>
-      </nav>
+<header>
+  <div class="header-inner">
+    <div class="logo">DS Digital Designs</div>
+
+    <div class="menu-btn" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
-  </header>
+  </div>
+</header>
 
-  <main>
-    <section class="hero">
-      <h1>Clean, modern websites that actually work</h1>
+<nav id="menu">
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="services.html">Services</a>
+  <a href="portfolio.html">Portfolio</a>
+  <a href="contact.html">Contact</a>
+</nav>
+
+<main>
+  <section class="hero">
+    <h1>Websites built to look good and actually convert</h1>
+    <p>
+      I design clean, modern websites for small businesses that need more
+      visibility, more trust, and more bookings. No bloated builders. No nonsense.
+    </p>
+    <a href="contact.html">Start a Project</a>
+  </section>
+
+  <section class="features">
+    <div class="feature">
+      <h3>Custom Code</h3>
       <p>
-        I design and build fast, simple, professional websites for small businesses
-        that want more visibility, more trust, and more customers.
+        Hand-written HTML, CSS, and JavaScript for speed, clarity, and control.
       </p>
-      <a href="contact.html" class="cta">Get Started</a>
-    </section>
+    </div>
 
-    <section class="sections">
-      <div class="card">
-        <h3>Custom Built</h3>
-        <p>No templates. No bloated builders. Every site is written clean and optimized.</p>
-      </div>
+    <div class="feature">
+      <h3>Mobile First</h3>
+      <p>
+        Designed from the ground up to feel great on phones and tablets.
+      </p>
+    </div>
 
-      <div class="card">
-        <h3>Mobile Friendly</h3>
-        <p>Your site will look good and load fast on phones, tablets, and desktops.</p>
-      </div>
+    <div class="feature">
+      <h3>Built to Grow</h3>
+      <p>
+        Easy to expand later without rebuilding everything from scratch.
+      </p>
+    </div>
+  </section>
+</main>
 
-      <div class="card">
-        <h3>Simple & Clear</h3>
-        <p>Designed to guide visitors, not confuse them.</p>
-      </div>
-    </section>
-  </main>
+<footer>
+  © 2026 DS Digital Designs
+</footer>
 
-  <footer>
-    © 2026 DS Digital Designs. All rights reserved.
-  </footer>
+<script>
+function toggleMenu() {
+  document.getElementById("menu").classList.toggle("active");
+}
+</script>
 
 </body>
 </html>
