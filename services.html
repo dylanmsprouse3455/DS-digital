@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Services | DS Digital Designs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Website design services for small businesses. One-page sites, multi-page websites, and redesigns. Custom code, fast turnaround, clear pricing.">
+
+<style>
+:root {
+  --blue: #2563eb;
+  --blue-dark: #1d4ed8;
+  --blue-light: rgba(37,99,235,0.08);
+  --dark: #0f172a;
+  --muted: #64748b;
+  --bg: #f8fafc;
+  --border: #e5e7eb;
+  --green: #10b981;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+  line-height: 1.6;
+}
+
+/* ===== HEADER ===== */
+
+header {
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 3px solid var(--blue);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 18px;
+  text-decoration: none;
+  color: var(--dark);
+  transition: color 0.2s;
+}
+
+.logo:hover {
+  color: var(--blue);
+}
+
+/* ===== MENU ===== */
+
+.menu-btn {
+  width: 36px;
+  height: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.menu-btn:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.menu-btn span {
+  height: 3px;
+  background: var(--dark);
+  border-radius: 2px;
+  transition: 0.3s;
+  display: block;
+  width: 100%;
+}
+
+.menu-btn.active span:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+
+.menu-btn.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-btn.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+nav {
+  position: fixed;
+  inset: 0;
+  background: white;
+  display: none;
+  flex-direction: column;
+  padding: 80px 24px;
+  z-index: 15;
+}
+
+nav.active {
+  display: flex;
+}
+
+nav a {
+  text-decoration: none;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 24px;
+  padding: 8px 0;
+  transition: color 0.2s;
+}
+
+nav a:hover,
+nav a:focus {
+  color: var(--blue);
+}
+
+nav a.active-link {
+  color: var(--blue);
+}
+
+/* ===== MAIN ===== */
+
+main {
+  max-width: 1200px;
+  margin: 60px auto 80px;
+  padding: 0 20px;
+}
+
+/* ===== PAGE HEADER ===== */
+
+.page-header {
+  max-width: 720px;
+  margin-bottom: 48px;
+}
+
+.page-header h1 {
+  font-size: clamp(34px, 5vw, 46px);
+  margin: 0 0 16px 0;
+  line-height: 1.1;
+}
+
+.page-header p {
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ===== GRID VIEW ===== */
+
+#servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 28px;
+}
+
+.service-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--blue);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.service-card:hover::before {
+  transform: scaleX(1);
+}
+
+.service-card:hover {
+  border-color: var(--blue);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(37,99,235,0.15);
+}
+
+.service-card:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+}
+
+.service-icon {
+  width: 56px;
+  height: 56px;
+  background: var(--blue-light);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  font-size: 28px;
+}
+
+.service-card h3 {
+  margin: 0 0 12px 0;
+  font-size: 22px;
+  color: var(--dark);
+}
+
+.service-card p {
+  margin: 0 0 16px 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.service-card .price {
+  font-weight: 700;
+  color: var(--dark);
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.service-card .learn-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--blue);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.service-card .learn-more span {
+  transition: transform 0.2s;
+}
+
+.service-card:hover .learn-more span {
+  transform: translateX(4px);
+}
+
+/* ===== DETAIL VIEW ===== */
+
+#serviceDetail {
+  position: fixed;
+  inset: 0;
+  background: white;
+  z-index: 30;
+  display: none;
+  overflow-y: auto;
+}
+
+#serviceDetail.active {
+  display: block;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.detail-header {
+  position: sticky;
+  top: 0;
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 16px 20px;
+  z-index: 5;
+}
+
+.detail-header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--blue);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.back-btn:hover {
+  background: var(--blue-light);
+}
+
+.back-btn:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.detail-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 20px 80px;
+}
+
+.detail-inner h1 {
+  margin: 0 0 16px 0;
+  font-size: clamp(32px, 5vw, 44px);
+  line-height: 1.1;
+}
+
+.detail-intro {
+  font-size: 20px;
+  color: var(--muted);
+  margin-bottom: 48px;
+  line-height: 1.6;
+}
+
+.detail-section {
+  margin-bottom: 40px;
+  padding: 28px;
+  background: var(--bg);
+  border-radius: 12px;
+  border-left: 4px solid var(--blue);
+}
+
+.detail-section h3 {
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  color: var(--dark);
+}
+
+.detail-section p {
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.detail-section ul {
+  margin: 12px 0 0 0;
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+.detail-section li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.detail-price {
+  background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+  color: white;
+  padding: 32px;
+  border-radius: 16px;
+  margin: 48px 0;
+  text-align: center;
+}
+
+.detail-price h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  opacity: 0.9;
+}
+
+.detail-price .price-amount {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.detail-price p {
+  margin: 0;
+  opacity: 0.85;
+  font-size: 15px;
+}
+
+.detail-cta {
+  text-align: center;
+  margin-top: 48px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 16px 36px;
+  background: var(--blue);
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 17px;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--blue-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37,99,235,0.3);
+}
+
+.btn:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+}
+
+/* ===== FOOTER ===== */
+
+footer {
+  background: white;
+  border-top: 1px solid var(--border);
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+footer p {
+  margin: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  main {
+    margin: 40px auto 60px;
+  }
+
+  .page-header {
+    margin-bottom: 32px;
+  }
+
+  #servicesGrid {
+    gap: 20px;
+  }
+
+  .service-card {
+    padding: 24px;
+  }
+
+  .detail-inner {
+    padding: 40px 20px 60px;
+  }
+
+  .detail-section {
+    padding: 20px;
+  }
+
+  .detail-price {
+    padding: 24px;
+  }
+
+  .detail-price .price-amount {
+    font-size: 28px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">DS Digital Designs</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Toggle navigation menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<nav id="menu" role="navigation">
+  <a href="index.html">Home</a>
+  <a href="services.html" class="active-link">Services</a>
+  <a href="portfolio.html">Portfolio</a>
+  <a href="quote.html">Get a Quote</a>
+  <a href="contact.html">Contact</a>
+</nav>
+
+<main>
+
+  <!-- PAGE DESCRIPTION -->
+  <div class="page-header">
+    <h1>Services</h1>
+    <p>
+      I build websites that help small businesses get found, build trust, and turn visitors into customers. 
+      Pick a service below to see exactly what's included.
+    </p>
+  </div>
+
+  <!-- SERVICES GRID -->
+  <section id="servicesGrid">
+
+    <div class="service-card" onclick="openService('one')" tabindex="0" role="button" aria-label="View One-Page Websites details">
+      <div class="service-icon">📄</div>
+      <h3>One-Page Websites</h3>
+      <p>Everything your customers need to know on a single, scroll-friendly page. Fast to build, easy to maintain.</p>
+      <div class="price">$300 – $600</div>
+      <div class="learn-more">Learn more <span>→</span></div>
+    </div>
+
+    <div class="service-card" onclick="openService('multi')" tabindex="0" role="button" aria-label="View Multi-Page Websites details">
+      <div class="service-icon">📑</div>
+      <h3>Multi-Page Websites</h3>
+      <p>Structured sites with dedicated pages for services, about, contact, and more. Room to grow.</p>
+      <div class="price">$600 – $1,200</div>
+      <div class="learn-more">Learn more <span>→</span></div>
+    </div>
+
+    <div class="service-card" onclick="openService('redesign')" tabindex="0" role="button" aria-label="View Website Redesigns details">
+      <div class="service-icon">🔄</div>
+      <h3>Website Redesigns</h3>
+      <p>Already have a site that's outdated or underperforming? I'll rebuild it without starting from zero.</p>
+      <div class="price">$400 – $1,000</div>
+      <div class="learn-more">Learn more <span>→</span></div>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- FULLSCREEN DETAIL VIEW -->
+<section id="serviceDetail" aria-hidden="true">
+  <div class="detail-header">
+
+    <div class="detail-header-inner">
+      <button class="back-btn" onclick="closeService()" aria-label="Go back to services list">
+        ← Back to Services
+      </button>
+    </div>
+  </div>
+
+  <div class="detail-inner" id="detailContent">
+    <!-- Details injected here -->
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 DS Digital Designs. All rights reserved.</p>
+</footer>
+
+<script>
+const menuBtn = document.getElementById('menuBtn');
+const menu = document.getElementById('menu');
+const detail = document.getElementById('serviceDetail');
+const detailContent = document.getElementById('detailContent');
+
+// Menu toggle
+menuBtn.addEventListener('click', function(e) {
+  e.stopPropagation();
+  const isActive = menu.classList.toggle('active');
+  menuBtn.classList.toggle('active', isActive);
+  menuBtn.setAttribute('aria-expanded', isActive);
+});
+
+// Close menu when clicking a link
+document.querySelectorAll('nav a').forEach(link => {
+  link.addEventListener('click', () => {
+    menu.classList.remove('active');
+    menuBtn.classList.remove('active');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  });
+});
+
+// Close menu when clicking outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('header') && !e.target.closest('nav')) {
+    menu.classList.remove('active');
+    menuBtn.classList.remove('active');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }
+});
+
+// Keyboard support for service cards
+document.querySelectorAll('.service-card').forEach(card => {
+  card.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      card.click();
+    }
+  });
+});
+
+/* SERVICE CONTENT */
+const services = {
+  one: {
+    title: "One-Page Websites",
+    intro: "A focused, high-impact website that tells your story and drives action—all on a single page.",
+    sections: [
+      { 
+        heading: "What You Get", 
+        content: `
+          <p>A complete, professionally designed single-page website that includes:</p>
+          <ul>
+            <li><strong>Hero section</strong> with a clear headline and call-to-action</li>
+            <li><strong>About section</strong> introducing you or your business</li>
+            <li><strong>Services or features</strong> highlighting what you offer</li>
+            <li><strong>Testimonials</strong> or social proof (if you have them)</li>
+            <li><strong>Contact section</strong> with a working form</li>
+            <li><strong>Mobile-responsive design</strong> that looks great on any device</li>
+            <li><strong>Basic SEO setup</strong> so you can be found on Google</li>
+          </ul>
+        `
+      },
+      { 
+        heading: "How It Works", 
+        content: `
+          <p>The process is simple and straightforward:</p>
+          <ul>
+            <li><strong>Step 1:</strong> You fill out a quick questionnaire about your business, goals, and preferences</li>
+            <li><strong>Step 2:</strong> I create a first draft and share it with you for feedback</li>
+            <li><strong>Step 3:</strong> We refine it together until you're happy (up to 2 revision rounds included)</li>
+            <li><strong>Step 4:</strong> I launch your site and hand over everything you need</li>
+          </ul>
+          <p>Most one-page sites are completed within <strong>5–7 business days</strong>.</p>
+        `
+      },
+      { 
+        heading: "Best For", 
+        content: `
+          <p>One-page websites are perfect if you:</p>
+          <ul>
+            <li>Need a professional online presence fast</li>
+            <li>Have a focused service or product to promote</li>
+            <li>Want something clean and simple—not cluttered</li>
+            <li>Are a freelancer, consultant, or local service provider</li>
+            <li>Don't need a blog or complex navigation</li>
+          </ul>
+        `
+      }
+    ],
+    price: "$300 – $600",
+    priceNote: "Final price depends on content length and custom features"
+  },
+  multi: {
+    title: "Multi-Page Websites",
+    intro: "A structured website with dedicated pages for each part of your business—built to scale as you grow.",
+    sections: [
+      { 
+        heading: "What You Get", 
+        content: `
+          <p>A complete multi-page website (typically 4–6 pages) including:</p>
+          <ul>
+            <li><strong>Home page</strong> with a compelling hero and overview</li>
+            <li><strong>About page</strong> telling your story and building trust</li>
+            <li><strong>Services page</strong> with detailed descriptions of what you offer</li>
+            <li><strong>Contact page</strong> with a working form and your info</li>
+            <li><strong>Additional pages</strong> as needed (FAQ, portfolio, pricing, etc.)</li>
+            <li><strong>Consistent navigation</strong> and professional layout throughout</li>
+            <li><strong>Mobile-responsive design</strong> optimized for all devices</li>
+            <li><strong>SEO fundamentals</strong> on every page</li>
+          </ul>
+        `
+      },
+      { 
+        heading: "How It Works", 
+        content: `
+          <p>Here's the typical process:</p>
+          <ul>
+            <li><strong>Step 1:</strong> We have a quick call or exchange to understand your business and goals</li>
+            <li><strong>Step 2:</strong> I map out a site structure and get your approval</li>
+            <li><strong>Step 3:</strong> I design and build page by page, sharing progress along the way</li>
+            <li><strong>Step 4:</strong> You review and request changes (up to 3 revision rounds included)</li>
+            <li><strong>Step 5:</strong> I launch and provide a simple guide for updates</li>
+          </ul>
+          <p>Timeline is typically <strong>10–14 business days</strong> depending on scope.</p>
+        `
+      },
+      { 
+        heading: "Best For", 
+        content: `
+          <p>Multi-page sites work best if you:</p>
+          <ul>
+            <li>Offer multiple services that each deserve their own page</li>
+            <li>Want room to add content over time (blog, case studies, etc.)</li>
+            <li>Need clear navigation for different audiences</li>
+            <li>Are an established business ready to invest in your online presence</li>
+            <li>Want to rank for multiple keywords on Google</li>
+          </ul>
+        `
+      }
+    ],
+    price: "$600 – $1,200",
+    priceNote: "Based on number of pages and complexity"
+  },
+  redesign: {
+    title: "Website Redesigns",
+    intro: "Your current site isn't working. Let's fix that—without throwing everything away and starting over.",
+    sections: [
+      { 
+        heading: "What You Get", 
+        content: `
+          <p>A complete overhaul of your existing website, including:</p>
+          <ul>
+            <li><strong>Design refresh</strong> with a modern, clean look</li>
+            <li><strong>Improved structure</strong> and navigation</li>
+            <li><strong>Mobile optimization</strong> (many older sites aren't mobile-friendly)</li>
+            <li><strong>Faster load times</strong> by cleaning up bloated code</li>
+            <li><strong>Updated content</strong> layout for better readability</li>
+            <li><strong>SEO improvements</strong> to help you rank better</li>
+            <li><strong>Working forms</strong> and calls-to-action that actually convert</li>
+          </ul>
+        `
+      },
+      { 
+        heading: "How It Works", 
+        content: `
+          <p>Redesigns follow a focused process:</p>
+          <ul>
+            <li><strong>Step 1:</strong> I audit your current site—what's working, what's not</li>
+            <li><strong>Step 2:</strong> We discuss your goals and what you want to keep vs. change</li>
+            <li><strong>Step 3:</strong> I rebuild the site section by section, keeping what works</li>
+            <li><strong>Step 4:</strong> You review and we refine (up to 2 revision rounds)</li>
+            <li><strong>Step 5:</strong> I launch the new version and redirect everything properly</li>
+          </ul>
+          <p>Most redesigns take <strong>7–12 business days</strong>.</p>
+        `
+      },
+      { 
+        heading: "Best For", 
+        content: `
+          <p>A redesign makes sense if:</p>
+          <ul>
+            <li>Your site looks outdated or unprofessional</li>
+            <li>It doesn't work well on phones or tablets</li>
+            <li>Visitors aren't converting into customers</li>
+            <li>You're embarrassed to share your website link</li>
+            <li>You've outgrown a DIY builder like Wix or Squarespace</li>
+            <li>Your site is slow, clunky, or hard to update</li>
+          </ul>
+        `
+      }
+    ],
+    price: "$400 – $1,000",
+    priceNote: "Depends on current site complexity and scope of changes"
+  }
+};
+
+function openService(key) {
+  const service = services[key];
+  
+  let html = `
+    <h1>${service.title}</h1>
+    <p class="detail-intro">${service.intro}</p>
+  `;
+
+  service.sections.forEach(sec => {
+    html += `
+      <div class="detail-section">
+        <h3>${sec.heading}</h3>
+        ${sec.content}
+      </div>
+    `;
+  });
+
+  html += `
+    <div class="detail-price">
+      <h3>Investment</h3>
+      <div class="price-amount">${service.price}</div>
+      <p>${service.priceNote}</p>
+    </div>
+    
+    <div class="detail-cta">
+      <a href="quote.html" class="btn">Get a Quote for This Service</a>
+    </div>
+  `;
+
+  detailContent.innerHTML = html;
+  detail.classList.add('active');
+  detail.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  
+  // Scroll to top of detail view
+  detail.scrollTop = 0;
+}
+
+function closeService() {
+  detail.classList.remove('active');
+  detail.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+// Close detail view with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && detail.classList.contains('active')) {
+    closeService();
+  }
+});
+</script>
+
+</body>
+</html>

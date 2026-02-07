@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Contact | DS Digital Designs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Get in touch with DS Digital Designs. Let's discuss your website project and bring your vision to life.">
+
+<style>
+:root {
+  --blue: #2563eb;
+  --blue-dark: #1d4ed8;
+  --blue-light: rgba(37,99,235,0.08);
+  --dark: #0f172a;
+  --muted: #64748b;
+  --bg: #f8fafc;
+  --border: #e5e7eb;
+  --green: #10b981;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+  line-height: 1.6;
+}
+
+/* ===== HEADER ===== */
+
+header {
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 3px solid var(--blue);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 18px;
+  text-decoration: none;
+  color: var(--dark);
+  transition: color 0.2s;
+}
+
+.logo:hover {
+  color: var(--blue);
+}
+
+/* ===== MENU BUTTON ===== */
+
+.menu-btn {
+  width: 36px;
+  height: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.menu-btn:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.menu-btn span {
+  height: 3px;
+  background: var(--dark);
+  border-radius: 2px;
+  display: block;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.menu-btn.active span:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+
+.menu-btn.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-btn.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* ===== NAV ===== */
+
+nav {
+  position: fixed;
+  inset: 0;
+  background: white;
+  display: none;
+  flex-direction: column;
+  padding: 80px 24px;
+  z-index: 15;
+}
+
+nav.active {
+  display: flex;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--dark);
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  padding: 8px 0;
+  transition: color 0.2s;
+}
+
+nav a:hover,
+nav a:focus {
+  color: var(--blue);
+}
+
+nav a.active-link {
+  color: var(--blue);
+}
+
+/* ===== LAYOUT ===== */
+
+.contact {
+  max-width: 1000px;
+  margin: 60px auto 80px;
+  padding: 0 20px;
+}
+
+.contact-card {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  padding: 48px;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 48px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+
+/* ===== LEFT ===== */
+
+.contact-left h1 {
+  margin: 0 0 16px 0;
+  font-size: clamp(28px, 4vw, 36px);
+  line-height: 1.2;
+}
+
+.contact-left > p {
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0 0 32px 0;
+}
+
+.contact-info {
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+.contact-info h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.contact-item-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--blue-light);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.contact-item-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-item-label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.contact-item-value {
+  font-weight: 600;
+  color: var(--dark);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.contact-item-value:hover {
+  color: var(--blue);
+}
+
+/* ===== RIGHT ===== */
+
+.quote-summary {
+  background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 28px;
+  color: white;
+}
+
+.quote-summary h3 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.quote-amount {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* ===== FORM ===== */
+
+form {
+  width: 100%;
+}
+
+.form-group {
+  display: none;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.form-group.active {
+  display: flex;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--dark);
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-family: inherit;
+  font-size: 15px;
+  background: white;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-light);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #a0aec0;
+}
+
+/* ===== PREFERENCE ===== */
+
+.preference-group {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  margin: 0 0 24px 0;
+  background: var(--bg);
+}
+
+.preference-group legend {
+  font-weight: 700;
+  font-size: 14px;
+  padding: 0 8px;
+  color: var(--dark);
+}
+
+.preference-options {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.preference-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 10px 16px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  transition: all 0.2s;
+  background: white;
+}
+
+.preference-option:hover {
+  border-color: var(--blue);
+}
+
+.preference-option input {
+  width: auto;
+  margin: 0;
+  cursor: pointer;
+}
+
+.preference-option input:checked + span {
+  color: var(--blue);
+}
+
+.preference-option:has(input:checked) {
+  border-color: var(--blue);
+  background: var(--blue-light);
+}
+
+/* Input fields inside preference group */
+.preference-group .form-group {
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+.preference-group .form-group:first-of-type.active {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.preference-group .form-group.active + .form-group.active {
+  margin-top: 16px;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* ===== BUTTON ===== */
+
+.submit-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 16px 24px;
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.submit-btn:hover {
+  background: var(--blue-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+}
+
+.submit-btn:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ===== POST SUBMIT ===== */
+
+.after-submit {
+  display: none;
+  margin-top: 28px;
+  padding: 24px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 12px;
+}
+
+.after-submit.show {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.after-submit h4 {
+  margin: 0 0 12px 0;
+  color: #065f46;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.after-submit h4::before {
+  content: '✓';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #10b981;
+  color: white;
+  border-radius: 50%;
+  font-size: 14px;
+}
+
+.after-submit p {
+  margin: 8px 0;
+  color: #047857;
+  padding-left: 32px;
+}
+
+/* ===== FOOTER ===== */
+
+footer {
+  background: white;
+  border-top: 1px solid var(--border);
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+footer p {
+  margin: 0;
+}
+
+/* ===== MOBILE ===== */
+
+@media (max-width: 900px) {
+  .contact {
+    margin: 40px auto 60px;
+  }
+
+  .contact-card {
+    grid-template-columns: 1fr;
+    padding: 28px 24px;
+    gap: 32px;
+  }
+
+  .contact-left {
+    text-align: center;
+  }
+
+  .contact-info {
+    text-align: left;
+  }
+
+  .preference-options {
+    flex-direction: column;
+  }
+
+  .preference-option {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">DS Digital Designs</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Toggle navigation menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<nav id="menu" role="navigation">
+  <a href="index.html">Home</a>
+  <a href="services.html">Services</a>
+  <a href="portfolio.html">Portfolio</a>
+  <a href="quote.html">Get a Quote</a>
+  <a href="contact.html" class="active-link">Contact</a>
+</nav>
+
+<main class="contact">
+  <div class="contact-card">
+
+    <!-- LEFT -->
+    <div class="contact-left">
+      <h1>Let's talk about your project</h1>
+      <p>Share a few details below and I'll review your request personally. I typically respond within 1–2 business days.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- RIGHT -->
+    <div>
+
+      <div class="quote-summary" id="quoteSummary" style="display:none;">
+        <h3>Your estimated range</h3>
+        <div class="quote-amount" id="quoteAmount"></div>
+      </div>
+
+      <form id="contactForm" action="https://formspree.io/f/mdalowdk" method="POST">
+        <input type="hidden" name="quoteRange" id="quoteInput">
+
+        <fieldset class="preference-group">
+          <legend>How should I contact you?</legend>
+
+          <div class="preference-options">
+            <label class="preference-option">
+              <input type="radio" name="contactPreference" value="Email" required>
+              <span>📧 Email</span>
+            </label>
+
+            <label class="preference-option">
+              <input type="radio" name="contactPreference" value="Text">
+              <span>💬 Text</span>
+            </label>
+
+            <label class="preference-option">
+              <input type="radio" name="contactPreference" value="Both">
+              <span>✅ Both</span>
+            </label>
+          </div>
+
+          <!-- Input fields appear here, below the buttons -->
+          <div class="form-group" id="emailGroup">
+            <label for="emailField">Email Address</label>
+            <input type="email" name="email" id="emailField" placeholder="you@example.com">
+          </div>
+
+          <div class="form-group" id="phoneGroup">
+            <label for="phoneField">Phone Number</label>
+            <input type="tel" name="phone" id="phoneField" placeholder="423-456-7890">
+          </div>
+
+        </fieldset>
+
+        <div class="form-group active">
+          <label for="projectMessage">Tell me about your project</label>
+          <textarea id="projectMessage" name="message" required placeholder="What kind of website do you need? Any specific features or goals?"></textarea>
+        </div>
+
+        <button class="submit-btn" type="submit">Send Message</button>
+      </form>
+
+      <div class="after-submit" id="afterSubmit">
+        <h4>Message sent!</h4>
+        <p>• I'll review your project details</p>
+        <p>• Expect a response within 1–2 business days</p>
+        <p>• We'll confirm scope, timeline, and next steps</p>
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+
+<section class="reach-out">
+  <div class="reach-out-inner">
+    <h3>Or reach out directly</h3>
+
+    <div class="reach-out-items">
+      <div class="contact-item">
+        <div class="contact-item-icon">📧</div>
+        <div class="contact-item-text">
+          <span class="contact-item-label">Email</span>
+          <a href="mailto:dsdigitaldesigns3455@gmail.com" class="contact-item-value">
+            dsdigitaldesigns3455@gmail.com
+          </a>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div class="contact-item-icon">📱</div>
+        <div class="contact-item-text">
+          <span class="contact-item-label">Phone / Text</span>
+          <a href="tel:+14238232215" class="contact-item-value">
+            423-823-2215
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<footer>
+  <p>&copy; 2026 DS Digital Designs. All rights reserved.</p>
+</footer>
+
+<script>
+// Menu functionality
+const menuBtn = document.getElementById('menuBtn');
+const menu = document.getElementById('menu');
+
+menuBtn.addEventListener('click', function(e) {
+  e.stopPropagation();
+  const isActive = menu.classList.toggle('active');
+  menuBtn.classList.toggle('active', isActive);
+  menuBtn.setAttribute('aria-expanded', isActive);
+});
+
+// Close menu when clicking a link
+document.querySelectorAll('nav a').forEach(link => {
+  link.addEventListener('click', () => {
+    menu.classList.remove('active');
+    menuBtn.classList.remove('active');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  });
+});
+
+// Close menu when clicking outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('header') && !e.target.closest('nav')) {
+    menu.classList.remove('active');
+    menuBtn.classList.remove('active');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }
+});
+
+// Keyboard support for menu
+menuBtn.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    menuBtn.click();
+  }
+});
+
+// Preference handling - shows input fields below buttons
+const preferenceInputs = document.querySelectorAll('input[name="contactPreference"]');
+
+preferenceInputs.forEach(input => {
+  input.addEventListener('change', handlePreference);
+});
+
+function handlePreference() {
+  const choice = document.querySelector('input[name="contactPreference"]:checked')?.value;
+
+  const emailGroup = document.getElementById("emailGroup");
+  const phoneGroup = document.getElementById("phoneGroup");
+  const emailField = document.getElementById("emailField");
+  const phoneField = document.getElementById("phoneField");
+
+  // Reset all
+  emailGroup.classList.remove("active");
+  phoneGroup.classList.remove("active");
+  emailField.required = false;
+  phoneField.required = false;
+
+  // Show based on selection
+  if (choice === "Email") {
+    emailGroup.classList.add("active");
+    emailField.required = true;
+    emailField.focus();
+  }
+
+  if (choice === "Text") {
+    phoneGroup.classList.add("active");
+    phoneField.required = true;
+    phoneField.focus();
+  }
+
+  if (choice === "Both") {
+    emailGroup.classList.add("active");
+    phoneGroup.classList.add("active");
+    emailField.required = true;
+    phoneField.required = true;
+    emailField.focus();
+  }
+}
+
+// Quote injection from localStorage (if coming from quote page)
+const savedQuote = localStorage.getItem("quoteRange");
+
+if (savedQuote) {
+  document.getElementById("quoteAmount").textContent = savedQuote;
+  document.getElementById("quoteSummary").style.display = "block";
+  document.getElementById("quoteInput").value = savedQuote;
+  document.getElementById("projectMessage").value = `Estimated quote range: ${savedQuote}\n\nProject details:\n`;
+}
+
+// Form submission handling
+const contactForm = document.getElementById('contactForm');
+const afterSubmit = document.getElementById('afterSubmit');
+
+contactForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const formData = new FormData(contactForm);
+  const submitBtn = contactForm.querySelector('.submit-btn');
+  
+  // Disable button and show loading state
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+  
+  fetch(contactForm.action, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'Accept': 'application/json'
+    }
+  })
+  .then(response => {
+    if (response.ok) {
+      // Success - hide form and show confirmation
+      contactForm.style.display = 'none';
+      afterSubmit.classList.add('show');
+      
+      // Clear the saved quote from localStorage
+      localStorage.removeItem("quoteRange");
+    } else {
+      throw new Error('Form submission failed');
+    }
+  })
+  .catch(error => {
+    // Error handling - reset button and show alert
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send Message';
+    alert('Something went wrong. Please try again or email me directly at dsdigitaldesigns3455@gmail.com');
+  });
+});
+</script>
+
+</body>
+</html>

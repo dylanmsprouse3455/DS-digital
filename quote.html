@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Get a Quote | DS Digital Designs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+  --blue: #2563eb;
+  --dark: #0f172a;
+  --muted: #64748b;
+  --bg: #f8fafc;
+  --border: #e5e7eb;
+}
+
+/* ===== BASE ===== */
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+}
+
+/* ===== WIZARD WRAPPER ===== */
+
+.wizard {
+  max-width: 760px;
+  margin: 140px auto;
+  padding: 0 20px;
+}
+
+.wizard-card {
+  background: white;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  padding: 48px;
+}
+
+/* ===== PROGRESS ===== */
+
+.progress {
+  height: 6px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 16%;
+  background: var(--blue);
+  transition: width 0.3s ease;
+}
+
+/* ===== STEPS ===== */
+
+.step {
+  display: none;
+}
+
+.step.active {
+  display: block;
+}
+
+.step h1,
+.step h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.step p {
+  color: var(--muted);
+  font-size: 16px;
+}
+
+/* ===== OPTIONS ===== */
+
+.options {
+  display: grid;
+  gap: 16px;
+  margin: 32px 0;
+}
+
+.option {
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.option:hover {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.08);
+}
+
+.option input {
+  margin-right: 10px;
+}
+
+/* ===== ACTIONS ===== */
+
+.actions {
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+}
+
+.next-btn {
+  padding: 16px 36px;
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.next-btn:hover {
+  background: #1d4ed8;
+}
+
+.cancel-btn {
+  margin-left: 16px;
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.cancel-btn:hover {
+  color: var(--dark);
+  border-color: var(--dark);
+}
+
+/* ===== SUMMARY ===== */
+
+.summary {
+  background: var(--bg);
+  border-radius: 14px;
+  padding: 32px;
+  border: 1px solid var(--border);
+}
+
+.summary h3 {
+  margin-top: 8px;
+  font-size: 28px;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 600px) {
+  .wizard-card {
+    padding: 32px 24px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<main class="wizard">
+  <div class="wizard-card">
+
+    <div class="progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- STEP 1 -->
+    <section class="step active" data-step="1">
+      <h1>Get a project estimate</h1>
+      <p>Answer a few quick questions to receive a realistic, non-binding estimate.</p>
+
+      <div class="actions">
+        <button class="next-btn">Start</button>
+        <a href="index.html" class="cancel-btn">Cancel</a>
+      </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="step" data-step="2">
+      <h2>What type of website do you need?</h2>
+
+      <div class="options">
+        <div class="option" data-type="one">One-page website</div>
+        <div class="option" data-type="multi">Multi-page website</div>
+        <div class="option" data-type="redesign">Redesign / refresh</div>
+        <div class="option" data-type="unsure">Not sure yet</div>
+      </div>
+
+      <div class="actions">
+        <a href="index.html" class="cancel-btn">Cancel</a>
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="step" data-step="3">
+      <h2>What features do you need?</h2>
+
+      <div class="options">
+        <label class="option"><input type="checkbox">Contact form</label>
+        <label class="option"><input type="checkbox">Image gallery</label>
+        <label class="option"><input type="checkbox">Booking / inquiry form</label>
+        <label class="option"><input type="checkbox">Blog or updates</label>
+      </div>
+
+      <div class="actions">
+        <button class="next-btn">Continue</button>
+        <a href="index.html" class="cancel-btn">Cancel</a>
+      </div>
+    </section>
+
+    <!-- STEP 4 -->
+    <section class="step" data-step="4">
+      <h2>How soon do you need it?</h2>
+
+      <div class="options">
+        <div class="option" data-time="asap">ASAP</div>
+        <div class="option" data-time="month">Within a month</div>
+        <div class="option" data-time="flexible">Flexible</div>
+      </div>
+
+      <div class="actions">
+        <a href="index.html" class="cancel-btn">Cancel</a>
+      </div>
+    </section>
+
+    <!-- STEP 5 -->
+    <section class="step" data-step="5">
+      <h2>Will you need ongoing updates?</h2>
+
+      <div class="options">
+        <div class="option" data-support="none">No ongoing updates</div>
+        <div class="option" data-support="occasional">Occasional small edits</div>
+        <div class="option" data-support="ongoing">Ongoing updates</div>
+      </div>
+
+      <div class="actions">
+        <a href="index.html" class="cancel-btn">Cancel</a>
+      </div>
+    </section>
+
+    <!-- STEP 6 -->
+    <section class="step" data-step="6">
+      <h2>Your estimated range</h2>
+
+      <div class="summary">
+        <p><strong>Estimated build range</strong></p>
+        <h3 id="price">$900 – $1,200</h3>
+        <p>This estimate is non-binding and based on the information provided.</p>
+      </div>
+
+      <div class="actions">
+        <a href="contact.html" class="next-btn" style="text-decoration:none;">Continue to Contact</a>
+        <a href="index.html" class="cancel-btn">Cancel</a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script src="quote.js"></script>
+
+<script>
+function updateProgress(step) {
+  const percent = (step / 6) * 100;
+  document.getElementById("progressBar").style.width = percent + "%";
+}
+</script>
+
+</body>
+</html>
