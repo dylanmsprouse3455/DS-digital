@@ -1,7 +1,3 @@
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,7 +26,7 @@ body {
   line-height: 1.6;
 }
 
-/* ===== HEADER ===== */
+/* HEADER */
 
 header {
   background: white;
@@ -50,13 +46,20 @@ header {
 }
 
 .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
   font-weight: 700;
   font-size: 18px;
   color: var(--dark);
-  text-decoration: none;
 }
 
-/* ===== MENU ===== */
+.logo img {
+  height: 100px;
+}
+
+/* MENU */
 
 .menu-btn {
   width: 36px;
@@ -67,14 +70,12 @@ header {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0;
 }
 
 .menu-btn span {
   height: 3px;
   background: var(--dark);
   border-radius: 2px;
-  transition: 0.3s;
 }
 
 .menu-btn.active span:nth-child(1) {
@@ -94,7 +95,6 @@ nav {
   display: none;
   flex-direction: column;
   padding: 80px 24px;
-  z-index: 9;
 }
 
 nav.active {
@@ -109,11 +109,7 @@ nav a {
   margin-bottom: 24px;
 }
 
-nav a:hover {
-  color: var(--blue);
-}
-
-/* ===== HERO ===== */
+/* HERO */
 
 .hero {
   max-width: 1200px;
@@ -123,7 +119,6 @@ nav a:hover {
 
 .hero h1 {
   font-size: clamp(36px, 5vw, 52px);
-  margin-bottom: 20px;
 }
 
 .hero p {
@@ -133,12 +128,11 @@ nav a:hover {
   margin-bottom: 40px;
 }
 
-/* ===== HERO BUTTONS ===== */
+/* BUTTONS */
 
 .hero-actions {
   display: flex;
   gap: 16px;
-  flex-wrap: nowrap;
 }
 
 .btn {
@@ -150,7 +144,6 @@ nav a:hover {
   border-radius: 8px;
   font-weight: 600;
   border: 2px solid var(--blue);
-  transition: 0.2s;
 }
 
 .btn.secondary {
@@ -161,10 +154,31 @@ nav a:hover {
 .btn:hover {
   background: var(--blue-dark);
   border-color: var(--blue-dark);
-  color: white;
 }
 
-/* ===== FEATURES ===== */
+/* INSTAGRAM BUTTON */
+
+.insta-row {
+  margin-top: 18px;
+}
+
+.btn.instagram {
+  background: linear-gradient(
+    45deg,
+    #f09433,
+    #e6683c,
+    #dc2743,
+    #cc2366,
+    #bc1888
+  );
+  border: none;
+}
+
+.btn.instagram:hover {
+  filter: brightness(1.1);
+}
+
+/* FEATURES */
 
 .features {
   max-width: 1200px;
@@ -182,32 +196,19 @@ nav a:hover {
   border: 1px solid var(--border);
 }
 
-/* ===== FOOTER ===== */
+.feature-sub {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--blue);
+}
+
+/* FOOTER */
 
 footer {
   padding: 40px 20px;
   text-align: center;
   font-size: 14px;
   color: var(--muted);
-}
-
-.feature-sub {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--blue);
-  margin-bottom: 10px;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.logo img {
-  height: 100px;
-  width: auto;
-  display: block;
 }
 </style>
 </head>
@@ -216,10 +217,11 @@ footer {
 
 <header>
   <div class="header-inner">
-<a href="index.html" class="logo">
-  <img src="0193CA57-3463-4528-AE1F-50F2BCD64BFB.png" alt="">
-  <span>DS Digital Designs</span>
-</a>
+    <a href="index.html" class="logo">
+      <img src="logo.png" alt="">
+      <span>DS Digital Designs</span>
+    </a>
+
     <button class="menu-btn" id="menuBtn">
       <span></span><span></span><span></span>
     </button>
@@ -235,58 +237,53 @@ footer {
 </nav>
 
 <main>
-  <section class="hero">
- <h1>Professional websites designed to drive real business results</h1>
+<section class="hero">
+<h1>Professional websites designed to drive real business results</h1>
+
 <p>
-  I design and build modern, high-performance websites for small businesses
-  that need clarity, credibility, and a strong online presence.
+I design and build modern, high-performance websites for small businesses
+that need clarity, credibility, and a strong online presence.
 </p>
 
-    <!-- ✅ HERO BUTTONS -->
-    <div class="hero-actions">
-      <a href="quote.html" class="btn">Get a Quote</a>
-      <a href="services.html" class="btn secondary">View Services</a>
-    </div>
-  </section>
+<div class="hero-actions">
+  <a href="quote.html" class="btn">Get a Quote</a>
+  <a href="services.html" class="btn secondary">View Services</a>
+</div>
+
+<!-- Instagram below main CTAs -->
+<div class="insta-row">
+  <a href="https://www.instagram.com/dylan_sprouse_web_designer"
+     target="_blank"
+     class="btn instagram">
+     Follow on Instagram
+  </a>
+</div>
+
+</section>
 
 <section class="features">
   <div class="feature">
     <h3>Custom-Built Websites</h3>
-    <p class="feature-sub">
-      Hand-written code, no templates or page builders.
-    </p>
-    <p>
-      Every website is built with clean HTML, CSS, and JavaScript for better
-      performance, flexibility, and long-term control.
-    </p>
+    <p class="feature-sub">Hand-written code, no templates.</p>
+    <p>Clean HTML/CSS/JS for speed and control.</p>
   </div>
 
   <div class="feature">
     <h3>Mobile-First Design</h3>
-    <p class="feature-sub">
-      Designed for phones first, then scaled up.
-    </p>
-    <p>
-      Your site is built to work flawlessly on mobile devices, ensuring a
-      smooth experience for users on phones, tablets, and desktops.
-    </p>
+    <p class="feature-sub">Phones first.</p>
+    <p>Flawless on mobile, tablet, and desktop.</p>
   </div>
 
   <div class="feature">
     <h3>Built to Scale</h3>
-    <p class="feature-sub">
-      Easy to expand as your business grows.
-    </p>
-    <p>
-      Whether you need new pages, features, or integrations later, your site
-      is structured to grow without needing a full rebuild.
-    </p>
+    <p class="feature-sub">Grows with you.</p>
+    <p>Add features later without rebuilding.</p>
   </div>
 </section>
 </main>
 
 <footer>
-  © 2026 DS Digital Designs
+© 2026 DS Digital Designs
 </footer>
 
 <script>
@@ -298,8 +295,6 @@ menuBtn.addEventListener('click', e => {
   menu.classList.toggle('active');
   menuBtn.classList.toggle('active');
 });
-
-menu.addEventListener('click', e => e.stopPropagation());
 
 document.addEventListener('click', () => {
   menu.classList.remove('active');
