@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Blog | DS Digital Designs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Insights on web design, digital strategy, performance, and business growth.">
+
+<style>
+:root {
+  --blue: #2563eb;
+  --blue-dark: #1d4ed8;
+  --dark: #0f172a;
+  --muted: #64748b;
+  --bg: #f8fafc;
+  --border: #e5e7eb;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+  line-height: 1.6;
+}
+
+/* HEADER */
+
+header {
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 3px solid var(--blue);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--dark);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo img {
+  height: 80px;
+  width: auto;
+  display: block;
+}
+
+/* MENU */
+
+.menu-btn {
+  width: 36px;
+  height: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.menu-btn span {
+  height: 3px;
+  background: var(--dark);
+  border-radius: 2px;
+}
+
+nav {
+  position: fixed;
+  inset: 0;
+  background: white;
+  display: none;
+  flex-direction: column;
+  padding: 80px 24px;
+}
+
+nav.active {
+  display: flex;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--dark);
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+/* MAIN */
+
+main {
+  max-width: 1100px;
+  margin: 80px auto;
+  padding: 0 20px;
+}
+
+.blog-header {
+  margin-bottom: 60px;
+}
+
+.blog-header h1 {
+  font-size: clamp(32px, 4vw, 48px);
+  margin-bottom: 10px;
+}
+
+.blog-header p {
+  color: var(--muted);
+  max-width: 600px;
+}
+
+/* FEATURED */
+
+.featured {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px;
+  margin-bottom: 60px;
+}
+
+.featured h2 {
+  margin-top: 0;
+}
+
+.featured a {
+  text-decoration: none;
+  color: var(--dark);
+}
+
+.featured a:hover {
+  color: var(--blue);
+}
+
+.featured-meta {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+/* GRID */
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.post-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+}
+
+.post-card h3 {
+  margin-top: 0;
+}
+
+.post-card a {
+  text-decoration: none;
+  color: var(--dark);
+}
+
+.post-card a:hover {
+  color: var(--blue);
+}
+
+.post-meta {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.category {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--blue);
+  margin-bottom: 10px;
+}
+
+/* FOOTER */
+
+footer {
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="header-inner">
+
+<a href="index.html" class="logo">
+  <img src="0193CA57-3463-4528-AE1F-50F2BCD64BFB.png" alt="DS Digital Designs Logo">
+  <span>DS Digital Designs</span>
+</a>
+
+<button class="menu-btn" id="menuBtn">
+<span></span><span></span><span></span>
+</button>
+
+</div>
+</header>
+
+<nav id="menu">
+<a href="index.html">Home</a>
+<a href="services.html">Services</a>
+<a href="portfolio.html">Portfolio</a>
+<a href="blog.html">Blog</a>
+<a href="quote.html">Get a Quote</a>
+<a href="contact.html">Contact</a>
+</nav>
+
+<main>
+
+<div class="blog-header">
+<h1>Blog</h1>
+<p>Insights on performance, strategy, security, and building better digital systems.</p>
+</div>
+
+<!-- FEATURED -->
+
+<div class="featured">
+<div class="category">Featured</div>
+<h2>
+<a href="post-high-converting-websites.html">
+What Actually Makes a Website Convert Visitors Into Clients
+</a>
+</h2>
+<div class="featured-meta">February 2026</div>
+<p>
+A deep breakdown of clarity, trust signals, layout psychology, and performance
+factors that influence buying decisions.
+</p>
+</div>
+
+<!-- POSTS -->
+
+<div class="blog-grid">
+
+<div class="post-card">
+<div class="category">Security</div>
+<h3>
+<a href="post-small-business-security.html">
+Small Business Security Mistakes Most Owners Miss
+</a>
+</h3>
+<div class="post-meta">February 2026</div>
+<p>
+Common vulnerabilities that quietly put customer data and revenue at risk.
+</p>
+</div>
+
+<div class="post-card">
+<div class="category">Performance</div>
+<h3>
+<a href="why-site-speed-impacts-revenue.html">
+Why Site Speed Impacts Revenue More Than You Think
+</a>
+</h3>
+<div class="post-meta">February 2026</div>
+<p>
+Understanding how load times influence trust, SEO, and conversions.
+</p>
+</div>
+
+</div>
+
+</main>
+
+<footer>
+© 2026 DS Digital Designs
+</footer>
+
+<script>
+const menuBtn = document.getElementById('menuBtn');
+const menu = document.getElementById('menu');
+
+menuBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  menu.classList.toggle('active');
+});
+
+document.addEventListener('click', () => {
+  menu.classList.remove('active');
+});
+</script>
+
+</body>
+</html>
