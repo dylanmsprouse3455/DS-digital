@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>About | Dylan Sprouse | DS Digital Designs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn about Dylan Sprouse, founder of DS Digital Designs — a strategic website designer and systems builder focused on clarity, structure, and custom-built solutions.">
+
+<style>
+:root {
+  --blue: #2563eb;
+  --blue-dark: #1d4ed8;
+  --dark: #0f172a;
+  --muted: #64748b;
+  --bg: #f8fafc;
+  --border: #e5e7eb;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+  line-height: 1.7;
+}
+
+/* HEADER */
+
+header {
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 3px solid var(--blue);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--dark);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo img {
+  height: 80px;
+}
+
+/* MENU */
+
+.menu-btn {
+  width: 36px;
+  height: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.menu-btn span {
+  height: 3px;
+  background: var(--dark);
+  border-radius: 2px;
+}
+
+nav {
+  position: fixed;
+  inset: 0;
+  background: white;
+  display: none;
+  flex-direction: column;
+  padding: 80px 24px;
+}
+
+nav.active { display: flex; }
+
+nav a {
+  text-decoration: none;
+  color: var(--dark);
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+/* MAIN */
+
+main {
+  max-width: 900px;
+  margin: 80px auto;
+  padding: 0 20px;
+}
+
+h1 {
+  font-size: clamp(32px, 4vw, 48px);
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: var(--muted);
+  margin-bottom: 40px;
+}
+
+.section {
+  margin-bottom: 60px;
+}
+
+.section h2 {
+  margin-bottom: 16px;
+}
+
+.highlight-box {
+  background: white;
+  border-left: 4px solid var(--blue);
+  padding: 24px;
+  border-radius: 10px;
+  margin: 30px 0;
+}
+
+.headshot {
+  margin-bottom: 40px;
+}
+
+.headshot img {
+  width: 180px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.cta-box {
+  margin-top: 60px;
+  padding: 30px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  text-align: center;
+}
+
+.cta-box a {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 14px 28px;
+  background: var(--blue);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.cta-box a:hover {
+  background: var(--blue-dark);
+}
+
+footer {
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="header-inner">
+<a href="index.html" class="logo">
+  <img src="0193CA57-3463-4528-AE1F-50F2BCD64BFB.png" alt="DS Digital Designs Logo">
+  <span>DS Digital Designs</span>
+</a>
+
+<button class="menu-btn" id="menuBtn">
+<span></span><span></span><span></span>
+</button>
+</div>
+</header>
+
+<nav id="menu">
+<a href="index.html">Home</a>
+<a href="about.html">About</a>
+<a href="services.html">Services</a>
+<a href="portfolio.html">Portfolio</a>
+<a href="blog.html">Blog</a>
+<a href="quote.html">Get a Quote</a>
+<a href="contact.html">Contact</a>
+</nav>
+
+<main>
+
+<h1>Dylan Sprouse</h1>
+<p class="subtitle">
+Website Designer & Technical Systems Builder
+</p>
+
+<div class="headshot">
+<img src="headshot.jpg" alt="Dylan Sprouse">
+</div>
+
+<div class="section">
+<h2>My Approach</h2>
+<p>
+I design and build structured, performance-focused websites using clean,
+custom-written code. I do not rely on bloated page builders or pre-built
+templates unless specifically requested.
+</p>
+<p>
+Every project begins with understanding the system — how the business operates,
+how users make decisions, and how structure influences action.
+</p>
+</div>
+
+<div class="section">
+<h2>How I Think</h2>
+<p>
+I approach design analytically. A website is not decoration — it is a system.
+</p>
+<p>
+Structure drives clarity. Clarity drives trust. Trust drives action.
+</p>
+<div class="highlight-box">
+I prioritize logic, flow, and controlled architecture over visual noise.
+</div>
+</div>
+
+<div class="section">
+<h2>Systems I’ve Built</h2>
+<p>
+Before founding DS Digital Designs, I built internal tools and structured systems
+that improved efficiency and understanding within professional environments.
+</p>
+
+<p>
+One example includes developing an escrow calculator tool used by agents to
+better understand and explain escrow shortages. The tool simplified complex
+calculations and improved clarity across the team.
+</p>
+
+<p>
+I’ve also built structured note-taking systems, internal documentation frameworks,
+and operational tools designed to reduce confusion and increase consistency.
+</p>
+
+<p>
+I build with long-term scalability in mind — not short-term shortcuts.
+</p>
+</div>
+
+<div class="section">
+<h2>Why Custom Code</h2>
+<p>
+Writing code directly provides full control over structure, performance,
+and scalability.
+</p>
+
+<p>
+Pre-built templates often introduce unnecessary complexity and limitations.
+By building from the ground up, I maintain clarity and flexibility in every system.
+</p>
+</div>
+
+<div class="cta-box">
+<h2>Let’s Build Something Structured</h2>
+<p>
+If you're looking for a clean, strategic website built with intention and control,
+I’d be glad to discuss your project.
+</p>
+<a href="quote.html">Start a Project</a>
+</div>
+
+</main>
+
+<footer>
+© 2026 DS Digital Designs
+</footer>
+
+<script>
+const menuBtn = document.getElementById('menuBtn');
+const menu = document.getElementById('menu');
+
+menuBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  menu.classList.toggle('active');
+});
+
+document.addEventListener('click', () => {
+  menu.classList.remove('active');
+});
+</script>
+
+</body>
+</html>
