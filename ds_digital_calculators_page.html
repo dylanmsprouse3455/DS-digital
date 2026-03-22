@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escrow Catch-Up Calculator</title>
+  <style>
+    :root{
+      --bg:#f6fbff;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --line:#dbeafe;
+      --blue:#2563eb;
+      --blueSoft:#eff6ff;
+      --shadow:0 18px 40px rgba(15,23,42,.08);
+      --radius:18px;
+      --good:#15803d;
+      --warn:#b45309;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:
+        radial-gradient(800px 400px at 10% -10%, rgba(37,99,235,.10), transparent 60%),
+        radial-gradient(700px 350px at 90% 0%, rgba(37,99,235,.06), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+    }
+
+    .wrap{
+      width:min(1000px,92%);
+      margin:0 auto;
+      padding:32px 0 48px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      background:var(--blueSoft);
+      color:var(--blue);
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+
+    h1{
+      margin:0 0 8px;
+      font-size:30px;
+    }
+
+    .sub{
+      margin:0 0 18px;
+      color:var(--muted);
+      max-width:760px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .cardHead{
+      padding:18px 18px 14px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(239,246,255,.95), #fff);
+    }
+
+    .cardHead h2{
+      margin:0;
+      font-size:18px;
+    }
+
+    .cardHead p{
+      margin:6px 0 0;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+      padding:18px;
+    }
+
+    @media (min-width:780px){
+      .grid{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .field label{
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .field input{
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid #bfdbfe;
+      background:#fff;
+      font-size:15px;
+      outline:none;
+    }
+
+    .field input:focus{
+      border-color:var(--blue);
+      box-shadow:0 0 0 4px rgba(37,99,235,.12);
+    }
+
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      padding:0 18px 18px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:800;
+      cursor:pointer;
+      font-size:14px;
+    }
+
+    .primary{
+      background:var(--blue);
+      color:#fff;
+    }
+
+    .secondary{
+      background:var(--blueSoft);
+      color:var(--blue);
+      border:1px solid var(--line);
+    }
+
+    .error{
+      margin:0 18px 18px;
+      padding:12px 14px;
+      border-radius:14px;
+      background:#fff4f4;
+      border:1px solid #fecaca;
+      color:#991b1b;
+      font-size:13px;
+      display:none;
+    }
+
+    .error.show{
+      display:block;
+    }
+
+    .results{
+      display:none;
+      padding:0 18px 18px;
+    }
+
+    .results.show{
+      display:block;
+    }
+
+    .heroSummary{
+      margin-top:16px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, var(--blueSoft), #fff);
+      border-radius:18px;
+      padding:18px;
+    }
+
+    .heroSummaryTitle{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+
+    .heroSummaryValue{
+      font-size:30px;
+      font-weight:900;
+      line-height:1.05;
+    }
+
+    .heroSummaryText{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .sectionBlock{
+      margin-top:16px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+      background:#fff;
+    }
+
+    .sectionHead{
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      background:#f8fbff;
+    }
+
+    .sectionHead h3{
+      margin:0;
+      font-size:16px;
+    }
+
+    .sectionHead p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .metricGrid{
+      padding:16px;
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+
+    @media (min-width:900px){
+      .metricGrid{
+        grid-template-columns:1fr 1fr 1fr;
+      }
+    }
+
+    .metric{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:linear-gradient(180deg, rgba(239,246,255,.55), #fff);
+      padding:14px;
+    }
+
+    .metricLabel{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+      margin-bottom:6px;
+    }
+
+    .metricValue{
+      font-size:24px;
+      font-weight:900;
+      line-height:1.1;
+    }
+
+    .metricSub{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .formula{
+      margin-top:16px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fafcff;
+      padding:14px;
+    }
+
+    .formula h3{
+      margin:0 0 8px;
+      font-size:15px;
+    }
+
+    .formula p{
+      margin:6px 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .formula code{
+      display:block;
+      margin-top:8px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:13px;
+      color:var(--text);
+      white-space:pre-line;
+    }
+
+    .good{ color:var(--good); }
+    .warn{ color:var(--warn); }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="eyebrow">Catch-up model</div>
+    <h1>Escrow Catch-Up Calculator</h1>
+    <p class="sub">
+      Enter monthly taxes and insurance before and after. This version uses your catch-up logic:
+      find the old minimum required balance, find the new minimum required balance, subtract the difference,
+      then multiply that difference by 2 to estimate the shortage pressure from catching up for the past and going forward.
+    </p>
+
+    <section class="card">
+      <div class="cardHead">
+        <h2>Enter monthly amounts</h2>
+        <p>Use monthly taxes and monthly insurance only.</p>
+      </div>
+
+      <div class="grid">
+        <div class="field">
+          <label for="taxBefore">Taxes before (monthly)</label>
+          <input id="taxBefore" type="number" step="0.01" inputmode="decimal" placeholder="50.00" />
+          <div class="hint">Example: 50</div>
+        </div>
+
+        <div class="field">
+          <label for="taxAfter">Taxes after (monthly)</label>
+          <input id="taxAfter" type="number" step="0.01" inputmode="decimal" placeholder="100.00" />
+          <div class="hint">Example: 100</div>
+        </div>
+
+        <div class="field">
+          <label for="insBefore">Insurance before (monthly)</label>
+          <input id="insBefore" type="number" step="0.01" inputmode="decimal" placeholder="0.00" />
+          <div class="hint">Example: 0</div>
+        </div>
+
+        <div class="field">
+          <label for="insAfter">Insurance after (monthly)</label>
+          <input id="insAfter" type="number" step="0.01" inputmode="decimal" placeholder="0.00" />
+          <div class="hint">Example: 0</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="calcBtn" type="button">Calculate</button>
+        <button class="secondary" id="exampleBtn" type="button">Use example</button>
+        <button class="secondary" id="resetBtn" type="button">Reset</button>
+      </div>
+
+      <div class="error" id="errorBox">
+        Enter all four monthly amounts before calculating.
+      </div>
+
+      <div class="results" id="results">
+        <div class="heroSummary">
+          <div class="heroSummaryTitle">Main takeaway</div>
+          <div class="heroSummaryValue" id="mainTakeaway">$0.00</div>
+          <div class="heroSummaryText" id="mainTakeawayText">
+            This will summarize the estimated catch-up shortage created by the change.
+          </div>
+        </div>
+
+        <div class="sectionBlock">
+          <div class="sectionHead">
+            <h3>Item changes</h3>
+            <p>These show what changed in taxes and insurance.</p>
+          </div>
+
+          <div class="metricGrid">
+            <div class="metric">
+              <div class="metricLabel">Taxes changed monthly</div>
+              <div class="metricValue" id="taxMonthlyDelta">$0.00</div>
+              <div class="metricSub">Taxes after minus taxes before.</div>
+            </div>
+
+            <div class="metric">
+              <div class="metricLabel">Taxes changed yearly</div>
+              <div class="metricValue" id="taxYearlyDelta">$0.00</div>
+              <div class="metricSub">Monthly tax change × 12.</div>
+            </div>
+
+            <div class="metric">
+              <div class="metricLabel">Insurance changed monthly</div>
+              <div class="metricValue" id="insMonthlyDelta">$0.00</div>
+              <div class="metricSub">Insurance after minus insurance before.</div>
+            </div>
+
+            <div class="metric">
+              <div class="metricLabel">Insurance changed yearly</div>
+              <div class="metricValue" id="insYearlyDelta">$0.00</div>
+              <div class="metricSub">Monthly insurance change × 12.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sectionBlock">
+          <div class="sectionHead">
+            <h3>Minimum required balance</h3>
+            <p>This uses the two-month cushion model.</p>
+          </div>
+
+          <div class="metricGrid">
+            <div class="metric">
+              <div class="metricLabel">Previous minimum required balance</div>
+              <div class="metricValue" id="minBefore">$0.00</div>
+              <div class="metricSub">((Taxes before + Insurance before) × 2)</div>
+            </div>
+
+            <div class="metric">
+              <div class="metricLabel">New minimum required balance</div>
+              <div class="metricValue" id="minAfter">$0.00</div>
+              <div class="metricSub">((Taxes after + Insurance after) × 2)</div>
+            </div>
+
+            <div class="metric">
+              <div class="metricLabel">Difference in minimum required balance</div>
+              <div class="metricValue" id="minDiff">$0.00</div>
+              <div class="metricSub">New minimum minus previous minimum.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sectionBlock">
+          <div class="sectionHead">
+            <h3>Your catch-up model</h3>
+            <p>This is the part you described: catch up for before and fund going forward.</p>
+          </div>
+
+          <div class="metricGrid">
+            <div class="metric">
+              <div class="metricLabel">Estimated shortage from change</div>
+              <div class="metricValue warn" id="catchUpShortage">$0.00</div>
+              <div class="metricSub">(Min difference × 2)</div>
+            </div>
+
+            <div class="metric">
+              <div class="metricLabel">Adjusted target</div>
+              <div class="metricValue good" id="adjustedTarget">$0.00</div>
+              <div class="metricSub">New minimum + minimum difference.</div>
+            </div>
+
+            <div class="metric">
+              <div class="metricLabel">Plain English</div>
+              <div class="metricValue" id="plainEnglish">$0.00</div>
+              <div class="metricSub">This is the amount your model says the change is creating.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="formula">
+          <h3>How this was calculated</h3>
+          <p>This version uses your exact catch-up model, not the standard simple reserve change only.</p>
+          <code id="formulaText"></code>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    const taxBeforeEl = $("taxBefore");
+    const taxAfterEl = $("taxAfter");
+    const insBeforeEl = $("insBefore");
+    const insAfterEl = $("insAfter");
+
+    const calcBtn = $("calcBtn");
+    const exampleBtn = $("exampleBtn");
+    const resetBtn = $("resetBtn");
+
+    const errorBox = $("errorBox");
+    const results = $("results");
+
+    const taxMonthlyDeltaOut = $("taxMonthlyDelta");
+    const taxYearlyDeltaOut = $("taxYearlyDelta");
+    const insMonthlyDeltaOut = $("insMonthlyDelta");
+    const insYearlyDeltaOut = $("insYearlyDelta");
+    const minBeforeOut = $("minBefore");
+    const minAfterOut = $("minAfter");
+    const minDiffOut = $("minDiff");
+    const catchUpShortageOut = $("catchUpShortage");
+    const adjustedTargetOut = $("adjustedTarget");
+    const plainEnglishOut = $("plainEnglish");
+    const mainTakeaway = $("mainTakeaway");
+    const mainTakeawayText = $("mainTakeawayText");
+    const formulaText = $("formulaText");
+
+    function money(n) {
+      return n.toLocaleString(undefined, {
+        style: "currency",
+        currency: "USD"
+      });
+    }
+
+    function signedMoney(n) {
+      const sign = n >= 0 ? "+" : "";
+      return sign + money(n);
+    }
+
+    function getNum(el) {
+      const n = parseFloat(el.value);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function calculate() {
+      const taxBefore = getNum(taxBeforeEl);
+      const taxAfter = getNum(taxAfterEl);
+      const insBefore = getNum(insBeforeEl);
+      const insAfter = getNum(insAfterEl);
+
+      if (
+        taxBefore === null ||
+        taxAfter === null ||
+        insBefore === null ||
+        insAfter === null
+      ) {
+        errorBox.classList.add("show");
+        results.classList.remove("show");
+        return;
+      }
+
+      errorBox.classList.remove("show");
+
+      const taxMonthlyDelta = taxAfter - taxBefore;
+      const taxYearlyDelta = taxMonthlyDelta * 12;
+
+      const insMonthlyDelta = insAfter - insBefore;
+      const insYearlyDelta = insMonthlyDelta * 12;
+
+      const minBefore = (taxBefore + insBefore) * 2;
+      const minAfter = (taxAfter + insAfter) * 2;
+      const minDiff = minAfter - minBefore;
+
+      // your model
+      const catchUpShortage = minDiff * 2;
+      const adjustedTarget = minAfter + minDiff;
+
+      taxMonthlyDeltaOut.textContent = signedMoney(taxMonthlyDelta);
+      taxYearlyDeltaOut.textContent = signedMoney(taxYearlyDelta);
+      insMonthlyDeltaOut.textContent = signedMoney(insMonthlyDelta);
+      insYearlyDeltaOut.textContent = signedMoney(insYearlyDelta);
+
+      minBeforeOut.textContent = money(minBefore);
+      minAfterOut.textContent = money(minAfter);
+      minDiffOut.textContent = signedMoney(minDiff);
+
+      catchUpShortageOut.textContent = signedMoney(catchUpShortage);
+      adjustedTargetOut.textContent = money(adjustedTarget);
+      plainEnglishOut.textContent = signedMoney(catchUpShortage);
+
+      mainTakeaway.textContent = signedMoney(catchUpShortage);
+      mainTakeawayText.textContent =
+        `Using your catch-up model, the difference between the old and new minimum required balance is ${signedMoney(minDiff)}. Doubling that gives an estimated shortage from the change of ${signedMoney(catchUpShortage)}.`;
+
+      formulaText.textContent =
+`Taxes monthly change = ${money(taxAfter)} - ${money(taxBefore)} = ${signedMoney(taxMonthlyDelta)}
+Taxes yearly change = ${signedMoney(taxMonthlyDelta)} × 12 = ${signedMoney(taxYearlyDelta)}
+
+Insurance monthly change = ${money(insAfter)} - ${money(insBefore)} = ${signedMoney(insMonthlyDelta)}
+Insurance yearly change = ${signedMoney(insMonthlyDelta)} × 12 = ${signedMoney(insYearlyDelta)}
+
+Previous minimum required balance = (${money(taxBefore)} + ${money(insBefore)}) × 2 = ${money(minBefore)}
+New minimum required balance = (${money(taxAfter)} + ${money(insAfter)}) × 2 = ${money(minAfter)}
+
+Minimum balance difference = ${money(minAfter)} - ${money(minBefore)} = ${signedMoney(minDiff)}
+
+Estimated shortage from change = ${signedMoney(minDiff)} × 2 = ${signedMoney(catchUpShortage)}
+
+Adjusted target = ${money(minAfter)} + ${signedMoney(minDiff)} = ${money(adjustedTarget)}`;
+
+      results.classList.add("show");
+    }
+
+    function fillExample() {
+      taxBeforeEl.value = "50";
+      taxAfterEl.value = "100";
+      insBeforeEl.value = "0";
+      insAfterEl.value = "0";
+      calculate();
+    }
+
+    function resetForm() {
+      taxBeforeEl.value = "";
+      taxAfterEl.value = "";
+      insBeforeEl.value = "";
+      insAfterEl.value = "";
+      errorBox.classList.remove("show");
+      results.classList.remove("show");
+      formulaText.textContent = "";
+      mainTakeaway.textContent = "$0.00";
+      mainTakeawayText.textContent = "This will summarize the estimated catch-up shortage created by the change.";
+    }
+
+    calcBtn.addEventListener("click", calculate);
+    exampleBtn.addEventListener("click", fillExample);
+    resetBtn.addEventListener("click", resetForm);
+  </script>
+</body>
+</html>
