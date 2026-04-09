@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Portfolio | DS Digital Designs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Selected websites, dashboards, and custom tools built by DS Digital Designs.">
+
+<style>
+:root {
+  --blue: #2563eb;
+  --blue-dark: #1d4ed8;
+  --dark: #0f172a;
+  --muted: #64748b;
+  --bg: #f8fafc;
+  --border: #e5e7eb;
+  --card-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+  line-height: 1.6;
+}
+
+header {
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 3px solid var(--blue);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--dark);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo img {
+  height: 72px;
+  width: auto;
+  display: block;
+}
+
+.menu-btn {
+  width: 36px;
+  height: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.menu-btn span {
+  height: 3px;
+  background: var(--dark);
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+.menu-btn.active span:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+.menu-btn.active span:nth-child(2) {
+  opacity: 0;
+}
+.menu-btn.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+nav {
+  position: fixed;
+  inset: 0;
+  background: white;
+  display: none;
+  flex-direction: column;
+  padding: 80px 24px;
+  z-index: 15;
+}
+
+nav.active {
+  display: flex;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--dark);
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 34px 20px 90px;
+}
+
+.hero {
+  background: linear-gradient(135deg, rgba(37,99,235,0.10), rgba(255,255,255,0.92));
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 34px 24px;
+  box-shadow: var(--card-shadow);
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue);
+  background: rgba(37,99,235,0.10);
+  border-radius: 999px;
+  padding: 8px 12px;
+}
+
+.hero h1 {
+  font-size: clamp(34px, 6vw, 52px);
+  line-height: 1.08;
+  margin: 18px 0 14px;
+}
+
+.hero p {
+  max-width: 760px;
+  color: var(--muted);
+  font-size: 18px;
+  margin: 0 0 22px;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.stat {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.stat span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.section-head {
+  margin: 52px 0 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: end;
+  flex-wrap: wrap;
+}
+
+.section-head h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.section-head p {
+  margin: 0;
+  max-width: 640px;
+  color: var(--muted);
+}
+
+.filter-bar {
+  margin: 22px 0 30px;
+  padding: 14px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  box-shadow: var(--card-shadow);
+}
+
+.chip {
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--dark);
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.chip.active,
+.chip:hover {
+  border-color: var(--blue);
+  background: rgba(37,99,235,0.10);
+  color: var(--blue);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.project {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: var(--card-shadow);
+  transition: 0.25s;
+}
+
+.project:hover {
+  transform: translateY(-4px);
+  border-color: var(--blue);
+}
+
+.project.hidden {
+  display: none;
+}
+
+.thumb {
+  border-radius: 16px;
+  min-height: 170px;
+  border: 1px solid rgba(255,255,255,0.35);
+  padding: 18px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.thumb small {
+  font-size: 12px;
+  opacity: 0.92;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.thumb strong {
+  font-size: 22px;
+  line-height: 1.1;
+  max-width: 180px;
+}
+
+.thumb.one { background: linear-gradient(135deg, #2563eb, #0f172a); }
+.thumb.two { background: linear-gradient(135deg, #b83b62, #f59ab5); }
+.thumb.three { background: linear-gradient(135deg, #0f766e, #14b8a6); }
+.thumb.four { background: linear-gradient(135deg, #6d28d9, #2563eb); }
+.thumb.five { background: linear-gradient(135deg, #ea580c, #f59e0b); }
+.thumb.six { background: linear-gradient(135deg, #334155, #64748b); }
+
+.project h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--blue);
+  background: rgba(37,99,235,0.10);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.desc {
+  color: var(--muted);
+  margin: 0;
+}
+
+.outcome {
+  margin: 0;
+  color: var(--dark);
+  font-size: 14px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.link {
+  display: inline-block;
+  padding: 11px 13px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 800;
+  border: 1px solid var(--border);
+  color: var(--dark);
+}
+
+.link.primary {
+  background: var(--blue);
+  color: white;
+  border-color: var(--blue);
+}
+
+.link:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.link.primary:hover {
+  background: var(--blue-dark);
+  border-color: var(--blue-dark);
+  color: white;
+}
+
+.note {
+  margin-top: 44px;
+  padding: 20px;
+  border-radius: 18px;
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  box-shadow: var(--card-shadow);
+}
+
+footer {
+  margin-top: 90px;
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  background: #f1f5f9;
+}
+
+@media (max-width: 640px) {
+  .logo img { height: 56px; }
+  .hero { padding: 24px 18px; }
+  .hero p { font-size: 16px; }
+  .thumb { min-height: 150px; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <img src="0193CA57-3463-4528-AE1F-50F2BCD64BFB.png" alt="DS Digital Designs logo">
+      <span>DS Digital Designs</span>
+    </a>
+
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<nav id="menu">
+  <a href="index.html">Home</a>
+  <a href="services.html">Services</a>
+  <a href="quote.html">Get a Quote</a>
+  <a href="contact.html">Contact</a>
+  <a href="blog.html">Blog</a>
+  <a href="portfolio-v2.html">Portfolio</a>
+  <a href="about.html">About</a>
+</nav>
+
+<main>
+  <section class="hero">
+    <div class="kicker">Selected work</div>
+    <h1>Websites, dashboards, and custom tools built to make things clearer</h1>
+    <p>
+      This portfolio shows the kind of work I build most often: clean business websites,
+      structured dashboards, and practical tools that turn messy information into something
+      easier to understand and use.
+    </p>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <strong>6</strong>
+        <span>Featured projects</span>
+      </div>
+      <div class="stat">
+        <strong>Mobile-first</strong>
+        <span>Built to work cleanly on phones first</span>
+      </div>
+      <div class="stat">
+        <strong>Custom code</strong>
+        <span>HTML, CSS, JavaScript, and purpose-built UI</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-head">
+    <div>
+      <h2>Featured projects</h2>
+      <p>
+        A mix of service-business websites, personal brand pages, nonprofit work, and
+        data-focused tools.
+      </p>
+    </div>
+  </div>
+
+  <div class="filter-bar" id="filterBar">
+    <button class="chip active" type="button" data-filter="all">All</button>
+    <button class="chip" type="button" data-filter="website">Websites</button>
+    <button class="chip" type="button" data-filter="tool">Tools</button>
+    <button class="chip" type="button" data-filter="dashboard">Dashboards</button>
+    <button class="chip" type="button" data-filter="brand">Brand / Portfolio</button>
+  </div>
+
+  <section class="grid" id="projectGrid">
+    <article class="project" data-category="website brand">
+      <div class="thumb one">
+        <small>Brand website</small>
+        <strong>DS Digital Designs</strong>
+      </div>
+      <h3>DS Digital Designs</h3>
+      <div class="meta">
+        <span class="tag">Website</span>
+        <span class="tag">Brand</span>
+        <span class="tag">Portfolio</span>
+      </div>
+      <p class="desc">
+        My own brand site focused on clear messaging, simple navigation, and a direct path for small businesses to understand the offer and request a quote.
+      </p>
+      <p class="outcome">
+        Built to position the business clearly and make custom web work feel straightforward instead of overwhelming.
+      </p>
+      <div class="links">
+        <a class="link primary" href="index.html">View Page</a>
+        <a class="link" href="https://github.com/dylanmsprouse3455/DS-digital" target="_blank" rel="noopener">GitHub Repo</a>
+      </div>
+    </article>
+
+    <article class="project" data-category="website">
+      <div class="thumb two">
+        <small>Nonprofit-style build</small>
+        <strong>Motherly Love</strong>
+      </div>
+      <h3>Motherly Love</h3>
+      <div class="meta">
+        <span class="tag">Website</span>
+        <span class="tag">Nonprofit</span>
+        <span class="tag">Donation Flow</span>
+      </div>
+      <p class="desc">
+        A softer, emotionally-driven website concept centered around trust, support, and a simple donation path for mothers in need.
+      </p>
+      <p class="outcome">
+        Focused on warmth and clarity so the visitor immediately understands the mission and where to act next.
+      </p>
+      <div class="links">
+        <a class="link" href="https://github.com/dylanmsprouse3455/Motherly-Love" target="_blank" rel="noopener">GitHub Repo</a>
+      </div>
+    </article>
+
+    <article class="project" data-category="tool dashboard">
+      <div class="thumb three">
+        <small>Tracking system</small>
+        <strong>Daily Tracker</strong>
+      </div>
+      <h3>Daily Tracker</h3>
+      <div class="meta">
+        <span class="tag">Tool</span>
+        <span class="tag">Dashboard</span>
+        <span class="tag">Local-First</span>
+      </div>
+      <p class="desc">
+        A structured tracking interface designed around fast input, simple analytics, and an easy way to log current states without adding friction.
+      </p>
+      <p class="outcome">
+        Built to capture repeated patterns over time instead of leaving useful personal data scattered across notes and memory.
+      </p>
+      <div class="links">
+        <a class="link" href="https://github.com/dylanmsprouse3455/Daily-Tracker" target="_blank" rel="noopener">GitHub Repo</a>
+      </div>
+    </article>
+
+    <article class="project" data-category="tool dashboard">
+      <div class="thumb four">
+        <small>Finance / mortgage utility</small>
+        <strong>Statement Extractor</strong>
+      </div>
+      <h3>Statement Extractor Mortgage</h3>
+      <div class="meta">
+        <span class="tag">Tool</span>
+        <span class="tag">Mortgage</span>
+        <span class="tag">Data Extraction</span>
+      </div>
+      <p class="desc">
+        A utility-focused project aimed at pulling useful structure out of mortgage and statement data so key numbers are easier to review and explain.
+      </p>
+      <p class="outcome">
+        Built around the idea that financial documents become more useful when they are translated into readable, actionable breakdowns.
+      </p>
+      <div class="links">
+        <a class="link" href="https://github.com/dylanmsprouse3455/Statement-Extractor-Mortgage" target="_blank" rel="noopener">GitHub Repo</a>
+      </div>
+    </article>
+
+    <article class="project" data-category="website">
+      <div class="thumb five">
+        <small>Service-business website</small>
+        <strong>Hale Kustom Paint</strong>
+      </div>
+      <h3>Hale Kustom Paint</h3>
+      <div class="meta">
+        <span class="tag">Website</span>
+        <span class="tag">Local Business</span>
+        <span class="tag">Lead Generation</span>
+      </div>
+      <p class="desc">
+        A service-business web project centered on stronger presentation, clearer services, and a more polished first impression for potential customers.
+      </p>
+      <p class="outcome">
+        Designed to make the business look more established online while reducing friction between interest and contact.
+      </p>
+      <div class="links">
+        <a class="link" href="https://github.com/dylanmsprouse3455/Hale-kustom-Paint" target="_blank" rel="noopener">GitHub Repo</a>
+      </div>
+    </article>
+
+    <article class="project" data-category="website brand">
+      <div class="thumb six">
+        <small>Personal brand page</small>
+        <strong>Dylan Sprouse Resume</strong>
+      </div>
+      <h3>Dylan Sprouse Resume</h3>
+      <div class="meta">
+        <span class="tag">Website</span>
+        <span class="tag">Resume</span>
+        <span class="tag">Brand</span>
+      </div>
+      <p class="desc">
+        A cleaner web-based resume concept intended to present experience, skills, and credibility in a format that is easier to scan than a plain document.
+      </p>
+      <p class="outcome">
+        Meant to turn a standard resume into a stronger digital first impression with better structure and readability.
+      </p>
+      <div class="links">
+        <a class="link" href="https://github.com/dylanmsprouse3455/Dylan-Sprouse-Resume" target="_blank" rel="noopener">GitHub Repo</a>
+      </div>
+    </article>
+  </section>
+
+  <div class="note">
+    Need something more custom than a standard brochure site? A lot of my work leans toward building structure: cleaner pages, better messaging, useful dashboards, and tools that make confusing information easier to work with.
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2026 DS Digital Designs. All rights reserved.</p>
+</footer>
+
+<script>
+const menuBtn = document.getElementById('menuBtn');
+const menu = document.getElementById('menu');
+
+menuBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  menu.classList.toggle('active');
+  menuBtn.classList.toggle('active');
+});
+
+menu.addEventListener('click', e => e.stopPropagation());
+
+document.addEventListener('click', () => {
+  menu.classList.remove('active');
+  menuBtn.classList.remove('active');
+});
+
+const chips = document.querySelectorAll('.chip');
+const projects = document.querySelectorAll('.project');
+
+chips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    chips.forEach(btn => btn.classList.remove('active'));
+    chip.classList.add('active');
+    const filter = chip.dataset.filter;
+
+    projects.forEach(project => {
+      const categories = project.dataset.category.split(' ');
+      const show = filter === 'all' || categories.includes(filter);
+      project.classList.toggle('hidden', !show);
+    });
+  });
+});
+</script>
+<script src="chat-widget.js"></script>
+</body>
+</html>
