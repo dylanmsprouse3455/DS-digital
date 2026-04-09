@@ -78,6 +78,7 @@ header {
   height: 3px;
   background: var(--dark);
   border-radius: 2px;
+  transition: 0.3s;
 }
 
 .menu-btn.active span:nth-child(1) {
@@ -136,6 +137,7 @@ nav a {
 .hero-actions {
   display: flex;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
 .btn {
@@ -235,12 +237,12 @@ footer {
 
 <nav id="menu">
 <a href="index.html">Home</a>
-<a href="services.html">Services</a>
-<a href="quote.html">Get a Quote</a>
-<a href="contact.html">Contact</a>
-<a href="blog.html">Blog</a>
-<a href="portfolio-v2.html">Portfolio</a>
-<a href="about.html">About</a>
+<a href="services-v2.html">Services</a>
+<a href="quote-v2.html">Get a Quote</a>
+<a href="contact-v2.html">Contact</a>
+<a href="blog-v2.html">Blog</a>
+<a href="portfolio-v3.html">Portfolio</a>
+<a href="about-v2.html">About</a>
 </nav>
 
 <main>
@@ -254,8 +256,8 @@ that need clarity, credibility, and a strong online presence.
 </p>
 
 <div class="hero-actions">
-<a href="quote.html" class="btn">Get a Quote</a>
-<a href="services.html" class="btn secondary">View Services</a>
+<a href="quote-v2.html" class="btn">Get a Quote</a>
+<a href="services-v2.html" class="btn secondary">View Services</a>
 </div>
 
 <div class="insta-row">
@@ -316,14 +318,14 @@ const menuBtn = document.getElementById('menuBtn');
 const menu = document.getElementById('menu');
 
 menuBtn.addEventListener('click', e => {
-e.stopPropagation();
-menu.classList.toggle('active');
-menuBtn.classList.toggle('active');
+  e.stopPropagation();
+  menu.classList.toggle('active');
+  menuBtn.classList.toggle('active');
 });
 
 document.addEventListener('click', () => {
-menu.classList.remove('active');
-menuBtn.classList.remove('active');
+  menu.classList.remove('active');
+  menuBtn.classList.remove('active');
 });
 </script>
 <script src="chat-widget.js"></script>
