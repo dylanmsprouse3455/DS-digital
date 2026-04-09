@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Get a Quote | DS Digital Designs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="assets/css/theme.css">
+</head>
+<body>
+<div id="header-slot"></div>
+<div id="nav-slot"></div>
+
+<main class="page-wrap">
+  <div class="wizard">
+    <div class="wizard-card">
+      <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+      <section class="step active" data-step="1">
+        <h1>Get a project estimate</h1>
+        <p class="page-intro">Answer a few quick questions to receive a realistic, non-binding estimate.</p>
+        <div class="actions"><button class="next-btn">Start</button><a href="index.html" class="cancel-btn">Cancel</a></div>
+      </section>
+
+      <section class="step" data-step="2">
+        <h2>What type of website do you need?</h2>
+        <div class="surface-card" style="padding:18px; margin-top:20px;">
+          <div class="options">
+            <div class="option" data-type="one">One-page website</div>
+            <div class="option" data-type="multi">Multi-page website</div>
+            <div class="option" data-type="redesign">Redesign / refresh</div>
+            <div class="option" data-type="unsure">Not sure yet</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="step" data-step="3">
+        <h2>Your estimated range</h2>
+        <div class="summary-card">
+          <p><strong>Estimated build range</strong></p>
+          <h3 id="price">$900 – $1,200</h3>
+          <p>This estimate is non-binding and based on the information provided.</p>
+        </div>
+        <div class="actions" style="margin-top:24px;"><a href="contact-v2.html" class="next-btn">Continue to Contact</a></div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<div id="footer-slot"></div>
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/load-components.js"></script>
+<script>
+const steps = document.querySelectorAll('.step');
+const progressBar = document.getElementById('progressBar');
+const optionButtons = document.querySelectorAll('[data-type]');
+let currentStep = 0;
+let selectedType = 'unsure';
+
+function renderStep(index) {
+  steps.forEach((step, i) => step.classList.toggle('active', i === index));
+  progressBar.style.width = `${((index + 1) / steps.length) * 100}%`;
+}
+
+function setPrice(type) {
+  const prices = {
+    one: '$300 – $600',
+    multi: '$600 – $1,200',
+    redesign: '$400 – $1,000',
+    unsure: '$500 – $1,200'
+  };
+  const value = prices[type] || prices.unsure;
+  document.getElementById('price').textContent = value;
+  localStorage.setItem('quoteRange', value);
+}
+
+document.querySelector('.next-btn').addEventListener('click', () => {
+  currentStep = 1;
+  renderStep(currentStep);
+});
+
+optionButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    selectedType = button.dataset.type;
+    setPrice(selectedType);
+    currentStep = 2;
+    renderStep(currentStep);
+  });
+});
+
+renderStep(currentStep);
+</script>
+<script src="chat-widget.js"></script>
+</body>
+</html>
