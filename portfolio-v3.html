@@ -15,44 +15,59 @@
 <meta name="twitter:title" content="Portfolio | DS Digital Designs">
 <meta name="twitter:description" content="Selected websites, dashboards, and custom tools built by DS Digital Designs.">
 <link rel="stylesheet" href="assets/css/theme.css">
+<style>
+.portfolio-hero{display:grid;grid-template-columns:minmax(0,1.15fr)minmax(280px,.85fr);gap:28px;align-items:stretch}.portfolio-hero .hero-panel{display:flex;flex-direction:column;justify-content:center;min-height:390px}.portfolio-hero h1{font-size:clamp(38px,6vw,58px);line-height:1.03;margin:18px 0 16px}.portfolio-hero p{max-width:760px;color:var(--muted);font-size:18px;margin:0}.portfolio-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}.portfolio-summary{padding:26px;display:flex;flex-direction:column;gap:16px}.summary-tile{padding:16px;border:1px solid var(--border);border-radius:14px;background:#f8fafc}.summary-tile span{display:block;color:var(--muted);font-size:13px;font-weight:800;text-transform:uppercase}.summary-tile strong{display:block;font-size:22px;line-height:1.2;margin-top:3px}.filter-shell{margin:34px 0 24px}.filter-shell .section-head{margin:0 0 16px}.filter-bar{margin:0}.chip{min-height:42px}.portfolio-grid{align-items:stretch}.portfolio-grid .project{position:relative;overflow:hidden;padding:22px}.portfolio-grid .project::before{content:"";position:absolute;inset:0 0 auto;height:5px;background:var(--blue)}.project h3{font-size:22px;line-height:1.2;margin:0}.project .thumb{margin-bottom:2px}.project .links{margin-top:auto}.project.hidden{display:none}.count-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:18px}.count-item{padding:14px;border-radius:14px;background:white;border:1px solid var(--border);box-shadow:var(--card-shadow)}.count-item strong{display:block;font-size:24px}.count-item span{color:var(--muted);font-size:13px;font-weight:800;text-transform:uppercase}.portfolio-note{display:grid;grid-template-columns:minmax(0,1fr)auto;gap:20px;align-items:center}.portfolio-note h2{margin:0 0 6px;font-size:26px}.portfolio-note p{margin:0;color:var(--muted)}.portfolio-note .links{justify-content:flex-end}.link.disabled{opacity:.55;pointer-events:none}.empty-state{display:none;margin-top:16px;padding:18px;border-radius:16px;border:1px dashed var(--border);color:var(--muted);background:white}.empty-state.show{display:block}@media(max-width:900px){.portfolio-hero,.portfolio-note{grid-template-columns:1fr}.portfolio-hero .hero-panel{min-height:auto}.portfolio-note .links{justify-content:flex-start}}@media(max-width:640px){.portfolio-summary,.portfolio-grid .project{padding:20px}.portfolio-actions .link,.portfolio-note .link{width:100%;text-align:center}.summary-tile strong{font-size:20px}}
+</style>
 </head>
 <body>
 <div id="header-slot"></div>
 <div id="nav-slot"></div>
 
 <main class="page-wrap">
-  <section class="hero-panel">
-    <div class="kicker">Selected work</div>
-    <h1 class="page-title">Websites, dashboards, and custom tools built to make things clearer</h1>
-    <p class="page-intro">
-      This portfolio shows the kind of work I build most often: clean business websites,
-      structured dashboards, and practical tools that turn messy information into something
-      easier to understand and use.
-    </p>
-
-    <div class="hero-stats">
-      <div class="stat"><strong>6</strong><span>Featured projects</span></div>
-      <div class="stat"><strong>Mobile-first</strong><span>Built to work cleanly on phones first</span></div>
-      <div class="stat"><strong>Custom code</strong><span>HTML, CSS, JavaScript, and purpose-built UI</span></div>
+  <section class="portfolio-hero">
+    <div class="hero-panel">
+      <div class="kicker">Selected work</div>
+      <h1 class="page-title">Websites, dashboards, and custom tools built to make things clearer</h1>
+      <p class="page-intro">This portfolio shows the kind of work I build most often: clean business websites, structured dashboards, and practical tools that turn messy information into something easier to understand and use.</p>
+      <div class="portfolio-actions">
+        <a class="link primary" href="quote-v2.html">Start a Similar Project</a>
+        <a class="link" href="services-v2.html">View Services</a>
+      </div>
     </div>
+
+    <aside class="surface-card portfolio-summary" aria-label="Portfolio summary">
+      <div class="summary-tile"><span>Featured projects</span><strong>6 selected builds</strong></div>
+      <div class="summary-tile"><span>Common work</span><strong>Websites, tools, and dashboards</strong></div>
+      <div class="summary-tile"><span>Build style</span><strong>Custom code with practical structure</strong></div>
+      <div class="summary-tile"><span>Best fit</span><strong>Small businesses and focused workflows</strong></div>
+    </aside>
   </section>
 
-  <div class="section-head">
-    <div>
-      <h2>Featured projects</h2>
-      <p>A mix of service-business websites, personal brand pages, nonprofit work, and data-focused tools.</p>
+  <section class="count-strip" aria-label="Portfolio category summary">
+    <div class="count-item"><strong>4</strong><span>Website / brand projects</span></div>
+    <div class="count-item"><strong>2</strong><span>Tools and dashboards</span></div>
+    <div class="count-item"><strong>6</strong><span>GitHub-backed examples</span></div>
+  </section>
+
+  <section class="filter-shell">
+    <div class="section-head">
+      <div>
+        <h2>Featured projects</h2>
+        <p>Filter by project type, or scan the full set to see how the work is structured.</p>
+      </div>
     </div>
-  </div>
 
-  <div class="filter-bar">
-    <button class="chip active" type="button" data-filter="all">All</button>
-    <button class="chip" type="button" data-filter="website">Websites</button>
-    <button class="chip" type="button" data-filter="tool">Tools</button>
-    <button class="chip" type="button" data-filter="dashboard">Dashboards</button>
-    <button class="chip" type="button" data-filter="brand">Brand / Portfolio</button>
-  </div>
+    <div class="filter-bar" aria-label="Portfolio filters">
+      <button class="chip active" type="button" data-filter="all">All</button>
+      <button class="chip" type="button" data-filter="website">Websites</button>
+      <button class="chip" type="button" data-filter="tool">Tools</button>
+      <button class="chip" type="button" data-filter="dashboard">Dashboards</button>
+      <button class="chip" type="button" data-filter="brand">Brand / Portfolio</button>
+    </div>
+    <div class="empty-state" id="emptyState">No projects match that filter yet.</div>
+  </section>
 
-  <section class="grid" id="projectGrid">
+  <section class="grid portfolio-grid" id="projectGrid">
     <article class="project" data-category="website brand">
       <div class="thumb one"><small>Brand website</small><strong>DS Digital Designs</strong></div>
       <h3>DS Digital Designs</h3>
@@ -108,7 +123,16 @@
     </article>
   </section>
 
-  <div class="note-card">Need something more custom than a standard brochure site? A lot of my work leans toward building structure: cleaner pages, better messaging, useful dashboards, and tools that make confusing information easier to work with.</div>
+  <section class="note-card portfolio-note">
+    <div>
+      <h2>Need something more custom than a standard brochure site?</h2>
+      <p>A lot of my work leans toward building structure: cleaner pages, better messaging, useful dashboards, and tools that make confusing information easier to work with.</p>
+    </div>
+    <div class="links">
+      <a class="link primary" href="quote-v2.html">Start Quote</a>
+      <a class="link" href="contact-v2.html">Contact</a>
+    </div>
+  </section>
 </main>
 
 <div id="footer-slot"></div>
@@ -118,16 +142,20 @@
 <script>
 const chips = document.querySelectorAll('.chip');
 const projects = document.querySelectorAll('.project');
+const emptyState = document.getElementById('emptyState');
 chips.forEach(chip => {
   chip.addEventListener('click', () => {
     chips.forEach(btn => btn.classList.remove('active'));
     chip.classList.add('active');
     const filter = chip.dataset.filter;
+    let visibleCount = 0;
     projects.forEach(project => {
       const categories = project.dataset.category.split(' ');
       const show = filter === 'all' || categories.includes(filter);
       project.classList.toggle('hidden', !show);
+      if (show) visibleCount += 1;
     });
+    emptyState.classList.toggle('show', visibleCount === 0);
   });
 });
 </script>
