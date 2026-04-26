@@ -15,52 +15,87 @@
 <meta name="twitter:title" content="About | DS Digital Designs">
 <meta name="twitter:description" content="Learn about the approach behind DS Digital Designs websites and tools.">
 <link rel="stylesheet" href="assets/css/theme.css">
+<style>
+.about-hero{display:grid;grid-template-columns:minmax(0,1.15fr)minmax(280px,.85fr);gap:28px;align-items:stretch}.about-hero .hero-panel{display:flex;flex-direction:column;justify-content:center;min-height:390px}.about-hero h1{font-size:clamp(38px,6vw,58px);line-height:1.03;margin:18px 0 16px}.about-hero p{max-width:760px;color:var(--muted);font-size:18px;margin:0}.about-actions{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}.profile-card{padding:26px;display:flex;flex-direction:column;gap:18px}.profile-mark{height:128px;border-radius:18px;background:linear-gradient(135deg,#2563eb,#0f172a);color:white;display:flex;align-items:flex-end;padding:18px;overflow:hidden}.profile-mark strong{font-size:30px;line-height:1.05;max-width:220px}.profile-list{display:grid;gap:12px;margin:0;padding:0;list-style:none}.profile-list li{padding:14px;border:1px solid var(--border);border-radius:14px;background:#f8fafc}.profile-list span{display:block;color:var(--muted);font-size:13px;font-weight:800;text-transform:uppercase}.profile-list strong{display:block;margin-top:3px}.about-split{display:grid;grid-template-columns:minmax(0,.95fr)minmax(0,1.05fr);gap:24px;margin-top:34px;align-items:start}.story-card{padding:28px}.story-card h2,.principles h2{font-size:30px;line-height:1.15;margin:0 0 12px}.story-card p{color:var(--muted);margin:0 0 14px}.story-card p:last-child{margin-bottom:0}.principles{display:grid;gap:14px}.principle{padding:20px;border-radius:16px;background:white;border:1px solid var(--border);box-shadow:var(--card-shadow)}.principle h3{margin:0 0 6px;font-size:18px}.principle p{color:var(--muted);margin:0;font-size:14px}.about-grid{margin-top:34px}.about-grid .project{position:relative;overflow:hidden}.about-grid .project::before{content:"";position:absolute;inset:0 0 auto;height:5px;background:var(--blue)}.about-cta{display:flex;justify-content:space-between;gap:22px;align-items:center;margin-top:34px}.about-cta h2{margin:0 0 6px;font-size:26px}.about-cta p{margin:0;color:var(--muted)}.about-cta .links{flex-shrink:0}@media(max-width:900px){.about-hero,.about-split{grid-template-columns:1fr}.about-hero .hero-panel{min-height:auto}.about-cta{align-items:flex-start;flex-direction:column}}@media(max-width:640px){.profile-card,.story-card{padding:22px}.about-actions .link,.about-cta .link{width:100%;text-align:center}.profile-mark{height:112px}.profile-mark strong{font-size:25px}}
+</style>
 </head>
 <body>
 <div id="header-slot"></div>
 <div id="nav-slot"></div>
 
 <main class="page-wrap">
-  <section class="hero-panel">
-    <div class="kicker">About the work</div>
-    <h1 class="page-title">Built around clarity, structure, and useful design</h1>
-    <p class="page-intro">
-      DS Digital Designs is focused on building websites and digital tools that make things easier to understand.
-      The goal is not just to make pages look better, but to make the information inside them cleaner, more useful,
-      and easier for real people to act on.
-    </p>
+  <section class="about-hero">
+    <div class="hero-panel">
+      <div class="kicker">About DS Digital Designs</div>
+      <h1>Clean websites for businesses that need to look clear, current, and credible online</h1>
+      <p>DS Digital Designs builds practical websites and small custom tools for people who need their online presence to make sense quickly. The work is focused on structure first: clear sections, readable copy, mobile-friendly layouts, and a direct path for visitors to take action.</p>
+      <div class="about-actions">
+        <a class="link primary" href="quote-v2.html">Get a Project Estimate</a>
+        <a class="link" href="portfolio-v3.html">View Portfolio</a>
+      </div>
+    </div>
+    <aside class="surface-card profile-card" aria-label="About summary">
+      <div class="profile-mark"><strong>Built with clarity before decoration</strong></div>
+      <ul class="profile-list">
+        <li><span>Focus</span><strong>Small-business websites and useful web tools</strong></li>
+        <li><span>Approach</span><strong>Custom HTML, CSS, and JavaScript</strong></li>
+        <li><span>Priority</span><strong>Mobile usability, trust, and easy next steps</strong></li>
+      </ul>
+    </aside>
+  </section>
+
+  <section class="about-split">
+    <article class="surface-card story-card">
+      <h2>Why the work is built this way</h2>
+      <p>A lot of small-business websites do not fail because the business is weak. They fail because the page is hard to understand, the offer is buried, the layout feels dated, or the visitor has to work too hard to know what to do next.</p>
+      <p>My goal is to make that path cleaner. That means organizing the message, trimming clutter, building pages that hold up on phones, and making sure the most important actions are obvious.</p>
+      <p>The style is practical on purpose: strong structure, clean visuals, useful content, and room to grow later.</p>
+    </article>
+
+    <div class="principles">
+      <article class="principle"><h3>Start with the visitor</h3><p>The page should answer the visitor's first questions quickly: what you do, who it is for, why it is trustworthy, and how to start.</p></article>
+      <article class="principle"><h3>Keep the build lean</h3><p>Custom code keeps the site easier to understand, easier to adjust, and less weighed down by unnecessary page-builder clutter.</p></article>
+      <article class="principle"><h3>Design for real use</h3><p>Most people will visit on a phone, skim fast, and decide quickly. The layout has to support that behavior instead of fighting it.</p></article>
+    </div>
   </section>
 
   <div class="section-head">
     <div>
-      <h2>What the business is built around</h2>
-      <p>The main angle is simple: turn messy information into organized information.</p>
+      <h2>What I pay attention to</h2>
+      <p>The details that make a website feel more trustworthy, easier to scan, and easier to act on.</p>
     </div>
   </div>
 
-  <section class="grid">
+  <section class="grid about-grid">
     <article class="surface-card project">
       <h3>Clear messaging</h3>
-      <p class="desc">A lot of small-business websites are not actually confusing because the business is confusing. They are confusing because the wording, structure, and hierarchy are weak.</p>
-      <p class="outcome">The fix is usually better organization, stronger framing, and a cleaner path to action.</p>
+      <p class="desc">Headlines, sections, and calls to action are shaped so visitors do not have to guess what the business offers.</p>
+      <p class="outcome">Better structure usually makes the business feel more professional before any visual polish is added.</p>
     </article>
 
     <article class="surface-card project">
-      <h3>Mobile-first thinking</h3>
-      <p class="desc">Most people hit a site from their phone first. That means the layout has to hold up on small screens before anything else matters.</p>
-      <p class="outcome">Pages are built to feel readable and usable on phones, then scale upward cleanly.</p>
+      <h3>Mobile-first layout</h3>
+      <p class="desc">Pages are planned for phone screens first, then expanded for tablets and desktops.</p>
+      <p class="outcome">The result is a site that feels usable where most visitors actually find it.</p>
     </article>
 
     <article class="surface-card project">
-      <h3>Custom structure</h3>
-      <p class="desc">Sometimes a normal website is enough. Other times the business needs a dashboard, estimate tool, intake flow, or simplified system layered into the site.</p>
-      <p class="outcome">That is where custom HTML, CSS, and JavaScript become useful instead of relying on one-size-fits-all templates.</p>
+      <h3>Useful custom features</h3>
+      <p class="desc">Some businesses need more than brochure pages, like quote tools, intake flows, dashboards, or organized resource pages.</p>
+      <p class="outcome">Custom features are added when they make the business easier to run or easier for customers to understand.</p>
     </article>
   </section>
 
-  <div class="note-card">
-    The overall style is practical on purpose. Clean pages. Less junk. Better structure. Easier editing. Easier growth later.
-  </div>
+  <section class="note-card about-cta">
+    <div>
+      <h2>Have a site that needs to feel more put together?</h2>
+      <p>Start with the quote tool or send a project note. I can help sort the structure before the build gets complicated.</p>
+    </div>
+    <div class="links">
+      <a class="link primary" href="quote-v2.html">Start Quote</a>
+      <a class="link" href="contact-v2.html">Contact</a>
+    </div>
+  </section>
 </main>
 
 <div id="footer-slot"></div>
