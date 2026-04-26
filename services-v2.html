@@ -1,4 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><title>Services | DS Digital Designs</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Website design services for small businesses. One-page sites, multi-page websites, redesigns, and custom tools with clear pricing ranges."><link rel="stylesheet" href="assets/css/theme.css"></head>
-<body><div id="header-slot"></div><div id="nav-slot"></div><main class="page-wrap"><div class="page-header"><h1>Services</h1><p>I build websites that help small businesses get found, build trust, and turn visitors into customers. Pick a service below to see what fits, then estimate the scope.</p></div><section class="services-grid"><article class="surface-card service-card"><div class="service-icon">Site</div><h3>One-Page Websites</h3><p class="desc">Everything your customers need to know on a single, scroll-friendly page. Fast to build, easy to maintain, and ideal for a focused offer.</p><p class="outcome"><strong>Range:</strong> $300 - $600</p><div class="links"><a class="link primary" href="quote-v2.html?type=one">Estimate This</a></div></article><article class="surface-card service-card"><div class="service-icon">Pages</div><h3>Multi-Page Websites</h3><p class="desc">Structured sites with dedicated pages for services, about, contact, blog, portfolio, or locations. Best when the business needs room to explain.</p><p class="outcome"><strong>Range:</strong> $700 - $1,300</p><div class="links"><a class="link primary" href="quote-v2.html?type=multi">Estimate This</a></div></article><article class="surface-card service-card"><div class="service-icon">Fix</div><h3>Website Redesigns</h3><p class="desc">Already have a site that feels outdated, unclear, or underperforming? I can rebuild the structure and polish the experience without starting from zero.</p><p class="outcome"><strong>Range:</strong> $450 - $1,050</p><div class="links"><a class="link primary" href="quote-v2.html?type=redesign">Estimate This</a></div></article></section><div class="note-card">These are starting ranges, not hard locked quotes. The final number depends on custom structure, content readiness, forms, galleries, booking flows, SEO, and ongoing update needs.</div></main><div id="footer-slot"></div><script src="assets/js/shell.js"></script><script src="assets/js/load-components.js?v=2026-04-26-quote-menu-fix"></script><script src="chat-widget.js"></script></body></html>
+<head>
+<meta charset="UTF-8">
+<title>Services | DS Digital Designs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Website design services for small businesses. One-page sites, multi-page websites, redesigns, and custom tools with clear pricing ranges.">
+<link rel="stylesheet" href="assets/css/theme.css">
+<style>
+.services-hero{display:grid;grid-template-columns:minmax(0,1.15fr)minmax(280px,.85fr);gap:28px;align-items:stretch;margin-bottom:34px}.services-hero .hero-panel{display:flex;flex-direction:column;justify-content:center;min-height:360px}.hero-panel h1{font-size:clamp(38px,6vw,58px);line-height:1.03;margin:18px 0 16px}.hero-panel p{max-width:720px;color:var(--muted);font-size:18px;margin:0}.hero-actions{margin-top:26px}.service-snapshot{padding:26px;display:flex;flex-direction:column;justify-content:space-between;gap:22px}.snapshot-row{display:flex;justify-content:space-between;gap:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}.snapshot-row:last-child{border-bottom:0;padding-bottom:0}.snapshot-row span{color:var(--muted);font-size:14px}.snapshot-row strong{font-size:20px;text-align:right}.service-section-head{margin:10px 0 18px}.service-section-head h2{font-size:30px;margin:0 0 8px}.service-section-head p{color:var(--muted);margin:0;max-width:760px}.services-grid{align-items:stretch}.service-card{position:relative;display:flex;flex-direction:column;gap:18px;padding:26px;border-radius:18px;overflow:hidden}.service-card::before{content:"";position:absolute;inset:0 0 auto;height:5px;background:var(--blue)}.service-card.featured::before{background:#0f766e}.service-card h3{font-size:25px;line-height:1.15;margin:0}.service-card .desc{font-size:15px}.service-icon{width:auto;height:auto;display:inline-flex;align-self:flex-start;align-items:center;justify-content:center;margin:0;padding:7px 10px;background:rgba(37,99,235,.10);border:1px solid rgba(37,99,235,.18);border-radius:999px;color:var(--blue);font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}.price-line{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-top:auto;padding-top:4px}.price-line span{color:var(--muted);font-size:13px;font-weight:800;text-transform:uppercase}.price-line strong{font-size:24px;line-height:1;color:var(--dark);text-align:right}.service-list{display:grid;gap:9px;margin:0;padding:0;list-style:none}.service-list li{position:relative;padding-left:20px;color:var(--muted);font-size:14px}.service-list li::before{content:"";position:absolute;left:0;top:.65em;width:7px;height:7px;border-radius:50%;background:var(--blue)}.service-card.featured .service-list li::before{background:#0f766e}.service-card .links{margin-top:2px}.process-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:34px}.process-step{padding:18px;border-radius:16px;background:white;border:1px solid var(--border);box-shadow:var(--card-shadow)}.process-step span{display:inline-flex;width:30px;height:30px;align-items:center;justify-content:center;border-radius:999px;background:rgba(37,99,235,.10);color:var(--blue);font-weight:900;margin-bottom:10px}.process-step h3{font-size:17px;margin:0 0 6px}.process-step p{color:var(--muted);font-size:14px;margin:0}.services-note{display:flex;justify-content:space-between;gap:20px;align-items:center}.services-note p{margin:0}.services-note .link{white-space:nowrap}@media(max-width:900px){.services-hero{grid-template-columns:1fr}.services-hero .hero-panel{min-height:auto}.process-strip{grid-template-columns:1fr}.services-note{align-items:flex-start;flex-direction:column}}@media(max-width:640px){.service-card{padding:22px}.price-line{align-items:flex-start;flex-direction:column}.price-line strong{text-align:left}.hero-actions .link{width:100%;text-align:center}.service-snapshot{padding:22px}.snapshot-row strong{text-align:left}.snapshot-row{flex-direction:column;gap:4px}}
+</style>
+</head>
+<body>
+<div id="header-slot"></div><div id="nav-slot"></div>
+<main class="page-wrap">
+  <section class="services-hero">
+    <div class="hero-panel">
+      <div class="kicker">Website services</div>
+      <h1>Clear websites built to help customers take the next step</h1>
+      <p>From focused one-page builds to fuller business sites and redesigns, each project is structured around clarity, trust, mobile usability, and an easy path to contact.</p>
+      <div class="hero-actions">
+        <a class="link primary" href="quote-v2.html">Get a Project Estimate</a>
+        <a class="link" href="portfolio-v3.html">View Portfolio</a>
+      </div>
+    </div>
+    <aside class="surface-card service-snapshot" aria-label="Service summary">
+      <div class="snapshot-row"><span>Starting range</span><strong>$300</strong></div>
+      <div class="snapshot-row"><span>Best fit</span><strong>Small business websites</strong></div>
+      <div class="snapshot-row"><span>Built for</span><strong>Mobile, trust, and lead flow</strong></div>
+      <div class="snapshot-row"><span>Next step</span><strong>Quick estimate</strong></div>
+    </aside>
+  </section>
+
+  <section class="service-section-head">
+    <h2>Choose the right starting point</h2>
+    <p>These ranges give you a realistic planning number. The final quote depends on page count, content readiness, features, forms, integrations, and launch needs.</p>
+  </section>
+
+  <section class="services-grid" aria-label="Website services">
+    <article class="surface-card service-card">
+      <div class="service-icon">Focused launch</div>
+      <h3>One-page website</h3>
+      <p class="desc">A complete scroll-friendly site for a focused offer, local service, personal brand, or simple business launch.</p>
+      <ul class="service-list">
+        <li>Hero, services, proof, contact, and call-to-action sections</li>
+        <li>Mobile-first layout with clean spacing and readable content</li>
+        <li>Basic SEO structure and contact path setup</li>
+      </ul>
+      <div class="price-line"><span>Typical range</span><strong>$300 - $600</strong></div>
+      <div class="links"><a class="link primary" href="quote-v2.html?type=one">Estimate This</a></div>
+    </article>
+
+    <article class="surface-card service-card featured">
+      <div class="service-icon">Most flexible</div>
+      <h3>Multi-page website</h3>
+      <p class="desc">A stronger structure for businesses that need dedicated pages for services, about, contact, portfolio, blog, or locations.</p>
+      <ul class="service-list">
+        <li>Planned navigation and page hierarchy</li>
+        <li>Service, trust, portfolio, contact, and support pages as needed</li>
+        <li>Reusable sections so the site can grow later</li>
+      </ul>
+      <div class="price-line"><span>Typical range</span><strong>$700 - $1,300</strong></div>
+      <div class="links"><a class="link primary" href="quote-v2.html?type=multi">Estimate This</a></div>
+    </article>
+
+    <article class="surface-card service-card">
+      <div class="service-icon">Refresh</div>
+      <h3>Website redesign</h3>
+      <p class="desc">For sites that already exist but feel outdated, unclear, slow, or hard to use on phones.</p>
+      <ul class="service-list">
+        <li>Cleaner structure, stronger messaging, and improved page flow</li>
+        <li>Visual polish without losing useful existing content</li>
+        <li>Better mobile experience and clearer calls to action</li>
+      </ul>
+      <div class="price-line"><span>Typical range</span><strong>$450 - $1,050</strong></div>
+      <div class="links"><a class="link primary" href="quote-v2.html?type=redesign">Estimate This</a></div>
+    </article>
+  </section>
+
+  <section class="process-strip" aria-label="Project process">
+    <article class="process-step"><span>1</span><h3>Estimate the scope</h3><p>Pick the closest service and answer a few quote questions so the starting range is grounded.</p></article>
+    <article class="process-step"><span>2</span><h3>Plan the structure</h3><p>Pages, sections, copy, features, and launch needs get organized before the build gets too far along.</p></article>
+    <article class="process-step"><span>3</span><h3>Build and polish</h3><p>The site is tightened for mobile, clarity, speed, and a clear path for visitors to contact you.</p></article>
+  </section>
+
+  <div class="note-card services-note">
+    <p>Not sure which option fits? Start with the quote tool and choose “Not sure yet.” The estimate can still point us in the right direction.</p>
+    <a class="link primary" href="quote-v2.html?type=unsure">Start Quote</a>
+  </div>
+</main>
+<div id="footer-slot"></div><script src="assets/js/shell.js"></script><script src="assets/js/load-components.js?v=2026-04-26-quote-menu-fix"></script><script src="chat-widget.js"></script>
+</body>
+</html>
