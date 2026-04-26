@@ -27,7 +27,7 @@ const componentFallbacks = {
 </footer>`
 };
 
-const shellVersion = '2026-04-26-quote-menu-fix';
+const shellVersion = '2026-04-26-menu-seo';
 
 function componentUrl(path) {
   const separator = path.includes('?') ? '&' : '?';
