@@ -2,193 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Get a Quote | DS Digital Designs</title>
+<title>Get a Website Quote | DS Digital Designs</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Estimate your website project with DS Digital Designs. Choose website type, features, timeline, and ongoing support needs.">
+<meta name="description" content="Use the DS Digital Designs quote tool to estimate a small-business website, redesign, or custom web project.">
+<link rel="canonical" href="https://dsdigitaldesigns.org/quote-v2.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Get a Website Quote | DS Digital Designs">
+<meta property="og:description" content="Estimate your website project by choosing site type, features, timeline, and ongoing support needs.">
+<meta property="og:url" content="https://dsdigitaldesigns.org/quote-v2.html">
+<meta property="og:image" content="https://dsdigitaldesigns.org/0193CA57-3463-4528-AE1F-50F2BCD64BFB.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Get a Website Quote | DS Digital Designs">
+<meta name="twitter:description" content="Estimate a small-business website project with DS Digital Designs.">
 <link rel="stylesheet" href="assets/css/theme.css">
-<style>
-.quote-layout{display:grid;grid-template-columns:minmax(0,1fr)320px;gap:24px;align-items:start}.estimate-panel{position:sticky;top:120px;padding:24px}.estimate-value{font-size:32px;font-weight:900;color:var(--blue);line-height:1.1}.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.option{display:flex;align-items:flex-start;gap:9px;border:1px solid var(--border);border-radius:14px;padding:14px;background:#fff;cursor:pointer;font-weight:800;line-height:1.35;min-height:56px}.option input{width:auto;min-width:16px;margin:2px 0 0;accent-color:var(--blue);cursor:pointer}.option.selected{border-color:var(--blue);background:rgba(37,99,235,.10);color:var(--blue)}.option:focus-within{outline:3px solid rgba(37,99,235,.18);outline-offset:2px}.step-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.step-actions button,.step-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border:1px solid var(--blue);border-radius:10px;padding:11px 13px;font-weight:800;cursor:pointer;text-decoration:none}.back-btn{background:#fff;color:var(--blue)}.small-note{color:var(--muted);font-size:14px;margin-top:10px}@media(max-width:860px){.quote-layout{grid-template-columns:1fr}.estimate-panel{position:static}}
-</style>
+<style>.quote-layout{display:grid;grid-template-columns:minmax(0,1fr)320px;gap:24px;align-items:start}.estimate-panel{position:sticky;top:120px;padding:24px}.estimate-value{font-size:32px;font-weight:900;color:var(--blue);line-height:1.1}.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.option{display:flex;align-items:flex-start;gap:9px;border:1px solid var(--border);border-radius:14px;padding:14px;background:#fff;cursor:pointer;font-weight:800;line-height:1.35;min-height:56px}.option input{width:auto;min-width:16px;margin:2px 0 0;accent-color:var(--blue);cursor:pointer}.option.selected{border-color:var(--blue);background:rgba(37,99,235,.10);color:var(--blue)}.option:focus-within{outline:3px solid rgba(37,99,235,.18);outline-offset:2px}.step-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.step-actions button,.step-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border:1px solid var(--blue);border-radius:10px;padding:11px 13px;font-weight:800;cursor:pointer;text-decoration:none}.back-btn{background:#fff;color:var(--blue)}.small-note{color:var(--muted);font-size:14px;margin-top:10px}@media(max-width:860px){.quote-layout{grid-template-columns:1fr}.estimate-panel{position:static}}</style>
 </head>
 <body>
 <div id="header-slot"></div><div id="nav-slot"></div>
-<main class="page-wrap">
-  <div class="page-header">
-    <h1>Get a project estimate</h1>
-    <p>Answer a few quick questions to receive a realistic, non-binding range. The final quote depends on content readiness, integrations, and launch requirements.</p>
-  </div>
-  <div class="quote-layout">
-    <div class="wizard-card">
-      <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
-      <form id="quoteForm">
-        <section class="step active" data-step="1">
-          <h2>What type of website do you need?</h2>
-          <div class="options">
-            <label class="option"><input type="radio" name="type" value="one" checked>One-page website</label>
-            <label class="option"><input type="radio" name="type" value="multi">Multi-page website</label>
-            <label class="option"><input type="radio" name="type" value="redesign">Redesign / refresh</label>
-            <label class="option"><input type="radio" name="type" value="unsure">Not sure yet</label>
-          </div>
-          <div class="step-actions"><button type="button" class="next-btn" data-next="2">Continue</button></div>
-        </section>
-        <section class="step" data-step="2">
-          <h2>What features should be included?</h2>
-          <div class="options">
-            <label class="option"><input type="checkbox" name="features" value="form">Contact form</label>
-            <label class="option"><input type="checkbox" name="features" value="gallery">Photo gallery</label>
-            <label class="option"><input type="checkbox" name="features" value="booking">Booking or intake flow</label>
-            <label class="option"><input type="checkbox" name="features" value="blog">Blog / updates</label>
-            <label class="option"><input type="checkbox" name="features" value="seo">Local SEO setup</label>
-            <label class="option"><input type="checkbox" name="features" value="copy">Copy cleanup</label>
-          </div>
-          <div class="step-actions"><button type="button" class="back-btn" data-prev="1">Back</button><button type="button" class="next-btn" data-next="3">Continue</button></div>
-        </section>
-        <section class="step" data-step="3">
-          <h2>What timeline are you working with?</h2>
-          <div class="options">
-            <label class="option"><input type="radio" name="timeline" value="asap">ASAP</label>
-            <label class="option"><input type="radio" name="timeline" value="month" checked>Within a month</label>
-            <label class="option"><input type="radio" name="timeline" value="flexible">Flexible</label>
-          </div>
-          <div class="step-actions"><button type="button" class="back-btn" data-prev="2">Back</button><button type="button" class="next-btn" data-next="4">Continue</button></div>
-        </section>
-        <section class="step" data-step="4">
-          <h2>Will you need ongoing updates?</h2>
-          <div class="options">
-            <label class="option"><input type="radio" name="care" value="none" checked>No ongoing updates</label>
-            <label class="option"><input type="radio" name="care" value="edits">Occasional edits</label>
-            <label class="option"><input type="radio" name="care" value="ongoing">Ongoing monthly support</label>
-          </div>
-          <p class="small-note">This does not lock you into a maintenance plan. It just helps estimate the setup and handoff needs.</p>
-          <div class="step-actions"><button type="button" class="back-btn" data-prev="3">Back</button><a id="contactLink" href="contact-v2.html" class="next-btn">Continue to Contact</a></div>
-        </section>
-      </form>
-    </div>
-    <aside class="surface-card estimate-panel">
-      <div class="kicker">Live estimate</div>
-      <p><strong>Estimated build range</strong></p>
-      <div class="estimate-value" id="price" aria-live="polite">$300 - $600</div>
-      <p class="small-note" id="estimateDetails">One-page website, standard timeline, no ongoing updates.</p>
-    </aside>
-  </div>
-</main>
-<div id="footer-slot"></div><script src="assets/js/shell.js"></script><script src="assets/js/load-components.js?v=2026-04-26-quote-menu-fix"></script>
+<main class="page-wrap"><div class="page-header"><h1>Get a project estimate</h1><p>Answer a few quick questions to receive a realistic, non-binding range. The final quote depends on content readiness, integrations, and launch requirements.</p></div><div class="quote-layout"><div class="wizard-card"><div class="progress"><div class="progress-bar" id="progressBar"></div></div><form id="quoteForm"><section class="step active" data-step="1"><h2>What type of website do you need?</h2><div class="options"><label class="option"><input type="radio" name="type" value="one" checked>One-page website</label><label class="option"><input type="radio" name="type" value="multi">Multi-page website</label><label class="option"><input type="radio" name="type" value="redesign">Redesign / refresh</label><label class="option"><input type="radio" name="type" value="unsure">Not sure yet</label></div><div class="step-actions"><button type="button" class="next-btn" data-next="2">Continue</button></div></section><section class="step" data-step="2"><h2>What features should be included?</h2><div class="options"><label class="option"><input type="checkbox" name="features" value="form">Contact form</label><label class="option"><input type="checkbox" name="features" value="gallery">Photo gallery</label><label class="option"><input type="checkbox" name="features" value="booking">Booking or intake flow</label><label class="option"><input type="checkbox" name="features" value="blog">Blog / updates</label><label class="option"><input type="checkbox" name="features" value="seo">Local SEO setup</label><label class="option"><input type="checkbox" name="features" value="copy">Copy cleanup</label></div><div class="step-actions"><button type="button" class="back-btn" data-prev="1">Back</button><button type="button" class="next-btn" data-next="3">Continue</button></div></section><section class="step" data-step="3"><h2>What timeline are you working with?</h2><div class="options"><label class="option"><input type="radio" name="timeline" value="asap">ASAP</label><label class="option"><input type="radio" name="timeline" value="month" checked>Within a month</label><label class="option"><input type="radio" name="timeline" value="flexible">Flexible</label></div><div class="step-actions"><button type="button" class="back-btn" data-prev="2">Back</button><button type="button" class="next-btn" data-next="4">Continue</button></div></section><section class="step" data-step="4"><h2>Will you need ongoing updates?</h2><div class="options"><label class="option"><input type="radio" name="care" value="none" checked>No ongoing updates</label><label class="option"><input type="radio" name="care" value="edits">Occasional edits</label><label class="option"><input type="radio" name="care" value="ongoing">Ongoing monthly support</label></div><p class="small-note">This does not lock you into a maintenance plan. It just helps estimate the setup and handoff needs.</p><div class="step-actions"><button type="button" class="back-btn" data-prev="3">Back</button><a id="contactLink" href="contact-v2.html" class="next-btn">Continue to Contact</a></div></section></form></div><aside class="surface-card estimate-panel"><div class="kicker">Live estimate</div><p><strong>Estimated build range</strong></p><div class="estimate-value" id="price" aria-live="polite">$300 - $600</div><p class="small-note" id="estimateDetails">One-page website, standard timeline, no ongoing updates.</p></aside></div></main>
+<div id="footer-slot"></div><script src="assets/js/shell.js"></script><script src="assets/js/load-components.js?v=2026-04-26-menu-seo"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  var form = document.getElementById('quoteForm');
-  var progressBar = document.getElementById('progressBar');
-  var priceEl = document.getElementById('price');
-  var detailsEl = document.getElementById('estimateDetails');
-  var contactLink = document.getElementById('contactLink');
-  if (!form || !progressBar || !priceEl || !detailsEl || !contactLink) return;
-
-  var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
-  var pricing = {
-    type: { one: [300, 600], multi: [700, 1300], redesign: [450, 1050], unsure: [500, 1200] },
-    features: { form: [75, 150], gallery: [75, 175], booking: [175, 350], blog: [150, 300], seo: [125, 250], copy: [150, 400] },
-    timeline: { asap: [150, 300], month: [0, 0], flexible: [-50, -100] },
-    care: { none: [0, 0], edits: [50, 150], ongoing: [150, 350] }
-  };
-  var labels = {
-    one: 'One-page website', multi: 'Multi-page website', redesign: 'Redesign / refresh', unsure: 'Not sure yet',
-    form: 'Contact form', gallery: 'Photo gallery', booking: 'Booking or intake flow', blog: 'Blog / updates', seo: 'Local SEO setup', copy: 'Copy cleanup',
-    asap: 'ASAP', month: 'Within a month', flexible: 'Flexible', none: 'No ongoing updates', edits: 'Occasional edits', ongoing: 'Ongoing monthly support'
-  };
-
-  function checkedInput(name) {
-    return form.querySelector('input[name="' + name + '"]:checked');
-  }
-
-  function selected(name) {
-    var input = checkedInput(name);
-    return input ? input.value : '';
-  }
-
-  function checkedFeatures() {
-    return Array.prototype.slice.call(form.querySelectorAll('input[name="features"]:checked')).map(function (input) {
-      return input.value;
-    });
-  }
-
-  function money(amount) {
-    var rounded = Math.max(250, Math.round(amount / 25) * 25);
-    return '$' + rounded.toLocaleString();
-  }
-
-  function calculate() {
-    var typeRange = pricing.type[selected('type')] || pricing.type.unsure;
-    var low = typeRange[0];
-    var high = typeRange[1];
-    checkedFeatures().forEach(function (feature) {
-      low += pricing.features[feature][0];
-      high += pricing.features[feature][1];
-    });
-    var timelineRange = pricing.timeline[selected('timeline')] || [0, 0];
-    var careRange = pricing.care[selected('care')] || [0, 0];
-    low += timelineRange[0] + careRange[0];
-    high += timelineRange[1] + careRange[1];
-    if (high < low + 200) high = low + 200;
-    return [low, high];
-  }
-
-  function syncSelectedOptions() {
-    Array.prototype.slice.call(form.querySelectorAll('.option')).forEach(function (option) {
-      var input = option.querySelector('input');
-      option.classList.toggle('selected', !!input && input.checked);
-    });
-  }
-
-  function updateEstimate() {
-    var range = calculate();
-    var rangeText = money(range[0]) + ' - ' + money(range[1]);
-    var features = checkedFeatures();
-    var featureLabels = features.map(function (feature) { return labels[feature]; }).join(', ');
-    var details = [
-      labels[selected('type')] || 'Website project',
-      featureLabels || 'standard feature set',
-      labels[selected('timeline')] || 'standard timeline',
-      labels[selected('care')] || 'no ongoing updates'
-    ].join(' | ');
-
-    priceEl.textContent = rangeText;
-    detailsEl.textContent = details;
-    contactLink.href = 'contact-v2.html?' + new URLSearchParams({ quoteRange: rangeText, quoteDetails: details }).toString();
-
-    try {
-      localStorage.setItem('quoteRange', rangeText);
-      localStorage.setItem('quoteDetails', details);
-    } catch (err) {
-      console.error(err);
-    }
-    syncSelectedOptions();
-  }
-
-  function renderStep(stepNumber) {
-    var activeStep = String(stepNumber || 1);
-    steps.forEach(function (step) {
-      step.classList.toggle('active', step.getAttribute('data-step') === activeStep);
-    });
-    progressBar.style.width = (Number(activeStep) / steps.length * 100) + '%';
-    updateEstimate();
-  }
-
-  form.addEventListener('click', function (event) {
-    var control = event.target.closest('[data-next], [data-prev]');
-    if (!control) return;
-    var nextStep = control.getAttribute('data-next') || control.getAttribute('data-prev');
-    if (nextStep) renderStep(nextStep);
-  });
-
-  form.addEventListener('change', updateEstimate);
-
-  var params = new URLSearchParams(window.location.search);
-  var requestedType = params.get('type');
-  if (requestedType) {
-    var requestedInput = form.querySelector('input[name="type"][value="' + requestedType + '"]');
-    if (requestedInput) requestedInput.checked = true;
-  }
-
-  renderStep(1);
-});
+document.addEventListener('DOMContentLoaded',function(){var form=document.getElementById('quoteForm'),progressBar=document.getElementById('progressBar'),priceEl=document.getElementById('price'),detailsEl=document.getElementById('estimateDetails'),contactLink=document.getElementById('contactLink');if(!form||!progressBar||!priceEl||!detailsEl||!contactLink)return;var steps=Array.prototype.slice.call(document.querySelectorAll('.step')),pricing={type:{one:[300,600],multi:[700,1300],redesign:[450,1050],unsure:[500,1200]},features:{form:[75,150],gallery:[75,175],booking:[175,350],blog:[150,300],seo:[125,250],copy:[150,400]},timeline:{asap:[150,300],month:[0,0],flexible:[-50,-100]},care:{none:[0,0],edits:[50,150],ongoing:[150,350]}},labels={one:'One-page website',multi:'Multi-page website',redesign:'Redesign / refresh',unsure:'Not sure yet',form:'Contact form',gallery:'Photo gallery',booking:'Booking or intake flow',blog:'Blog / updates',seo:'Local SEO setup',copy:'Copy cleanup',asap:'ASAP',month:'Within a month',flexible:'Flexible',none:'No ongoing updates',edits:'Occasional edits',ongoing:'Ongoing monthly support'};function checkedInput(name){return form.querySelector('input[name="'+name+'"]:checked')}function selected(name){var input=checkedInput(name);return input?input.value:''}function checkedFeatures(){return Array.prototype.slice.call(form.querySelectorAll('input[name="features"]:checked')).map(function(input){return input.value})}function money(amount){return '$'+Math.max(250,Math.round(amount/25)*25).toLocaleString()}function calculate(){var range=pricing.type[selected('type')]||pricing.type.unsure,low=range[0],high=range[1];checkedFeatures().forEach(function(feature){low+=pricing.features[feature][0];high+=pricing.features[feature][1]});var timeline=pricing.timeline[selected('timeline')]||[0,0],care=pricing.care[selected('care')]||[0,0];low+=timeline[0]+care[0];high+=timeline[1]+care[1];if(high<low+200)high=low+200;return[low,high]}function syncSelectedOptions(){Array.prototype.slice.call(form.querySelectorAll('.option')).forEach(function(option){var input=option.querySelector('input');option.classList.toggle('selected',!!input&&input.checked)})}function updateEstimate(){var range=calculate(),rangeText=money(range[0])+' - '+money(range[1]),features=checkedFeatures(),featureLabels=features.map(function(feature){return labels[feature]}).join(', '),details=[labels[selected('type')]||'Website project',featureLabels||'standard feature set',labels[selected('timeline')]||'standard timeline',labels[selected('care')]||'no ongoing updates'].join(' | ');priceEl.textContent=rangeText;detailsEl.textContent=details;contactLink.href='contact-v2.html?'+new URLSearchParams({quoteRange:rangeText,quoteDetails:details}).toString();try{localStorage.setItem('quoteRange',rangeText);localStorage.setItem('quoteDetails',details)}catch(err){console.error(err)}syncSelectedOptions()}function renderStep(stepNumber){var activeStep=String(stepNumber||1);steps.forEach(function(step){step.classList.toggle('active',step.getAttribute('data-step')===activeStep)});progressBar.style.width=Number(activeStep)/steps.length*100+'%';updateEstimate()}form.addEventListener('click',function(event){var control=event.target.closest('[data-next], [data-prev]');if(!control)return;var nextStep=control.getAttribute('data-next')||control.getAttribute('data-prev');if(nextStep)renderStep(nextStep)});form.addEventListener('change',updateEstimate);var requestedType=new URLSearchParams(window.location.search).get('type');if(requestedType){var requestedInput=form.querySelector('input[name="type"][value="'+requestedType+'"]');if(requestedInput)requestedInput.checked=true}renderStep(1)});
 </script><script src="chat-widget.js"></script>
 </body></html>
