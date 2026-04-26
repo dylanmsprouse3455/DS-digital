@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Contact | DS Digital Designs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Get in touch with DS Digital Designs. Let's discuss your website project and bring your vision to life.">
+<link rel="stylesheet" href="assets/css/theme.css">
+<style>.form-status{display:none;margin-top:16px;padding:14px;border-radius:12px;border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8;font-weight:700}.form-status.show{display:block}.field-error{display:none;color:#b91c1c;font-size:13px;margin-top:6px}.field-error.show{display:block}</style>
+</head>
+<body>
+<div id="header-slot"></div>
+<div id="nav-slot"></div>
+
+<main class="page-wrap contact-shell">
+  <div class="contact-card">
+    <section>
+      <h1>Let's talk about your project</h1>
+      <p class="page-intro">Share a few details below and I'll review your request personally. I typically respond within 1-2 business days.</p>
+
+      <div class="note-card" style="margin-top:24px;">
+        <p><strong>Email:</strong> <a href="mailto:dsdigitaldesigns3455@gmail.com">dsdigitaldesigns3455@gmail.com</a></p>
+        <p><strong>Phone / Text:</strong> <a href="tel:+14238232215">423-823-2215</a></p>
+      </div>
+    </section>
+
+    <section>
+      <div class="quote-summary" id="quoteSummary" style="display:none;">
+        <h3>Your estimated range</h3>
+        <div class="quote-amount" id="quoteAmount"></div>
+        <p id="quoteDetails" style="margin-bottom:0;"></p>
+      </div>
+
+      <form id="contactForm" action="https://formspree.io/f/mdalowdk" method="POST">
+        <input type="hidden" name="quoteRange" id="quoteInput">
+        <input type="hidden" name="quoteDetails" id="quoteDetailsInput">
+
+        <fieldset class="preference-group">
+          <legend>How should I contact you?</legend>
+          <div class="preference-options">
+            <label><input type="radio" name="contactPreference" value="Email" required> Email</label>
+            <label><input type="radio" name="contactPreference" value="Text"> Text</label>
+            <label><input type="radio" name="contactPreference" value="Both"> Both</label>
+          </div>
+        </fieldset>
+
+        <div class="form-group">
+          <label for="emailField">Email Address</label>
+          <input type="email" name="email" id="emailField" placeholder="you@example.com">
+          <div class="field-error" id="emailError">Please add an email address for email contact.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="phoneField">Phone Number</label>
+          <input type="tel" name="phone" id="phoneField" placeholder="423-456-7890">
+          <div class="field-error" id="phoneError">Please add a phone number for text contact.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="projectMessage">Tell me about your project</label>
+          <textarea id="projectMessage" name="message" required placeholder="What kind of website do you need? Any specific features or goals?"></textarea>
+        </div>
+
+        <div class="actions">
+          <button class="next-btn" type="submit">Send Message</button>
+        </div>
+        <div class="form-status" id="formStatus">Sending through Formspree. If a new page opens, follow the confirmation there.</div>
+      </form>
+    </section>
+  </div>
+</main>
+
+<div id="footer-slot"></div>
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/load-components.js"></script>
+<script>
+const params = new URLSearchParams(window.location.search);
+const savedQuote = params.get('quoteRange') || localStorage.getItem('quoteRange');
+const savedDetails = params.get('quoteDetails') || localStorage.getItem('quoteDetails');
+const quoteSummary = document.getElementById('quoteSummary');
+const quoteAmount = document.getElementById('quoteAmount');
+const quoteDetails = document.getElementById('quoteDetails');
+const quoteInput = document.getElementById('quoteInput');
+const quoteDetailsInput = document.getElementById('quoteDetailsInput');
+const message = document.getElementById('projectMessage');
+if (savedQuote) {
+  quoteAmount.textContent = savedQuote;
+  quoteSummary.style.display = 'block';
+  quoteInput.value = savedQuote;
+  quoteDetailsInput.value = savedDetails || '';
+  if (savedDetails) quoteDetails.textContent = savedDetails;
+  if (!message.value) message.value = `Estimated range: ${savedQuote}\n${savedDetails || ''}\n\nProject notes: `;
+}
+const form = document.getElementById('contactForm');
+const emailField = document.getElementById('emailField');
+const phoneField = document.getElementById('phoneField');
+const emailError = document.getElementById('emailError');
+const phoneError = document.getElementById('phoneError');
+const formStatus = document.getElementById('formStatus');
+function selectedPreference(){return form.querySelector('input[name="contactPreference"]:checked')?.value;}
+form.addEventListener('submit', (event) => {
+  const preference = selectedPreference();
+  const needsEmail = preference === 'Email' || preference === 'Both';
+  const needsPhone = preference === 'Text' || preference === 'Both';
+  emailError.classList.toggle('show', needsEmail && !emailField.value.trim());
+  phoneError.classList.toggle('show', needsPhone && !phoneField.value.trim());
+  if ((needsEmail && !emailField.value.trim()) || (needsPhone && !phoneField.value.trim())) {
+    event.preventDefault();
+    return;
+  }
+  formStatus.classList.add('show');
+});
+</script>
+<script src="chat-widget.js"></script>
+</body>
+</html>
