@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Website Clarity Snapshot | DS Digital Designs</title>
+
+  <style>
+    :root {
+      --bg: #f4f8ff;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --blue: #2563eb;
+      --navy: #0f2a5f;
+      --soft: #dbeafe;
+      --line: #dbe3ef;
+      --good: #15803d;
+      --warn: #b45309;
+      --shadow: 0 24px 60px rgba(15, 42, 95, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, #dbeafe 0, transparent 34%),
+        linear-gradient(135deg, #f8fbff 0%, #eef5ff 100%);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #0f2a5f, #2563eb);
+      color: white;
+      border-radius: 28px;
+      padding: 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.22);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .hero p {
+      max-width: 720px;
+      color: rgba(255,255,255,0.82);
+      font-size: 1.05rem;
+      line-height: 1.55;
+      margin: 18px 0 0;
+    }
+
+    .tool-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      margin-bottom: 22px;
+    }
+
+    .label {
+      display: block;
+      color: var(--navy);
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      font-size: 1rem;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    button {
+      border: 0;
+      background: var(--blue);
+      color: white;
+      font-weight: 800;
+      padding: 16px 20px;
+      border-radius: 18px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-size: 1rem;
+      box-shadow: 0 14px 28px rgba(37, 99, 235, 0.22);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .report {
+      display: none;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    }
+
+    .report.show {
+      display: block;
+    }
+
+    .report-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px;
+      margin-bottom: 18px;
+    }
+
+    .report h2 {
+      margin: 0;
+      font-size: 1.8rem;
+      letter-spacing: -0.04em;
+    }
+
+    .url {
+      color: var(--muted);
+      margin-top: 6px;
+      word-break: break-word;
+    }
+
+    .score {
+      min-width: 120px;
+      text-align: center;
+      background: var(--soft);
+      color: var(--navy);
+      padding: 14px;
+      border-radius: 22px;
+      font-weight: 900;
+      font-size: 2rem;
+    }
+
+    .score span {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+      background: #fbfdff;
+    }
+
+    .mini-card h3 {
+      margin: 0 0 10px;
+      color: var(--navy);
+      font-size: 1rem;
+    }
+
+    .mini-card p,
+    .mini-card li {
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.95rem;
+    }
+
+    ul {
+      padding-left: 18px;
+      margin: 0;
+    }
+
+    .status-good {
+      color: var(--good);
+      font-weight: 800;
+    }
+
+    .status-warn {
+      color: var(--warn);
+      font-weight: 800;
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 14px;
+      }
+
+      .hero,
+      .tool-card,
+      .report {
+        border-radius: 22px;
+        padding: 22px;
+      }
+
+      .form-row {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .report-top {
+        flex-direction: column;
+      }
+
+      .score {
+        width: 100%;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="badge">DS Digital Designs · Steve Preview</div>
+      <h1>Website Clarity Snapshot</h1>
+      <p>
+        Enter a website and generate a clean first-look report. This first version shows the flow and report style before the real scanner backend is connected.
+      </p>
+    </section>
+
+    <section class="tool-card">
+      <label class="label" for="websiteUrl">Website URL</label>
+
+      <div class="form-row">
+        <input id="websiteUrl" type="url" placeholder="https://examplebusiness.com" />
+        <button id="runBtn">Run Website Snapshot</button>
+      </div>
+
+      <p class="note">
+        Preview mode: this does not scan the live website yet. It creates a sample Steve-style report using the URL you enter.
+      </p>
+    </section>
+
+    <section id="report" class="report">
+      <div class="report-top">
+        <div>
+          <h2>Snapshot Report</h2>
+          <div id="reportUrl" class="url"></div>
+        </div>
+
+        <div class="score">
+          82
+          <span>Health Score</span>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="mini-card">
+          <h3>Visibility</h3>
+          <p><span class="status-good">Good:</span> The website has a clear public presence and can be reviewed from a customer-facing angle.</p>
+        </div>
+
+        <div class="mini-card">
+          <h3>Structure</h3>
+          <p><span class="status-warn">Needs review:</span> Homepage clarity, navigation, and service sections should be checked for friction.</p>
+        </div>
+
+        <div class="mini-card">
+          <h3>SEO Basics</h3>
+          <ul>
+            <li>Check homepage title strength.</li>
+            <li>Review meta description.</li>
+            <li>Look for local keywords.</li>
+          </ul>
+        </div>
+
+        <div class="mini-card">
+          <h3>Trust Signals</h3>
+          <ul>
+            <li>Contact info should be easy to find.</li>
+            <li>About page should build credibility.</li>
+            <li>Services should be clear and specific.</li>
+          </ul>
+        </div>
+
+        <div class="mini-card">
+          <h3>Quick Wins</h3>
+          <ul>
+            <li>Add stronger homepage wording.</li>
+            <li>Make the main call-to-action obvious.</li>
+            <li>Improve mobile readability.</li>
+          </ul>
+        </div>
+
+        <div class="mini-card">
+          <h3>Next Steps</h3>
+          <p>
+            Connect this page to the private Steve backend so it can perform real checks and return real findings.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const runBtn = document.getElementById("runBtn");
+    const input = document.getElementById("websiteUrl");
+    const report = document.getElementById("report");
+    const reportUrl = document.getElementById("reportUrl");
+
+    runBtn.addEventListener("click", () => {
+      const url = input.value.trim();
+
+      if (!url) {
+        alert("Type a website URL first.");
+        return;
+      }
+
+      reportUrl.textContent = url;
+      report.classList.add("show");
+      report.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  </script>
+</body>
+</html>
