@@ -255,6 +255,41 @@
 
     .message.show { display: block; }
 
+    .advanced-box {
+      width: 90%;
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fbfdff;
+      padding: 14px 16px;
+    }
+
+    .advanced-box summary {
+      cursor: pointer;
+      font-weight: 900;
+      color: var(--blue-dark);
+    }
+
+    .advanced-box p {
+      margin: 10px 0 12px;
+      font-size: 0.94rem;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--ink);
+      font-size: 0.94rem;
+      font-weight: 800;
+    }
+
+    .checkbox-row input {
+      width: auto;
+      margin-top: 4px;
+      box-shadow: none;
+    }
+
     .progress {
       display: none;
       margin: 0 auto 24px;
@@ -321,6 +356,22 @@
     .report-url {
       color: var(--muted);
       overflow-wrap: anywhere;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      margin-top: 10px;
+      border-radius: 999px;
+      padding: 7px 11px;
+      background: var(--green-soft);
+      color: var(--green);
+      font-size: 0.82rem;
+      font-weight: 900;
+    }
+
+    .status-pill.demo {
+      background: var(--amber-soft);
+      color: var(--amber);
     }
 
     .overall-score {
@@ -471,6 +522,38 @@
       overflow: hidden;
     }
 
+    .tool-panel {
+      display: none;
+    }
+
+    .tool-panel.show {
+      display: block;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .tool-chip {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px;
+      background: #fbfdff;
+      min-width: 0;
+    }
+
+    .tool-chip strong {
+      display: block;
+      overflow-wrap: anywhere;
+    }
+
+    .tool-chip span {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
     .locked-card:before {
       content: "Locked";
       display: inline-flex;
@@ -521,6 +604,7 @@
       .score-grid,
       .finding-grid,
       .locked-grid,
+      .tools-grid,
       .issue-grid {
         grid-template-columns: 1fr;
       }
@@ -582,9 +666,17 @@
       <h2 id="scannerTitle">Run a Website Opportunity Report</h2>
       <p>Enter a public website URL. The report translates structure, visibility, trust, mobile, and action-flow signals into plain-English business priorities.</p>
       <form id="scanForm" class="scan-form">
-        <input id="websiteUrl" type="url" inputmode="url" placeholder="https://examplebusiness.com" autocomplete="url" required />
+        <input id="websiteUrl" type="text" inputmode="url" placeholder="examplebusiness.com" autocomplete="url" required />
         <button id="runBtn" type="submit">Scan Website</button>
       </form>
+      <details class="advanced-box">
+        <summary>Advanced authorized scan</summary>
+        <p>Optional permission-based checks can use installed Linux/Kali tools when the backend is running. Only enable this for websites you own, control, or have permission to test.</p>
+        <label class="checkbox-row" for="advancedAuthorized">
+          <input id="advancedAuthorized" type="checkbox" />
+          <span>I own this website or have permission to test it.</span>
+        </label>
+      </details>
       <p class="privacy-note">This is a respectful public website scan and business review. It does not run exploit checks or aggressive testing.</p>
       <div id="message" class="message" role="status" aria-live="polite"></div>
     </section>
@@ -604,6 +696,7 @@
             <div class="report-kicker">Website Opportunity Report</div>
             <h2 id="reportTitle">Opportunity Summary</h2>
             <div id="reportUrl" class="report-url"></div>
+            <div id="apiStatus" class="status-pill">Live scanner connected</div>
           </div>
           <div id="overallScore" class="overall-score">--<span>Overall Website Health</span></div>
         </div>
@@ -617,6 +710,15 @@
           <p>These scores show how the website supports trust, visibility, customer action, mobile use, and technical basics.</p>
         </div>
         <div id="scoreGrid" class="score-grid"></div>
+      </article>
+
+      <article id="toolPanel" class="report-card tool-panel">
+        <div class="section-title">
+          <p class="section-label">Scan engine</p>
+          <h2>Tool Status</h2>
+          <p id="toolSummary">Standard scan complete.</p>
+        </div>
+        <div id="toolsGrid" class="tools-grid"></div>
       </article>
 
       <article class="report-card">
@@ -668,9 +770,15 @@
   </main>
 
   <script>
-    const API_URL = "https://chronicle-reading-lodging-theft.trycloudflare.com/api/scan";
+    const DEFAULT_SCANNER_API_BASE = "http://100.118.56.21:5000";
+    const LOCAL_SCANNER_API_BASE = "http://127.0.0.1:5000";
+    const SCANNER_API_BASE = ["127.0.0.1", "localhost"].includes(window.location.hostname)
+      ? LOCAL_SCANNER_API_BASE
+      : DEFAULT_SCANNER_API_BASE;
+    const API_URL = `${SCANNER_API_BASE}/api/website-opportunity-scan`;
     const form = document.getElementById("scanForm");
     const input = document.getElementById("websiteUrl");
+    const advancedAuthorized = document.getElementById("advancedAuthorized");
     const runBtn = document.getElementById("runBtn");
     const message = document.getElementById("message");
     const progressCard = document.getElementById("progressCard");
@@ -680,9 +788,13 @@
     const report = document.getElementById("report");
     const reportTitle = document.getElementById("reportTitle");
     const reportUrl = document.getElementById("reportUrl");
+    const apiStatus = document.getElementById("apiStatus");
     const overallScore = document.getElementById("overallScore");
     const executiveSummary = document.getElementById("executiveSummary");
     const scoreGrid = document.getElementById("scoreGrid");
+    const toolPanel = document.getElementById("toolPanel");
+    const toolSummary = document.getElementById("toolSummary");
+    const toolsGrid = document.getElementById("toolsGrid");
     const issueList = document.getElementById("issueList");
     const fastestWin = document.getElementById("fastestWin");
     const plainEnglish = document.getElementById("plainEnglish");
@@ -753,24 +865,21 @@
       return { title, found, why, impact, priority, difficulty, next };
     }
 
-    function buildOpportunityReport(url, apiData) {
-      const apiReport = apiData && apiData.report ? apiData.report : {};
-      const scan = apiData && apiData.scan ? apiData.scan : {};
-      const baseScore = Number(apiReport.score) || 76;
-      const finalUrl = scan.final_url || url;
-
+    function buildDemoReport(url) {
       return {
-        url: finalUrl,
-        mode: apiData ? "live-or-normalized" : "preview",
-        overall: Math.max(52, Math.min(92, baseScore)),
-        summary: "Steve scanned this site, mapped the public experience, separated business-facing signals from raw technical checks, and turned the results into a practical opportunity report for trust, visibility, and customer action.",
+        url,
+        mode: "demo",
+        scanMode: "demo",
+        statusText: "Backend unavailable - showing demo preview",
+        summary: "Demo report preview. This preview shows the report format. Live scan checks require the scanner backend to be running.",
         scores: [
-          { label: "Trust Score", value: Math.max(58, Math.min(91, baseScore - 3)), detail: "Clear business identity, contact confidence, and credibility signals." },
-          { label: "Google Clarity Score", value: Math.max(55, Math.min(90, baseScore - 6)), detail: "Titles, descriptions, headings, and signals that help searchers understand the site." },
-          { label: "Customer Action Score", value: Math.max(54, Math.min(89, baseScore - 8)), detail: "How easily visitors can find the next step." },
-          { label: "Mobile Experience Score", value: Math.max(60, Math.min(94, baseScore + 2)), detail: "How clear the experience feels on smaller screens." },
-          { label: "Technical Health Score", value: Math.max(59, Math.min(93, baseScore)), detail: "Basic public-page structure, availability, and crawl-friendly setup." }
+          { label: "Trust Score", value: 73, detail: "Clear business identity, contact confidence, and credibility signals." },
+          { label: "Google Clarity Score", value: 70, detail: "Titles, descriptions, headings, and signals that help searchers understand the site." },
+          { label: "Customer Action Score", value: 68, detail: "How easily visitors can find the next step." },
+          { label: "Mobile Experience Score", value: 78, detail: "How clear the experience feels on smaller screens." },
+          { label: "Technical Health Score", value: 76, detail: "Basic public-page structure, availability, and crawl-friendly setup." }
         ],
+        overall: 73,
         issues: [
           buildIssue(
             "The primary next step could be more obvious",
@@ -805,6 +914,67 @@
           text: "The fastest win is usually a simple button and supporting line near the top of the homepage, such as Request a Quote, Schedule a Call, or Get Directions, paired with a short reason to act now."
         },
         plainEnglish: "This website has enough public-facing signals to start a useful business review. The best opportunities are not about making the site sound more technical. They are about helping visitors understand the offer faster, trust the business sooner, and take the next step with less friction.",
+        toolsAvailable: {},
+        toolResults: {},
+        toolsUsedAdvanced: [],
+        locked: [
+          "Exact fix instructions",
+          "Suggested wording",
+          "Screenshots with notes",
+          "Full issue list",
+          "Fix priority order",
+          "Local SEO checklist",
+          "PDF export",
+          "Monthly monitoring"
+        ]
+      };
+    }
+
+    function buildOpportunityReport(url, apiData) {
+      if (!apiData || apiData.mode !== "live") {
+        return buildDemoReport(url);
+      }
+
+      const scores = apiData.scores || {};
+      const scanMode = apiData.scan_mode || "standard";
+      const issues = Array.isArray(apiData.top_issues) ? apiData.top_issues : [];
+      const fastest = apiData.fastest_win || {};
+      const overall = Number(scores.overall_score) || 0;
+      const statusText = scanMode === "advanced"
+        ? "Advanced authorized scan complete"
+        : "Standard scan complete";
+
+      return {
+        url: apiData.final_url || apiData.normalized_url || url,
+        mode: "live",
+        scanMode,
+        statusText,
+        overall,
+        summary: apiData.summary || "Steve completed a live Website Opportunity Report and translated public website signals into business-facing priorities.",
+        scores: [
+          { label: "Trust Score", value: scores.trust_score ?? "--", detail: "HTTPS, contact confidence, privacy, and trust signals." },
+          { label: "Google Clarity Score", value: scores.google_clarity_score ?? "--", detail: "Titles, descriptions, headings, sitemap, robots, and search clarity." },
+          { label: "Customer Action Score", value: scores.customer_action_score ?? "--", detail: "Calls-to-action, forms, contact paths, and phone links." },
+          { label: "Mobile Experience Score", value: scores.mobile_score ?? "--", detail: "Viewport and responsive presentation signals." },
+          { label: "Technical Health Score", value: scores.technical_health_score ?? "--", detail: "Reachability, headers, link sample, speed, and page structure." }
+        ],
+        issues: issues.map((item) => ({
+          title: item.title,
+          found: item.what_we_found,
+          why: item.why_it_matters,
+          impact: item.business_impact,
+          priority: String(item.priority || item.severity || "Medium"),
+          difficulty: item.difficulty,
+          next: item.suggested_fix
+        })),
+        fastestWin: {
+          title: fastest.title || "Clarify the next customer action",
+          text: `${fastest.reason || "A clear next step helps visitors act sooner"} ${fastest.suggested_action || ""}`.trim()
+        },
+        plainEnglish: "This live report reviewed the public website experience and translated technical signals into practical business opportunities: trust, visibility, mobile readiness, customer action flow, and what to fix first.",
+        toolsAvailable: apiData.tools_available || {},
+        toolResults: apiData.tool_results || {},
+        toolsUsedAdvanced: apiData.tools_used_advanced || [],
         locked: [
           "Exact fix instructions",
           "Suggested wording",
@@ -830,7 +1000,8 @@
 
     function renderIssues(issues) {
       issueList.innerHTML = "";
-      issues.slice(0, 3).forEach((issue) => {
+      const visibleIssues = issues.length ? issues : buildDemoReport("").issues;
+      visibleIssues.slice(0, 3).forEach((issue) => {
         const card = document.createElement("article");
         card.className = "issue-card";
         card.innerHTML = `
@@ -850,6 +1021,40 @@
       });
     }
 
+    function renderTools(data) {
+      const available = data.toolsAvailable || {};
+      const results = data.toolResults || {};
+      const toolNames = Object.keys(available);
+      toolsGrid.innerHTML = "";
+
+      if (!toolNames.length && !Object.keys(results).length) {
+        toolPanel.classList.remove("show");
+        return;
+      }
+
+      toolPanel.classList.add("show");
+      if (data.mode === "demo") {
+        toolSummary.textContent = "Backend unavailable - tool status requires the scanner backend.";
+      } else if (data.scanMode === "advanced") {
+        const used = data.toolsUsedAdvanced.length ? data.toolsUsedAdvanced.join(", ") : "no advanced tools ran";
+        toolSummary.textContent = `Advanced authorized scan complete. Tools used: ${used}.`;
+        if (data.toolsUsedAdvanced.length) {
+          trackScannerEvent("scanner_kali_tools_used", { tools_used: data.toolsUsedAdvanced.join(",") });
+        }
+      } else {
+        toolSummary.textContent = "Standard scan complete. External Kali/Linux tools were detected but not run in standard mode.";
+      }
+
+      toolNames.forEach((name) => {
+        const matchingResults = Object.entries(results).filter(([key]) => key === name || key.startsWith(`${name}_`));
+        const ran = matchingResults.some(([, value]) => value && value.ran);
+        const chip = document.createElement("div");
+        chip.className = "tool-chip";
+        chip.innerHTML = `<strong>${name}</strong><span>${available[name] ? (ran ? "available and ran" : "available") : "not found"}</span>`;
+        toolsGrid.appendChild(chip);
+      });
+    }
+
     function renderLocked(items) {
       lockedGrid.innerHTML = "";
       items.forEach((label) => {
@@ -863,9 +1068,12 @@
     function renderReport(data) {
       reportTitle.textContent = "Website Opportunity Report";
       reportUrl.textContent = data.url;
+      apiStatus.textContent = data.statusText;
+      apiStatus.classList.toggle("demo", data.mode === "demo");
       overallScore.innerHTML = `${data.overall}<span>Overall Website Health</span>`;
       executiveSummary.textContent = data.summary;
       renderScores(data.scores);
+      renderTools(data);
       renderIssues(data.issues);
       fastestWin.innerHTML = `<h3>${data.fastestWin.title}</h3><p>${data.fastestWin.text}</p>`;
       plainEnglish.textContent = data.plainEnglish;
@@ -875,15 +1083,17 @@
       trackScannerEvent("scanner_report_viewed", { website_url: data.url, report_mode: data.mode });
     }
 
-    async function requestScan(url) {
+    async function requestScan(url, scanMode, authorized) {
       const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url })
+        body: JSON.stringify({ url, mode: scanMode, authorized })
       });
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
       if (!response.ok || data.ok === false) {
-        throw new Error(data.error || data.message || "Scan endpoint unavailable");
+        const error = new Error(data.error || data.message || "Scan endpoint unavailable");
+        error.payload = data;
+        throw error;
       }
       return data;
     }
@@ -891,23 +1101,35 @@
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const url = normalizeUrl(input.value);
+      const scanMode = advancedAuthorized.checked ? "advanced" : "standard";
+      const authorized = advancedAuthorized.checked === true;
 
       runBtn.disabled = true;
       runBtn.textContent = "Scanning...";
       report.classList.remove("show");
       setMessage("");
       startProgress();
-      trackScannerEvent("scanner_url_submitted", { website_url: url });
+      trackScannerEvent("scanner_url_submitted", { website_url: url, scan_mode: scanMode });
+      if (scanMode === "advanced") {
+        trackScannerEvent("scanner_advanced_enabled", { website_url: url });
+      }
 
       try {
-        const apiData = await requestScan(url);
+        const apiData = await requestScan(url, scanMode, authorized);
         finishProgress();
         renderReport(buildOpportunityReport(url, apiData));
+        trackScannerEvent("scanner_backend_live", { website_url: url, scan_mode: scanMode });
         setMessage("");
       } catch (error) {
         finishProgress();
-        setMessage("Showing a preview report experience while the live scan endpoint is unavailable. This page is ready to connect to the production scanner API.");
-        renderReport(buildOpportunityReport(url, null));
+        if (error.payload && error.payload.scan_mode === "advanced") {
+          setMessage(error.message);
+          trackScannerEvent("scanner_advanced_blocked", { website_url: url });
+        } else {
+          setMessage("Demo report preview. This preview shows the report format. Live scan checks require the scanner backend to be running.");
+          trackScannerEvent("scanner_backend_fallback", { website_url: url, scan_mode: scanMode });
+        }
+        renderReport(buildDemoReport(url));
       } finally {
         runBtn.disabled = false;
         runBtn.textContent = "Scan Website";
