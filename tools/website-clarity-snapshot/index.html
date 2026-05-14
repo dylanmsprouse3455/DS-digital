@@ -246,6 +246,79 @@
       font-weight: 700;
     }
 
+    .progress-card {
+      display: none;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      padding: 22px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      margin-bottom: 22px;
+    }
+
+    .progress-card.show {
+      display: block;
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .progress-label {
+      color: var(--navy);
+      font-size: 0.82rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .progress-message {
+      color: var(--ink);
+      font-size: 1.08rem;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .progress-percent {
+      flex: 0 0 auto;
+      min-width: 68px;
+      text-align: right;
+      color: var(--blue);
+      font-size: 1.35rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 13px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #dbeafe;
+      border: 1px solid rgba(37, 99, 235, 0.16);
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--navy), var(--blue));
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.24);
+      transition: width 420ms ease;
+    }
+
+    .progress-help {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
     .summary-card {
       margin-bottom: 14px;
     }
@@ -299,6 +372,7 @@
 
       .hero,
       .tool-card,
+      .progress-card,
       .report {
         border-radius: 22px;
         padding: 22px;
@@ -314,6 +388,10 @@
 
       .report-top {
         flex-direction: column;
+      }
+
+      .progress-top {
+        gap: 10px;
       }
 
       .score {
@@ -354,6 +432,25 @@
       </p>
 
       <div id="message" class="message" role="status" aria-live="polite"></div>
+    </section>
+
+    <section id="progressCard" class="progress-card" aria-live="polite" aria-label="Website scan progress">
+      <div class="progress-top">
+        <div>
+          <div class="progress-label">Scan in progress</div>
+          <div id="progressMessage" class="progress-message">Starting public website scan...</div>
+        </div>
+
+        <div id="progressPercent" class="progress-percent">0%</div>
+      </div>
+
+      <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+
+      <p class="progress-help">
+        Larger websites may take a little longer. This public scan reviews same-domain HTML pages only.
+      </p>
     </section>
 
     <section id="report" class="report">
@@ -414,6 +511,11 @@
     const report = document.getElementById("report");
     const reportUrl = document.getElementById("reportUrl");
     const message = document.getElementById("message");
+    const progressCard = document.getElementById("progressCard");
+    const progressMessage = document.getElementById("progressMessage");
+    const progressPercent = document.getElementById("progressPercent");
+    const progressBar = document.getElementById("progressBar");
+    const progressTrack = document.querySelector(".progress-track");
     const score = document.getElementById("score");
     const summary = document.getElementById("summary");
     const strengths = document.getElementById("strengths");
@@ -423,11 +525,95 @@
     const checked = document.getElementById("checked");
     const scanDetails = document.getElementById("scanDetails");
     const API_URL = "https://chronicle-reading-lodging-theft.trycloudflare.com/api/scan";
+    const progressMessages = [
+      "Starting public website scan...",
+      "Checking homepage availability...",
+      "Finding internal pages...",
+      "Reviewing titles and meta descriptions...",
+      "Checking headings and page structure...",
+      "Looking for contact and trust signals...",
+      "Checking for broken public pages...",
+      "Building your DS Digital Designs report..."
+    ];
+    let progressInterval = null;
+    let progressMessageInterval = null;
+    let currentProgress = 0;
+    let currentProgressMessageIndex = 0;
 
     function setMessage(text, isError = false) {
       message.textContent = text;
       message.classList.toggle("show", Boolean(text));
       message.classList.toggle("error", isError);
+    }
+
+    function setProgress(value) {
+      currentProgress = Math.max(0, Math.min(100, Math.round(value)));
+      progressBar.style.width = `${currentProgress}%`;
+      progressPercent.textContent = `${currentProgress}%`;
+      progressTrack.setAttribute("aria-valuenow", String(currentProgress));
+    }
+
+    function setProgressMessage(text) {
+      progressMessage.textContent = text;
+    }
+
+    function clearProgressIntervals() {
+      if (progressInterval) {
+        clearInterval(progressInterval);
+        progressInterval = null;
+      }
+
+      if (progressMessageInterval) {
+        clearInterval(progressMessageInterval);
+        progressMessageInterval = null;
+      }
+    }
+
+    function startProgress() {
+      clearProgressIntervals();
+      currentProgressMessageIndex = 0;
+      setProgress(0);
+      setProgressMessage(progressMessages[currentProgressMessageIndex]);
+      progressCard.classList.add("show");
+
+      progressInterval = setInterval(() => {
+        if (currentProgress >= 92) {
+          setProgress(92);
+          return;
+        }
+
+        const remaining = 92 - currentProgress;
+        const increment = Math.max(1, Math.ceil(remaining * 0.12));
+        setProgress(Math.min(92, currentProgress + increment));
+      }, 850);
+
+      progressMessageInterval = setInterval(() => {
+        currentProgressMessageIndex = (currentProgressMessageIndex + 1) % progressMessages.length;
+        setProgressMessage(progressMessages[currentProgressMessageIndex]);
+      }, 2600);
+    }
+
+    function stopProgress(errorText) {
+      clearProgressIntervals();
+      if (errorText) {
+        setProgressMessage(errorText);
+      }
+    }
+
+    function finishProgress() {
+      clearProgressIntervals();
+      setProgress(100);
+      setProgressMessage("Report ready");
+    }
+
+    function hideProgress() {
+      progressCard.classList.remove("show");
+    }
+
+    function wait(ms) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
     }
 
     function renderList(target, items) {
@@ -508,7 +694,8 @@
       runBtn.disabled = true;
       runBtn.textContent = "Scanning...";
       report.classList.remove("show");
-      setMessage("Scanning the public website snapshot now...");
+      setMessage("");
+      startProgress();
 
       try {
         const response = await fetch(API_URL, {
@@ -524,10 +711,15 @@
           throw new Error(data.error || data.message || "The scan request failed.");
         }
 
+        finishProgress();
+        await wait(500);
         setMessage("");
         renderReport(data, url);
+        hideProgress();
       } catch (error) {
-        setMessage(error.message || "The scan request failed.", true);
+        stopProgress();
+        hideProgress();
+        setMessage("We couldn't complete the scan. Please check the website URL and try again.", true);
       } finally {
         runBtn.disabled = false;
         runBtn.textContent = "Run Website Snapshot";
