@@ -1,4 +1,4 @@
-const API_BASE = "http://127.0.0.1:5050"; // For production, replace with your public tunnel/backend URL.
+const API_BASE = "http://100.118.56.21:5051"; // For production, replace with your public tunnel/backend URL.
 const SMART_BASE = "https://dsdigitaldesigns.org/qr/redirect.html";
 
 const presets = {

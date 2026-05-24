@@ -21,8 +21,8 @@ CORS(
         r"/api/*": {
             "origins": [
                 "https://dsdigitaldesigns.org",
-                "http://127.0.0.1:5050",
-                "http://localhost:5050",
+                "http://127.0.0.1:5051",
+                "http://localhost:5051",
                 "null",
             ]
         }
@@ -278,4 +278,4 @@ def admin():
 if __name__ == "__main__":
     with app.app_context():
         init_db()
-    app.run(host="127.0.0.1", port=5050, debug=True)
+    app.run(host="0.0.0.0", port=5051, debug=True)
