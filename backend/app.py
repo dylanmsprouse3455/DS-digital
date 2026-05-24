@@ -1,19 +1,31 @@
 import secrets
 import sqlite3
 import string
+from functools import wraps
 from datetime import datetime, timezone
 from os import environ
 from pathlib import Path
 from urllib.parse import urlparse
 
-from flask import Flask, g, jsonify, redirect, render_template_string, request
+from flask import Flask, Response, g, jsonify, redirect, render_template_string, request
 from flask_cors import CORS
 
 
 APP_DIR = Path(__file__).resolve().parent
 DB_PATH = APP_DIR / "ds_smart_qr.db"
 PUBLIC_SMART_BASE = environ.get("PUBLIC_SMART_BASE", "https://kali.tail768496.ts.net").rstrip("/")
+ADMIN_PASSWORD = environ.get("ADMIN_PASSWORD", "")
 ALPHABET = string.ascii_letters + string.digits
+CONSENT_VERSION = "2026-05-24"
+SAFE_EVENT_TYPES = {
+    "page_loaded",
+    "design_selected",
+    "qr_generated",
+    "qr_downloaded",
+    "smart_link_copied",
+    "qr_created",
+    "qr_scanned",
+}
 
 app = Flask(__name__)
 CORS(
@@ -65,6 +77,8 @@ def init_db():
             qr_type TEXT,
             card_title TEXT,
             caption TEXT,
+            destination_domain TEXT,
+            last_scanned_at TEXT,
             created_at TEXT,
             scan_count INTEGER DEFAULT 0
         );
@@ -75,6 +89,35 @@ def init_db():
             scanned_at TEXT NOT NULL,
             user_agent TEXT,
             referrer TEXT,
+            ip_address TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS qr_events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            event_type TEXT NOT NULL,
+            code TEXT,
+            created_at TEXT NOT NULL,
+            qr_type TEXT,
+            design TEXT,
+            size TEXT,
+            qr_color TEXT,
+            bg_color TEXT,
+            destination_domain TEXT,
+            destination_length INTEGER,
+            user_agent TEXT,
+            referrer TEXT,
+            ip_address TEXT,
+            consent_status TEXT,
+            notes TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS consent_records (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            created_at TEXT NOT NULL,
+            consent_id TEXT,
+            consent_status TEXT NOT NULL,
+            consent_version TEXT NOT NULL,
+            user_agent TEXT,
             ip_address TEXT
         );
         """
@@ -90,6 +133,8 @@ def init_db():
         "size": "TEXT",
         "card_title": "TEXT",
         "caption": "TEXT",
+        "destination_domain": "TEXT",
+        "last_scanned_at": "TEXT",
     }
     for column, column_type in optional_columns.items():
         if column not in existing_columns:
@@ -112,10 +157,34 @@ def normalize_url(raw_url):
     return value
 
 
+def destination_domain(value):
+    try:
+        parsed = urlparse(value)
+    except ValueError:
+        return ""
+    return (parsed.netloc or "").lower()[:180]
+
+
 def clean_text(value, max_length):
     if value is None:
         return ""
     return str(value).strip()[:max_length]
+
+
+def clean_int(value, default=0):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def user_agent_summary(value):
+    value = clean_text(value, 240)
+    if not value:
+        return ""
+    for marker in (" Chrome/", " Safari/", " Firefox/", " Edg/", " Version/"):
+        value = value.replace(marker, f"\n{marker.strip()}")
+    return value.split("\n", 1)[0][:160]
 
 
 def generate_code():
@@ -136,10 +205,60 @@ def request_ip():
     return request.remote_addr or ""
 
 
-def record_scan(db, code):
+def log_event(
+    db,
+    event_type,
+    code="",
+    qr_type="",
+    design="",
+    size="",
+    qr_color="",
+    bg_color="",
+    domain="",
+    destination_length=0,
+    consent_status="necessary",
+    notes="",
+):
+    if event_type not in SAFE_EVENT_TYPES:
+        return
     db.execute(
-        "UPDATE qr_links SET scan_count = scan_count + 1 WHERE code = ?",
+        """
+        INSERT INTO qr_events (
+            event_type, code, created_at, qr_type, design, size, qr_color, bg_color,
+            destination_domain, destination_length, user_agent, referrer, ip_address,
+            consent_status, notes
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            event_type,
+            clean_text(code, 12),
+            utc_now(),
+            clean_text(qr_type, 40),
+            clean_text(design, 30),
+            clean_text(size, 12),
+            clean_text(qr_color, 20),
+            clean_text(bg_color, 20),
+            clean_text(domain, 180),
+            clean_int(destination_length),
+            clean_text(request.headers.get("User-Agent", ""), 500),
+            clean_text(request.headers.get("Referer", ""), 500),
+            request_ip(),
+            clean_text(consent_status, 20),
+            clean_text(notes, 240),
+        ),
+    )
+
+
+def record_scan(db, code):
+    scanned_at = utc_now()
+    row = db.execute(
+        "SELECT destination_url, destination_domain, qr_type, design, size, qr_color, bg_color FROM qr_links WHERE code = ?",
         (code,),
+    ).fetchone()
+    db.execute(
+        "UPDATE qr_links SET scan_count = scan_count + 1, last_scanned_at = ? WHERE code = ?",
+        (scanned_at, code),
     )
     db.execute(
         """
@@ -148,13 +267,47 @@ def record_scan(db, code):
         """,
         (
             code,
-            utc_now(),
+            scanned_at,
             request.headers.get("User-Agent", ""),
             request.headers.get("Referer", ""),
             request_ip(),
         ),
     )
+    if row:
+        domain = row["destination_domain"] or destination_domain(row["destination_url"])
+        log_event(
+            db,
+            "qr_scanned",
+            code=code,
+            qr_type=row["qr_type"] or "website",
+            design=row["design"] or "",
+            size=row["size"] or "",
+            qr_color=row["qr_color"] or "",
+            bg_color=row["bg_color"] or "",
+            domain=domain,
+            destination_length=len(row["destination_url"] or ""),
+            consent_status="necessary",
+        )
     db.commit()
+
+
+def require_admin(view):
+    @wraps(view)
+    def wrapped(*args, **kwargs):
+        if not ADMIN_PASSWORD:
+            return view(*args, **kwargs)
+
+        auth = request.authorization
+        if auth and auth.username == "admin" and auth.password == ADMIN_PASSWORD:
+            return view(*args, **kwargs)
+
+        return Response(
+            "Authentication required",
+            401,
+            {"WWW-Authenticate": 'Basic realm="DS Digital QR Admin"'},
+        )
+
+    return wrapped
 
 
 @app.before_request
@@ -187,13 +340,16 @@ def create_qr():
     qr_color = clean_text(data.get("qr_color"), 20)
     bg_color = clean_text(data.get("bg_color"), 20)
     size = clean_text(data.get("size"), 12)
+    domain = destination_domain(destination_url)
+    destination_length = len(destination_url)
+    consent_status = clean_text(data.get("consent_status") or "necessary", 20)
 
     db = get_db()
     db.execute(
         """
         INSERT INTO qr_links
-            (code, destination_url, title, design, qr_color, bg_color, size, qr_type, card_title, caption, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (code, destination_url, title, design, qr_color, bg_color, size, qr_type, card_title, caption, destination_domain, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             code,
@@ -206,8 +362,22 @@ def create_qr():
             qr_type,
             card_title,
             caption,
+            domain,
             utc_now(),
         ),
+    )
+    log_event(
+        db,
+        "qr_created",
+        code=code,
+        qr_type=qr_type,
+        design=design,
+        size=size,
+        qr_color=qr_color,
+        bg_color=bg_color,
+        domain=domain,
+        destination_length=destination_length,
+        consent_status=consent_status or "necessary",
     )
     db.commit()
 
@@ -217,6 +387,65 @@ def create_qr():
         smart_url=f"{PUBLIC_SMART_BASE}/q/{code}",
         destination_url=destination_url,
     )
+
+
+@app.post("/api/consent")
+def record_consent():
+    data = request.get_json(silent=True) or {}
+    consent_status = clean_text(data.get("consent_status"), 20)
+    if consent_status not in {"accepted", "declined"}:
+        return jsonify(ok=False, error="Consent status must be accepted or declined."), 400
+
+    consent_version = clean_text(data.get("consent_version") or CONSENT_VERSION, 40)
+    consent_id = clean_text(data.get("consent_id"), 80)
+    db = get_db()
+    db.execute(
+        """
+        INSERT INTO consent_records
+            (created_at, consent_id, consent_status, consent_version, user_agent, ip_address)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        (
+            utc_now(),
+            consent_id,
+            consent_status,
+            consent_version,
+            clean_text(request.headers.get("User-Agent", ""), 500),
+            request_ip(),
+        ),
+    )
+    db.commit()
+    return jsonify(ok=True)
+
+
+@app.post("/api/event")
+def record_frontend_event():
+    data = request.get_json(silent=True) or {}
+    event_type = clean_text(data.get("event_type"), 40)
+    consent_status = clean_text(data.get("consent_status"), 20)
+
+    if consent_status != "accepted":
+        return jsonify(ok=False, error="Analytics consent is required for optional events."), 403
+    if event_type not in SAFE_EVENT_TYPES - {"qr_created", "qr_scanned"}:
+        return jsonify(ok=False, error="Unsupported event type."), 400
+
+    db = get_db()
+    log_event(
+        db,
+        event_type,
+        code=data.get("code"),
+        qr_type=data.get("qr_type"),
+        design=data.get("design"),
+        size=data.get("size"),
+        qr_color=data.get("qr_color"),
+        bg_color=data.get("bg_color"),
+        domain=data.get("destination_domain"),
+        destination_length=data.get("destination_length"),
+        consent_status=consent_status,
+        notes=data.get("notes"),
+    )
+    db.commit()
+    return jsonify(ok=True)
 
 
 @app.get("/q/<code>")
@@ -372,19 +601,60 @@ REDIRECT_TEMPLATE = """
 
 
 @app.get("/admin")
+@require_admin
 def admin():
-    # TODO: Add password protection before any public release.
-    rows = get_db().execute(
+    # TODO: Keep /admin password-protected before public promotion.
+    db = get_db()
+    today = utc_now()[:10]
+    overview = {
+        "total_qr": db.execute("SELECT COUNT(*) AS value FROM qr_links").fetchone()["value"],
+        "total_scans": db.execute("SELECT COALESCE(SUM(scan_count), 0) AS value FROM qr_links").fetchone()["value"],
+        "scans_today": db.execute(
+            "SELECT COUNT(*) AS value FROM qr_scans WHERE substr(scanned_at, 1, 10) = ?",
+            (today,),
+        ).fetchone()["value"],
+        "created_today": db.execute(
+            "SELECT COUNT(*) AS value FROM qr_links WHERE substr(created_at, 1, 10) = ?",
+            (today,),
+        ).fetchone()["value"],
+        "top_design": (
+            db.execute(
+                """
+                SELECT COALESCE(NULLIF(design, ''), 'Unknown') AS value, COUNT(*) AS count
+                FROM qr_links
+                GROUP BY value
+                ORDER BY count DESC
+                LIMIT 1
+                """
+            ).fetchone()
+            or {"value": ""}
+        )["value"],
+        "top_domain": (
+            db.execute(
+                """
+                SELECT COALESCE(NULLIF(destination_domain, ''), 'Unknown') AS value, COUNT(*) AS count
+                FROM qr_links
+                GROUP BY value
+                ORDER BY count DESC
+                LIMIT 1
+                """
+            ).fetchone()
+            or {"value": ""}
+        )["value"],
+    }
+    qr_rows = db.execute(
         """
         SELECT
             q.code,
             q.destination_url,
+            q.destination_domain,
             q.title,
             q.qr_type,
             q.design,
             q.created_at,
             q.scan_count,
-            MAX(s.scanned_at) AS last_scanned
+            q.last_scanned_at,
+            MAX(s.scanned_at) AS scan_last_scanned
         FROM qr_links q
         LEFT JOIN qr_scans s ON s.code = q.code
         GROUP BY q.id
@@ -392,6 +662,59 @@ def admin():
         LIMIT 200
         """
     ).fetchall()
+    recent_scans = db.execute(
+        """
+        SELECT
+            s.scanned_at,
+            s.code,
+            COALESCE(q.destination_domain, '') AS destination_domain,
+            s.user_agent,
+            s.referrer,
+            s.ip_address
+        FROM qr_scans s
+        LEFT JOIN qr_links q ON q.code = s.code
+        ORDER BY s.id DESC
+        LIMIT 100
+        """
+    ).fetchall()
+    recent_events = db.execute(
+        """
+        SELECT created_at, event_type, code, qr_type, design, consent_status
+        FROM qr_events
+        ORDER BY id DESC
+        LIMIT 100
+        """
+    ).fetchall()
+    consent_rows = db.execute(
+        """
+        SELECT created_at, consent_status, consent_version, user_agent, ip_address
+        FROM consent_records
+        ORDER BY id DESC
+        LIMIT 100
+        """
+    ).fetchall()
+
+    scan_rows = [
+        {
+            "scanned_at": row["scanned_at"],
+            "code": row["code"],
+            "destination_domain": row["destination_domain"],
+            "user_agent": user_agent_summary(row["user_agent"]),
+            "referrer": row["referrer"],
+            "ip_address": row["ip_address"],
+        }
+        for row in recent_scans
+    ]
+    consent_records = [
+        {
+            "created_at": row["created_at"],
+            "consent_status": row["consent_status"],
+            "consent_version": row["consent_version"],
+            "user_agent": user_agent_summary(row["user_agent"]),
+            "ip_address": row["ip_address"],
+        }
+        for row in consent_rows
+    ]
 
     return render_template_string(
         """
@@ -407,8 +730,14 @@ def admin():
             main { width: min(1280px, 100%); margin: 0 auto; padding: 28px 18px 60px; }
             .header { display: flex; justify-content: space-between; gap: 16px; align-items: end; margin-bottom: 18px; }
             h1 { margin: 0; font-size: clamp(30px, 6vw, 46px); }
+            h2 { margin: 30px 0 12px; font-size: 22px; }
             p { color: #64748b; }
-            .note { padding: 12px 14px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 12px; color: #9a3412; font-weight: 700; }
+            .note { padding: 12px 14px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 12px; color: #9a3412; font-weight: 800; }
+            .danger { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+            .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 18px 0 10px; }
+            .metric { padding: 16px; background: white; border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05); }
+            .metric span { display: block; color: #64748b; font-size: 12px; font-weight: 900; text-transform: uppercase; }
+            .metric strong { display: block; margin-top: 6px; font-size: 24px; overflow-wrap: anywhere; }
             .table-wrap { overflow-x: auto; background: white; border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06); }
             table { width: 100%; border-collapse: collapse; min-width: 1120px; }
             th, td { padding: 14px 12px; border-bottom: 1px solid #e5e7eb; text-align: left; vertical-align: top; }
@@ -417,6 +746,7 @@ def admin():
             a { color: #2563eb; overflow-wrap: anywhere; }
             .code { font-weight: 900; color: #111827; }
             .count { font-weight: 900; }
+            .wrap { max-width: 360px; overflow-wrap: anywhere; }
             @media (max-width: 700px) { .header { display: block; } }
           </style>
         </head>
@@ -427,16 +757,29 @@ def admin():
                 <p>DS Digital Designs</p>
                 <h1>DS Digital QR Admin</h1>
               </div>
-              <p class="note">Local testing only. Add authentication before public release.</p>
+              {% if admin_password_set %}
+                <p class="note">Admin password protection is enabled.</p>
+              {% else %}
+                <p class="note danger">Admin is not password protected.</p>
+              {% endif %}
             </div>
+            <section class="cards" aria-label="Overview">
+              <div class="metric"><span>Total QR codes</span><strong>{{ overview.total_qr }}</strong></div>
+              <div class="metric"><span>Total scans</span><strong>{{ overview.total_scans }}</strong></div>
+              <div class="metric"><span>Scans today</span><strong>{{ overview.scans_today }}</strong></div>
+              <div class="metric"><span>QR codes today</span><strong>{{ overview.created_today }}</strong></div>
+              <div class="metric"><span>Top design</span><strong>{{ overview.top_design or "" }}</strong></div>
+              <div class="metric"><span>Top domain</span><strong>{{ overview.top_domain or "" }}</strong></div>
+            </section>
+            <h2>QR Links</h2>
             <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
                     <th>Code</th>
                     <th>Smart URL</th>
-                    <th>Destination / Content</th>
-                    <th>QR Type</th>
+                    <th>Destination Domain</th>
+                    <th>Title</th>
                     <th>Design</th>
                     <th>Created</th>
                     <th>Scans</th>
@@ -444,16 +787,16 @@ def admin():
                   </tr>
                 </thead>
                 <tbody>
-                  {% for row in rows %}
+                  {% for row in qr_rows %}
                   <tr>
                     <td class="code">{{ row.code }}</td>
                     <td><a href="{{ public_base }}/q/{{ row.code }}" target="_blank" rel="noopener">{{ public_base }}/q/{{ row.code }}</a></td>
-                    <td><a href="{{ row.destination_url }}" target="_blank" rel="noopener">{{ row.destination_url }}</a></td>
-                    <td>{{ row.qr_type or "website" }}</td>
+                    <td class="wrap">{{ row.destination_domain or "" }}</td>
+                    <td class="wrap">{{ row.title or "" }}</td>
                     <td>{{ row.design or "" }}</td>
                     <td>{{ row.created_at or "" }}</td>
                     <td class="count">{{ row.scan_count }}</td>
-                    <td>{{ row.last_scanned or "" }}</td>
+                    <td>{{ row.last_scanned_at or row.scan_last_scanned or "" }}</td>
                   </tr>
                   {% else %}
                   <tr><td colspan="8">No QR records yet.</td></tr>
@@ -461,12 +804,76 @@ def admin():
                 </tbody>
               </table>
             </div>
+            <h2>Recent Scans</h2>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Scanned At</th><th>Code</th><th>Destination Domain</th><th>User Agent Summary</th><th>Referrer</th><th>IP Address</th></tr></thead>
+                <tbody>
+                {% for row in scan_rows %}
+                  <tr>
+                    <td>{{ row.scanned_at }}</td>
+                    <td class="code">{{ row.code }}</td>
+                    <td class="wrap">{{ row.destination_domain }}</td>
+                    <td class="wrap">{{ row.user_agent }}</td>
+                    <td class="wrap">{{ row.referrer }}</td>
+                    <td>{{ row.ip_address }}</td>
+                  </tr>
+                {% else %}
+                  <tr><td colspan="6">No scans yet.</td></tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <h2>Recent Events</h2>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Created At</th><th>Event Type</th><th>Code</th><th>QR Type</th><th>Design</th><th>Consent</th></tr></thead>
+                <tbody>
+                {% for row in recent_events %}
+                  <tr>
+                    <td>{{ row.created_at }}</td>
+                    <td>{{ row.event_type }}</td>
+                    <td class="code">{{ row.code or "" }}</td>
+                    <td>{{ row.qr_type or "" }}</td>
+                    <td>{{ row.design or "" }}</td>
+                    <td>{{ row.consent_status or "" }}</td>
+                  </tr>
+                {% else %}
+                  <tr><td colspan="6">No events yet.</td></tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <h2>Consent Records</h2>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Created At</th><th>Status</th><th>Version</th><th>User Agent Summary</th><th>IP Address</th></tr></thead>
+                <tbody>
+                {% for row in consent_records %}
+                  <tr>
+                    <td>{{ row.created_at }}</td>
+                    <td>{{ row.consent_status }}</td>
+                    <td>{{ row.consent_version }}</td>
+                    <td class="wrap">{{ row.user_agent }}</td>
+                    <td>{{ row.ip_address }}</td>
+                  </tr>
+                {% else %}
+                  <tr><td colspan="5">No consent records yet.</td></tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
           </main>
         </body>
         </html>
         """,
-        rows=rows,
+        overview=overview,
+        qr_rows=qr_rows,
+        scan_rows=scan_rows,
+        recent_events=recent_events,
+        consent_records=consent_records,
         public_base=PUBLIC_SMART_BASE,
+        admin_password_set=bool(ADMIN_PASSWORD),
     )
 
 

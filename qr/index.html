@@ -115,8 +115,23 @@
       </aside>
     </section>
 
+    <section class="privacy-section" id="privacy">
+      <h2>Privacy</h2>
+      <p>DS Digital QR records basic usage data, QR creation details, and scan counts so the tool can work and improve. Do not use this tool for sensitive private links.</p>
+      <p>DS Digital QR uses basic first-party usage data to create QR codes, count scans, and improve the tool. Smart QR links require storing the destination URL so the redirect can work. Avoid using this tool for sensitive private links. We do not collect passwords, payment details, or private browser cookies.</p>
+    </section>
+
     <p class="behavior-note">Smart QR links may open a short DS Digital Designs redirect screen before continuing to the destination.</p>
   </main>
+
+  <div class="consent-banner" id="consentBanner" hidden>
+    <p>DS Digital QR can record basic first-party analytics to improve the tool. You can decline and still create QR codes.</p>
+    <div class="consent-actions">
+      <button type="button" id="acceptAnalytics">Accept analytics</button>
+      <button type="button" id="declineAnalytics">Decline analytics</button>
+      <a href="#privacy">Privacy</a>
+    </div>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="app.js"></script>

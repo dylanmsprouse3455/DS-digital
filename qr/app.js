@@ -1,4 +1,7 @@
 const API_BASE = "https://kali.tail768496.ts.net";
+const CONSENT_VERSION = "2026-05-24";
+const CONSENT_CHOICE_KEY = "dsDigitalQrConsentStatus";
+const CONSENT_ID_KEY = "dsDigitalQrConsentId";
 
 const presets = {
   classic: {
@@ -65,6 +68,9 @@ const scanLabel = document.getElementById("scanLabel");
 const scanLabelToggle = document.getElementById("scanLabelToggle");
 const destinationToggle = document.getElementById("destinationToggle");
 const sizeInput = document.getElementById("qrSize");
+const consentBanner = document.getElementById("consentBanner");
+const acceptAnalyticsBtn = document.getElementById("acceptAnalytics");
+const declineAnalyticsBtn = document.getElementById("declineAnalytics");
 
 function setStatus(message, isError = false) {
   statusEl.textContent = message;
@@ -76,6 +82,78 @@ function normalizeUrl(value) {
   if (!trimmed) throw new Error("Paste a destination link first.");
   if (/^https?:\/\//i.test(trimmed)) return trimmed;
   return `https://${trimmed}`;
+}
+
+function safeDomain(value) {
+  try {
+    return new URL(value).hostname.slice(0, 180);
+  } catch (_error) {
+    return "";
+  }
+}
+
+function consentId() {
+  let value = localStorage.getItem(CONSENT_ID_KEY);
+  if (!value) {
+    value = `dsqr-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
+    localStorage.setItem(CONSENT_ID_KEY, value);
+  }
+  return value;
+}
+
+function consentStatus() {
+  return localStorage.getItem(CONSENT_CHOICE_KEY) || "";
+}
+
+async function postJson(path, payload) {
+  try {
+    await fetch(`${API_BASE}${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  } catch (_error) {
+    // Analytics must never block QR creation or downloads.
+  }
+}
+
+function recordConsent(status) {
+  localStorage.setItem(CONSENT_CHOICE_KEY, status);
+  consentBanner.hidden = true;
+  postJson("/api/consent", {
+    consent_id: consentId(),
+    consent_status: status,
+    consent_version: CONSENT_VERSION
+  });
+  if (status === "accepted") {
+    recordEvent("page_loaded");
+  }
+}
+
+function recordEvent(eventType, extra = {}) {
+  if (consentStatus() !== "accepted") return;
+  postJson("/api/event", {
+    event_type: eventType,
+    qr_type: "url",
+    design: selectedDesign,
+    size: sizeInput.value,
+    qr_color: qrColor.value,
+    bg_color: bgColor.value,
+    consent_status: "accepted",
+    ...extra
+  });
+}
+
+function initConsent() {
+  const status = consentStatus();
+  if (!status) {
+    consentBanner.hidden = false;
+    return;
+  }
+  consentBanner.hidden = true;
+  if (status === "accepted") {
+    recordEvent("page_loaded");
+  }
 }
 
 function currentTitle() {
@@ -261,6 +339,7 @@ document.getElementById("presetGrid").addEventListener("click", (event) => {
   const button = event.target.closest(".style-btn");
   if (!button) return;
   activePreset(button.dataset.design);
+  recordEvent("design_selected");
 });
 
 [titleInput, captionInput, scanLabelToggle, destinationToggle].forEach((input) => {
@@ -310,7 +389,8 @@ form.addEventListener("submit", async (event) => {
         design: selectedDesign,
         qr_color: qrColor.value,
         bg_color: bgColor.value,
-        size
+        size,
+        consent_status: consentStatus() || "necessary"
       })
     });
     const data = await response.json();
@@ -338,19 +418,42 @@ form.addEventListener("submit", async (event) => {
     downloadBtn.disabled = false;
     copyBtn.disabled = false;
     copyBtn.hidden = false;
+    recordEvent("qr_generated", {
+      code: latestQr.code,
+      destination_domain: safeDomain(destinationUrl),
+      destination_length: destinationUrl.length
+    });
     setStatus("QR created. Download your card or copy the smart link.");
   } catch (error) {
     setStatus(error.message || "Could not connect to the QR backend.", true);
   }
 });
 
-downloadBtn.addEventListener("click", downloadCard);
+downloadBtn.addEventListener("click", async () => {
+  await downloadCard();
+  if (latestQr) {
+    recordEvent("qr_downloaded", {
+      code: latestQr.code,
+      destination_domain: safeDomain(latestQr.destination),
+      destination_length: latestQr.destination.length
+    });
+  }
+});
 
 copyBtn.addEventListener("click", async () => {
   if (!latestQr) return;
   await navigator.clipboard.writeText(latestQr.smartUrl);
+  recordEvent("smart_link_copied", {
+    code: latestQr.code,
+    destination_domain: safeDomain(latestQr.destination),
+    destination_length: latestQr.destination.length
+  });
   setStatus("Smart link copied.");
 });
 
+acceptAnalyticsBtn.addEventListener("click", () => recordConsent("accepted"));
+declineAnalyticsBtn.addEventListener("click", () => recordConsent("declined"));
+
 activePreset("classic");
 updatePreviewText();
+initConsent();
