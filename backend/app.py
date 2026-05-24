@@ -337,7 +337,7 @@ REDIRECT_TEMPLATE = """
       width: 100%;
       transform-origin: left;
       background: linear-gradient(90deg, #2563eb, #7c3aed);
-      animation: fill 2.1s ease-out forwards;
+      animation: fill 3.8s ease-out forwards;
     }
     .continue { color: #2563eb; font-weight: 800; }
     .muted { color: #64748b; }
@@ -358,7 +358,7 @@ REDIRECT_TEMPLATE = """
       <script>
         window.setTimeout(() => {
           window.location.href = {{ destination_url|tojson }};
-        }, 2100);
+        }, 3800);
       </script>
     {% else %}
       <h1>QR code not found</h1>

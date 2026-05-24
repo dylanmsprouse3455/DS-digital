@@ -95,6 +95,23 @@ h1 {
   font-size: 18px;
 }
 
+.trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.trust-row span {
+  padding: 8px 11px;
+  border: 1px solid #dbeafe;
+  border-radius: 999px;
+  color: #344054;
+  background: rgba(255, 255, 255, 0.76);
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .main-card {
   display: grid;
   gap: 26px;
