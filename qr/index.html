@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create free smart QR codes with DS Digital QR. No account required.">
+  <link rel="canonical" href="https://dsdigitaldesigns.org/qr/">
+  <title>DS Digital QR | Free Smart QR Code Maker</title>
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html" aria-label="DS Digital Designs home">
+      <span class="brand-badge">DS</span>
+      <span>DS Digital Designs</span>
+    </a>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">DS Digital QR</p>
+        <h1>Create a free smart QR code.</h1>
+        <p class="lead">Free smart QR codes. No account required.</p>
+        <div class="trust-row" aria-label="Product notes">
+          <span>Created through DS Digital Designs.</span>
+          <span>Simple scan tracking and branded redirect flow.</span>
+        </div>
+      </div>
+      <div class="notice-card">
+        <strong>Your QR opens a short DS Digital Designs intro before continuing.</strong>
+        <p>This smart QR opens a short DS Digital Designs intro before redirecting.</p>
+      </div>
+    </section>
+
+    <section class="tool-grid" aria-label="QR maker">
+      <form class="maker-card" id="qrForm">
+        <div class="field-group">
+          <label for="destinationUrl">Destination URL</label>
+          <input id="destinationUrl" name="destination_url" type="text" inputmode="url" autocomplete="url" placeholder="example.com/menu" required>
+        </div>
+
+        <div class="field-group">
+          <label for="cardTitle">Card title</label>
+          <input id="cardTitle" name="title" type="text" maxlength="80" placeholder="Scan to visit our menu">
+        </div>
+
+        <fieldset class="field-group">
+          <legend>Design preset</legend>
+          <div class="preset-grid" id="presetGrid">
+            <button type="button" class="preset-btn active" data-design="classic">Classic</button>
+            <button type="button" class="preset-btn" data-design="ds-purple">DS Purple</button>
+            <button type="button" class="preset-btn" data-design="blue-pro">Blue Pro</button>
+            <button type="button" class="preset-btn" data-design="dark-card">Dark Card</button>
+            <button type="button" class="preset-btn" data-design="soft-card">Soft Card</button>
+          </div>
+        </fieldset>
+
+        <div class="color-row">
+          <div class="field-group compact">
+            <label for="qrColor">QR color</label>
+            <input id="qrColor" name="qr_color" type="color" value="#111827">
+          </div>
+          <div class="field-group compact">
+            <label for="bgColor">Background</label>
+            <input id="bgColor" name="bg_color" type="color" value="#ffffff">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="qrSize">Size</label>
+          <select id="qrSize" name="size">
+            <option value="900">Large PNG</option>
+            <option value="720" selected>Standard PNG</option>
+            <option value="560">Small PNG</option>
+          </select>
+        </div>
+
+        <button class="primary-btn" type="submit" id="generateBtn">Generate</button>
+        <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+
+        <p class="privacy-note">DS Smart QR records basic scan and QR usage data so the redirect can work and scan counts can be shown. Do not use this for sensitive private links unless you understand the redirect flow.</p>
+      </form>
+
+      <aside class="preview-card" aria-label="QR preview">
+        <div class="qr-card" id="qrCard">
+          <div class="qr-card-head">
+            <span class="mini-badge">DS</span>
+            <div>
+              <p>DS Digital QR</p>
+              <h2 id="previewTitle">Your smart QR code</h2>
+            </div>
+          </div>
+          <div class="qr-box" id="qrBox">
+            <div id="qrcode" aria-hidden="true"></div>
+            <p class="empty-state" id="emptyState">Generate a QR to preview it here.</p>
+          </div>
+          <p class="smart-url" id="smartUrlText">https://dsdigitaldesigns.org/qr/redirect.html?c=...</p>
+          <p class="qr-footer">Free QR code made on dsdigitaldesigns.org</p>
+        </div>
+        <button class="secondary-btn" type="button" id="downloadBtn" disabled>Download PNG</button>
+      </aside>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

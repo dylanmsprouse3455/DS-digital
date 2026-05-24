@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Redirecting | DS Digital QR</title>
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body class="redirect-body">
+  <main class="redirect-shell">
+    <section class="redirect-card" id="redirectCard">
+      <span class="brand-badge large">DS</span>
+      <p class="eyebrow">DS Digital Designs</p>
+      <h1 id="redirectTitle">Redirecting you now...</h1>
+      <p id="redirectMessage">This QR code was created with DS Digital QR on dsdigitaldesigns.org.</p>
+      <div class="progress-track" aria-hidden="true">
+        <span></span>
+      </div>
+      <p class="redirect-small" id="redirectSmall">Checking the smart QR link.</p>
+    </section>
+  </main>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:5050"; // For production, replace with your public tunnel/backend URL.
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("c");
+    const title = document.getElementById("redirectTitle");
+    const message = document.getElementById("redirectMessage");
+    const small = document.getElementById("redirectSmall");
+
+    function showNotFound() {
+      title.textContent = "QR code not found";
+      message.textContent = "This smart QR link is missing, inactive, or unavailable.";
+      small.textContent = "Please check the QR code or contact DS Digital Designs.";
+      document.querySelector(".progress-track").style.display = "none";
+    }
+
+    async function resolveCode() {
+      if (!code) {
+        showNotFound();
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/api/resolve/${encodeURIComponent(code)}`);
+        const data = await response.json();
+        if (!response.ok || !data.ok || !data.destination_url) {
+          showNotFound();
+          return;
+        }
+
+        small.textContent = data.title ? `Opening ${data.title}.` : "Opening the destination link.";
+        const delay = 1800 + Math.floor(Math.random() * 401);
+        window.setTimeout(() => {
+          window.location.href = data.destination_url;
+        }, delay);
+      } catch (error) {
+        showNotFound();
+      }
+    }
+
+    resolveCode();
+  </script>
+</body>
+</html>
