@@ -89,6 +89,7 @@ def init_db():
             caption TEXT,
             destination_domain TEXT,
             last_scanned_at TEXT,
+            admin_viewed_at TEXT,
             created_at TEXT,
             scan_count INTEGER DEFAULT 0
         );
@@ -145,6 +146,7 @@ def init_db():
         "caption": "TEXT",
         "destination_domain": "TEXT",
         "last_scanned_at": "TEXT",
+        "admin_viewed_at": "TEXT",
     }
     for column, column_type in optional_columns.items():
         if column not in existing_columns:
@@ -258,6 +260,18 @@ def log_event(
             clean_text(notes, 240),
         ),
     )
+
+
+def admin_is_authenticated():
+    return bool(ADMIN_PASSWORD and session.get("admin_authenticated"))
+
+
+def admin_login_required_json():
+    if not ADMIN_PASSWORD:
+        return jsonify(ok=False, error="Admin password is not configured."), 503
+    if not session.get("admin_authenticated"):
+        return jsonify(ok=False, error="Admin login required."), 401
+    return None
 
 
 def record_scan(db, code):
@@ -721,6 +735,17 @@ def admin():
 
     db = get_db()
     today = utc_now()[:10]
+    most_scanned_row = db.execute(
+        """
+        SELECT code, COALESCE(NULLIF(title, ''), code) AS title, scan_count
+        FROM qr_links
+        ORDER BY scan_count DESC, id DESC
+        LIMIT 1
+        """
+    ).fetchone()
+    last_scan_row = db.execute(
+        "SELECT scanned_at FROM qr_scans ORDER BY id DESC LIMIT 1"
+    ).fetchone()
     overview = {
         "total_qr": db.execute("SELECT COUNT(*) AS value FROM qr_links").fetchone()["value"],
         "total_scans": db.execute("SELECT COALESCE(SUM(scan_count), 0) AS value FROM qr_links").fetchone()["value"],
@@ -732,30 +757,12 @@ def admin():
             "SELECT COUNT(*) AS value FROM qr_links WHERE substr(created_at, 1, 10) = ?",
             (today,),
         ).fetchone()["value"],
-        "top_design": (
-            db.execute(
-                """
-                SELECT COALESCE(NULLIF(design, ''), 'Unknown') AS value, COUNT(*) AS count
-                FROM qr_links
-                GROUP BY value
-                ORDER BY count DESC
-                LIMIT 1
-                """
-            ).fetchone()
-            or {"value": ""}
-        )["value"],
-        "top_domain": (
-            db.execute(
-                """
-                SELECT COALESCE(NULLIF(destination_domain, ''), 'Unknown') AS value, COUNT(*) AS count
-                FROM qr_links
-                GROUP BY value
-                ORDER BY count DESC
-                LIMIT 1
-                """
-            ).fetchone()
-            or {"value": ""}
-        )["value"],
+        "most_scanned": (
+            f"{most_scanned_row['title']} ({most_scanned_row['scan_count']})"
+            if most_scanned_row
+            else ""
+        ),
+        "last_scan_time": last_scan_row["scanned_at"] if last_scan_row else "",
     }
     qr_rows = db.execute(
         """
@@ -769,6 +776,7 @@ def admin():
             q.created_at,
             q.scan_count,
             q.last_scanned_at,
+            q.admin_viewed_at,
             MAX(s.scanned_at) AS scan_last_scanned
         FROM qr_links q
         LEFT JOIN qr_scans s ON s.code = q.code
@@ -783,6 +791,7 @@ def admin():
             s.scanned_at,
             s.code,
             COALESCE(q.destination_domain, '') AS destination_domain,
+            COALESCE(NULLIF(q.title, ''), q.code) AS title,
             s.user_agent,
             s.referrer,
             s.ip_address
@@ -814,12 +823,38 @@ def admin():
             "scanned_at": row["scanned_at"],
             "code": row["code"],
             "destination_domain": row["destination_domain"],
+            "title": row["title"],
             "user_agent": user_agent_summary(row["user_agent"]),
             "referrer": row["referrer"],
             "ip_address": row["ip_address"],
         }
         for row in recent_scans
     ]
+    scans_by_code = {}
+    for row in scan_rows:
+        scans_by_code.setdefault(row["code"], []).append(row)
+    qr_cards = []
+    for row in qr_rows:
+        last_scanned = row["last_scanned_at"] or row["scan_last_scanned"] or ""
+        admin_viewed_at = row["admin_viewed_at"] or ""
+        unread = not admin_viewed_at or (last_scanned and last_scanned > admin_viewed_at)
+        smart_url = f"{PUBLIC_SMART_BASE}/q/{row['code']}"
+        qr_cards.append(
+            {
+                "code": row["code"],
+                "title": row["title"] or "",
+                "destination_domain": row["destination_domain"] or destination_domain(row["destination_url"]),
+                "destination_url": row["destination_url"],
+                "smart_url": smart_url,
+                "design": row["design"] or "",
+                "created_at": row["created_at"] or "",
+                "scan_count": row["scan_count"] or 0,
+                "last_scanned": last_scanned,
+                "admin_viewed_at": admin_viewed_at,
+                "unread": unread,
+                "recent_scans": scans_by_code.get(row["code"], [])[:8],
+            }
+        )
     consent_records = [
         {
             "created_at": row["created_at"],
@@ -841,152 +876,445 @@ def admin():
           <title>DS Digital QR Admin</title>
           <style>
             * { box-sizing: border-box; }
-            body { margin: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; color: #111827; }
-            main { width: min(1280px, 100%); margin: 0 auto; padding: 28px 18px 60px; }
-            .header { display: flex; justify-content: space-between; gap: 16px; align-items: end; margin-bottom: 18px; }
-            h1 { margin: 0; font-size: clamp(30px, 6vw, 46px); }
-            h2 { margin: 30px 0 12px; font-size: 22px; }
-            p { color: #64748b; }
-            .note { padding: 12px 14px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 12px; color: #9a3412; font-weight: 800; }
-            .danger { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
-            .logout { display: inline-flex; margin-top: 8px; color: #2563eb; font-weight: 900; }
-            .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 18px 0 10px; }
-            .metric { padding: 16px; background: white; border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05); }
-            .metric span { display: block; color: #64748b; font-size: 12px; font-weight: 900; text-transform: uppercase; }
-            .metric strong { display: block; margin-top: 6px; font-size: 24px; overflow-wrap: anywhere; }
-            .table-wrap { overflow-x: auto; background: white; border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06); }
-            table { width: 100%; border-collapse: collapse; min-width: 1120px; }
-            th, td { padding: 14px 12px; border-bottom: 1px solid #e5e7eb; text-align: left; vertical-align: top; }
-            th { color: #344054; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; background: #f8fafc; }
-            td { font-size: 14px; }
+            body {
+              margin: 0;
+              font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+              color: #111827;
+              background:
+                radial-gradient(circle at top left, rgba(37, 99, 235, 0.10), transparent 28rem),
+                #f8fafc;
+            }
+            main { width: min(1080px, 100%); margin: 0 auto; padding: 18px 14px 56px; }
             a { color: #2563eb; overflow-wrap: anywhere; }
-            .code { font-weight: 900; color: #111827; }
-            .count { font-weight: 900; }
-            .wrap { max-width: 360px; overflow-wrap: anywhere; }
-            @media (max-width: 700px) { .header { display: block; } }
+            .topbar {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              gap: 14px;
+              margin-bottom: 18px;
+            }
+            .brand-row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+            .badge {
+              width: 48px;
+              height: 48px;
+              display: grid;
+              place-items: center;
+              flex: 0 0 auto;
+              border-radius: 14px;
+              color: white;
+              background: linear-gradient(135deg, #2563eb, #7c3aed);
+              font-weight: 900;
+              box-shadow: 0 12px 26px rgba(37, 99, 235, 0.20);
+            }
+            .eyebrow { margin: 0; color: #64748b; font-size: 13px; font-weight: 850; }
+            h1 { margin: 0; font-size: clamp(28px, 8vw, 44px); line-height: 1.03; letter-spacing: 0; }
+            h2 { margin: 28px 0 12px; font-size: 21px; }
+            .logout {
+              min-height: 42px;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              padding: 9px 12px;
+              border: 1px solid #bfdbfe;
+              border-radius: 12px;
+              background: white;
+              text-decoration: none;
+              font-weight: 900;
+              white-space: nowrap;
+            }
+            .note {
+              margin: 0 0 16px;
+              padding: 12px 14px;
+              border: 1px solid #bfdbfe;
+              border-radius: 14px;
+              color: #1d4ed8;
+              background: #eff6ff;
+              font-weight: 800;
+            }
+            .stats {
+              display: grid;
+              grid-template-columns: repeat(2, minmax(0, 1fr));
+              gap: 10px;
+            }
+            .stat-card,
+            .qr-card,
+            .scan-card,
+            .detail-panel {
+              border: 1px solid #e5e7eb;
+              border-radius: 18px;
+              background: rgba(255, 255, 255, 0.96);
+              box-shadow: 0 14px 34px rgba(15, 23, 42, 0.07);
+            }
+            .stat-card { padding: 15px; min-height: 112px; }
+            .stat-card span { display: block; color: #64748b; font-size: 12px; font-weight: 900; text-transform: uppercase; }
+            .stat-card strong { display: block; margin-top: 8px; font-size: clamp(23px, 7vw, 34px); line-height: 1.05; overflow-wrap: anywhere; }
+            .stat-card.wide { grid-column: 1 / -1; }
+            .controls { display: grid; gap: 10px; margin: 8px 0 14px; }
+            .search-input {
+              width: 100%;
+              min-height: 48px;
+              padding: 12px 13px;
+              border: 1px solid #d0d5dd;
+              border-radius: 13px;
+              background: white;
+              font: inherit;
+            }
+            .filter-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+            .filter-btn {
+              min-height: 44px;
+              border: 1px solid #dbe3ef;
+              border-radius: 12px;
+              background: white;
+              color: #344054;
+              font: inherit;
+              font-weight: 900;
+              cursor: pointer;
+            }
+            .filter-btn.active { color: white; border-color: transparent; background: linear-gradient(135deg, #2563eb, #7c3aed); }
+            .qr-list,
+            .scan-list { display: grid; gap: 12px; }
+            .qr-card {
+              position: relative;
+              width: 100%;
+              padding: 15px;
+              text-align: left;
+              font: inherit;
+              cursor: pointer;
+            }
+            .qr-card:focus-visible,
+            .filter-btn:focus-visible,
+            .search-input:focus,
+            .copy-btn:focus-visible,
+            .close-detail:focus-visible {
+              outline: 3px solid rgba(37, 99, 235, 0.18);
+              outline-offset: 2px;
+            }
+            .unread-dot {
+              position: absolute;
+              top: 14px;
+              right: 14px;
+              width: 11px;
+              height: 11px;
+              border-radius: 999px;
+              background: #2563eb;
+              box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+            }
+            .qr-card.viewed .unread-dot { display: none; }
+            .card-top { display: flex; align-items: start; justify-content: space-between; gap: 16px; padding-right: 16px; }
+            .code { color: #2563eb; font-size: 13px; font-weight: 950; }
+            .title { margin: 3px 0 0; font-size: 18px; font-weight: 900; line-height: 1.2; overflow-wrap: anywhere; }
+            .domain { margin: 6px 0 0; color: #64748b; font-size: 14px; overflow-wrap: anywhere; }
+            .scan-count { color: #111827; font-size: 26px; font-weight: 950; text-align: right; }
+            .scan-count span { display: block; color: #64748b; font-size: 11px; font-weight: 900; text-transform: uppercase; }
+            .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+            .meta { padding: 9px; border-radius: 12px; background: #f8fafc; color: #475467; font-size: 12px; font-weight: 800; overflow-wrap: anywhere; }
+            .meta span { display: block; color: #94a3b8; font-size: 10px; text-transform: uppercase; }
+            .smart-url { margin-top: 10px; color: #64748b; font-size: 12px; overflow-wrap: anywhere; }
+            .scan-card { padding: 14px; }
+            .scan-card strong { display: block; font-size: 16px; overflow-wrap: anywhere; }
+            .scan-card p { margin: 6px 0 0; color: #64748b; font-size: 13px; overflow-wrap: anywhere; }
+            .empty { padding: 18px; color: #64748b; text-align: center; }
+            .detail-overlay {
+              position: fixed;
+              inset: 0;
+              z-index: 40;
+              display: none;
+              padding: 14px;
+              overflow: auto;
+              background: rgba(15, 23, 42, 0.42);
+            }
+            .detail-overlay.active { display: grid; place-items: start center; }
+            .detail-panel {
+              width: min(720px, 100%);
+              margin: 18px auto;
+              padding: 16px;
+            }
+            .detail-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+            .detail-head h2 { margin: 0; }
+            .close-detail {
+              min-width: 44px;
+              min-height: 44px;
+              border: 1px solid #dbe3ef;
+              border-radius: 12px;
+              background: #f8fafc;
+              font-size: 22px;
+              cursor: pointer;
+            }
+            .detail-grid { display: grid; gap: 10px; margin-top: 14px; }
+            .detail-item { padding: 11px; border: 1px solid #edf2f7; border-radius: 13px; background: #f8fafc; overflow-wrap: anywhere; }
+            .detail-item span { display: block; color: #64748b; font-size: 11px; font-weight: 900; text-transform: uppercase; }
+            .copy-btn {
+              width: 100%;
+              min-height: 46px;
+              margin-top: 12px;
+              border: 0;
+              border-radius: 12px;
+              color: white;
+              background: linear-gradient(135deg, #2563eb, #7c3aed);
+              font: inherit;
+              font-weight: 900;
+              cursor: pointer;
+            }
+            @media (min-width: 760px) {
+              main { padding: 26px 22px 70px; }
+              .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+              .stat-card.wide { grid-column: auto; }
+              .controls { grid-template-columns: minmax(260px, 1fr) minmax(360px, 1fr); align-items: center; }
+              .filter-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+              .qr-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+              .detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            }
           </style>
         </head>
         <body>
           <main>
-            <div class="header">
-              <div>
-                <p>DS Digital Designs</p>
-                <h1>DS Digital QR Admin</h1>
-                <a class="logout" href="/admin/logout">Log out</a>
+            <header class="topbar">
+              <div class="brand-row">
+                <span class="badge">DS</span>
+                <div>
+                  <p class="eyebrow">DS Digital Designs</p>
+                  <h1>QR Reports</h1>
+                </div>
               </div>
-              <p class="note">Admin password protection is enabled.</p>
-            </div>
-            <section class="cards" aria-label="Overview">
-              <div class="metric"><span>Total QR codes</span><strong>{{ overview.total_qr }}</strong></div>
-              <div class="metric"><span>Total scans</span><strong>{{ overview.total_scans }}</strong></div>
-              <div class="metric"><span>Scans today</span><strong>{{ overview.scans_today }}</strong></div>
-              <div class="metric"><span>QR codes today</span><strong>{{ overview.created_today }}</strong></div>
-              <div class="metric"><span>Top design</span><strong>{{ overview.top_design or "" }}</strong></div>
-              <div class="metric"><span>Top domain</span><strong>{{ overview.top_domain or "" }}</strong></div>
+              <a class="logout" href="/admin/logout">Log out</a>
+            </header>
+            <p class="note">Admin password protection is enabled.</p>
+
+            <section class="stats" aria-label="Overview">
+              <div class="stat-card"><span>Total QR codes</span><strong>{{ overview.total_qr }}</strong></div>
+              <div class="stat-card"><span>Total scans</span><strong>{{ overview.total_scans }}</strong></div>
+              <div class="stat-card"><span>Scans today</span><strong>{{ overview.scans_today }}</strong></div>
+              <div class="stat-card"><span>QR codes today</span><strong>{{ overview.created_today }}</strong></div>
+              <div class="stat-card wide"><span>Most scanned QR</span><strong>{{ overview.most_scanned or "None" }}</strong></div>
+              <div class="stat-card wide"><span>Last scan time</span><strong>{{ overview.last_scan_time or "No scans" }}</strong></div>
             </section>
-            <h2>QR Links</h2>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Code</th>
-                    <th>Smart URL</th>
-                    <th>Destination Domain</th>
-                    <th>Title</th>
-                    <th>Design</th>
-                    <th>Created</th>
-                    <th>Scans</th>
-                    <th>Last Scanned</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for row in qr_rows %}
-                  <tr>
-                    <td class="code">{{ row.code }}</td>
-                    <td><a href="{{ public_base }}/q/{{ row.code }}" target="_blank" rel="noopener">{{ public_base }}/q/{{ row.code }}</a></td>
-                    <td class="wrap">{{ row.destination_domain or "" }}</td>
-                    <td class="wrap">{{ row.title or "" }}</td>
-                    <td>{{ row.design or "" }}</td>
-                    <td>{{ row.created_at or "" }}</td>
-                    <td class="count">{{ row.scan_count }}</td>
-                    <td>{{ row.last_scanned_at or row.scan_last_scanned or "" }}</td>
-                  </tr>
-                  {% else %}
-                  <tr><td colspan="8">No QR records yet.</td></tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-            <h2>Recent Scans</h2>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>Scanned At</th><th>Code</th><th>Destination Domain</th><th>User Agent Summary</th><th>Referrer</th><th>IP Address</th></tr></thead>
-                <tbody>
-                {% for row in scan_rows %}
-                  <tr>
-                    <td>{{ row.scanned_at }}</td>
-                    <td class="code">{{ row.code }}</td>
-                    <td class="wrap">{{ row.destination_domain }}</td>
-                    <td class="wrap">{{ row.user_agent }}</td>
-                    <td class="wrap">{{ row.referrer }}</td>
-                    <td>{{ row.ip_address }}</td>
-                  </tr>
+
+            <section aria-label="QR reports">
+              <h2>QR Reports</h2>
+              <div class="controls">
+                <input class="search-input" id="searchInput" type="search" placeholder="Search title, code, or destination">
+                <div class="filter-row" role="group" aria-label="Filter reports">
+                  <button class="filter-btn active" type="button" data-filter="all">All</button>
+                  <button class="filter-btn" type="button" data-filter="unread">Unread</button>
+                  <button class="filter-btn" type="button" data-filter="most">Most scanned</button>
+                  <button class="filter-btn" type="button" data-filter="recent">Recently scanned</button>
+                </div>
+              </div>
+              <div class="qr-list" id="qrList">
+                {% for row in qr_cards %}
+                <button
+                  class="qr-card{% if not row.unread %} viewed{% endif %}"
+                  type="button"
+                  data-code="{{ row.code }}"
+                  data-search="{{ (row.code ~ ' ' ~ row.title ~ ' ' ~ row.destination_domain ~ ' ' ~ row.destination_url)|lower }}"
+                  data-unread="{{ 'true' if row.unread else 'false' }}"
+                  data-scans="{{ row.scan_count }}"
+                  data-last="{{ row.last_scanned }}"
+                >
+                  <span class="unread-dot" aria-label="Unread report"></span>
+                  <span class="card-top">
+                    <span>
+                      <span class="code">{{ row.code }}</span>
+                      <span class="title">{{ row.title or "Untitled QR" }}</span>
+                      <span class="domain">{{ row.destination_domain or "No domain" }}</span>
+                    </span>
+                    <span class="scan-count">{{ row.scan_count }}<span>Scans</span></span>
+                  </span>
+                  <span class="meta-grid">
+                    <span class="meta"><span>Created</span>{{ row.created_at or "Unknown" }}</span>
+                    <span class="meta"><span>Last scanned</span>{{ row.last_scanned or "No scans" }}</span>
+                    <span class="meta"><span>Design</span>{{ row.design or "Default" }}</span>
+                    <span class="meta"><span>Status</span>{% if row.unread %}New activity{% else %}Viewed{% endif %}</span>
+                  </span>
+                  <span class="smart-url">{{ row.smart_url }}</span>
+                </button>
                 {% else %}
-                  <tr><td colspan="6">No scans yet.</td></tr>
+                <div class="empty">No QR records yet.</div>
                 {% endfor %}
-                </tbody>
-              </table>
-            </div>
-            <h2>Recent Events</h2>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>Created At</th><th>Event Type</th><th>Code</th><th>QR Type</th><th>Design</th><th>Consent</th></tr></thead>
-                <tbody>
-                {% for row in recent_events %}
-                  <tr>
-                    <td>{{ row.created_at }}</td>
-                    <td>{{ row.event_type }}</td>
-                    <td class="code">{{ row.code or "" }}</td>
-                    <td>{{ row.qr_type or "" }}</td>
-                    <td>{{ row.design or "" }}</td>
-                    <td>{{ row.consent_status or "" }}</td>
-                  </tr>
+              </div>
+            </section>
+
+            <section aria-label="Recent scans">
+              <h2>Recent Scans</h2>
+              <div class="scan-list">
+                {% for row in scan_rows[:20] %}
+                <article class="scan-card">
+                  <strong>{{ row.scanned_at }} · {{ row.code }}</strong>
+                  <p>{{ row.title }} · {{ row.destination_domain or "No domain" }}</p>
+                  <p>{{ row.user_agent or "Unknown device" }}</p>
+                  {% if row.referrer %}<p>Referrer: {{ row.referrer }}</p>{% endif %}
+                  {% if row.ip_address %}<p>IP: {{ row.ip_address }}</p>{% endif %}
+                </article>
                 {% else %}
-                  <tr><td colspan="6">No events yet.</td></tr>
+                <div class="empty">No scans yet.</div>
                 {% endfor %}
-                </tbody>
-              </table>
-            </div>
-            <h2>Consent Records</h2>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>Created At</th><th>Status</th><th>Version</th><th>User Agent Summary</th><th>IP Address</th></tr></thead>
-                <tbody>
-                {% for row in consent_records %}
-                  <tr>
-                    <td>{{ row.created_at }}</td>
-                    <td>{{ row.consent_status }}</td>
-                    <td>{{ row.consent_version }}</td>
-                    <td class="wrap">{{ row.user_agent }}</td>
-                    <td>{{ row.ip_address }}</td>
-                  </tr>
-                {% else %}
-                  <tr><td colspan="5">No consent records yet.</td></tr>
-                {% endfor %}
-                </tbody>
-              </table>
-            </div>
+              </div>
+            </section>
           </main>
+
+          <div class="detail-overlay" id="detailOverlay" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+            <section class="detail-panel">
+              <div class="detail-head">
+                <div>
+                  <p class="eyebrow" id="detailCode"></p>
+                  <h2 id="detailTitle">QR Report</h2>
+                </div>
+                <button class="close-detail" id="closeDetail" type="button" aria-label="Close report">×</button>
+              </div>
+              <div class="detail-grid" id="detailGrid"></div>
+              <button class="copy-btn" id="copySmartUrl" type="button">Copy smart URL</button>
+              <h2>Recent scans for this QR</h2>
+              <div class="scan-list" id="detailScans"></div>
+            </section>
+          </div>
+
+          <script>
+            const reports = {{ qr_cards|tojson }};
+            const reportByCode = new Map(reports.map((report) => [report.code, report]));
+            const qrList = document.getElementById("qrList");
+            const searchInput = document.getElementById("searchInput");
+            const filterButtons = Array.from(document.querySelectorAll(".filter-btn"));
+            const detailOverlay = document.getElementById("detailOverlay");
+            const closeDetail = document.getElementById("closeDetail");
+            const detailCode = document.getElementById("detailCode");
+            const detailTitle = document.getElementById("detailTitle");
+            const detailGrid = document.getElementById("detailGrid");
+            const detailScans = document.getElementById("detailScans");
+            const copySmartUrl = document.getElementById("copySmartUrl");
+            let currentFilter = "all";
+            let activeReport = null;
+
+            function matchesFilter(card) {
+              if (currentFilter === "unread") return card.dataset.unread === "true";
+              if (currentFilter === "most") return Number(card.dataset.scans || 0) > 0;
+              if (currentFilter === "recent") return Boolean(card.dataset.last);
+              return true;
+            }
+
+            function applyFilters() {
+              const query = searchInput.value.trim().toLowerCase();
+              Array.from(qrList.querySelectorAll(".qr-card")).forEach((card) => {
+                const matchesSearch = !query || card.dataset.search.includes(query);
+                card.hidden = !(matchesSearch && matchesFilter(card));
+              });
+              if (currentFilter === "most") {
+                Array.from(qrList.querySelectorAll(".qr-card"))
+                  .sort((a, b) => Number(b.dataset.scans || 0) - Number(a.dataset.scans || 0))
+                  .forEach((card) => qrList.appendChild(card));
+              }
+              if (currentFilter === "recent") {
+                Array.from(qrList.querySelectorAll(".qr-card"))
+                  .sort((a, b) => (b.dataset.last || "").localeCompare(a.dataset.last || ""))
+                  .forEach((card) => qrList.appendChild(card));
+              }
+            }
+
+            function detailItem(label, value) {
+              const div = document.createElement("div");
+              div.className = "detail-item";
+              div.innerHTML = `<span>${label}</span>${value || "Not available"}`;
+              return div;
+            }
+
+            function renderDetail(report) {
+              activeReport = report;
+              detailCode.textContent = report.code;
+              detailTitle.textContent = report.title || "Untitled QR";
+              detailGrid.innerHTML = "";
+              [
+                ["Full destination URL", report.destination_url],
+                ["Smart URL", report.smart_url],
+                ["Created at", report.created_at],
+                ["Total scans", report.scan_count],
+                ["Last scanned", report.last_scanned],
+                ["Design", report.design]
+              ].forEach(([label, value]) => detailGrid.appendChild(detailItem(label, value)));
+
+              detailScans.innerHTML = "";
+              if (!report.recent_scans.length) {
+                detailScans.innerHTML = '<div class="empty">No scans yet for this QR.</div>';
+              } else {
+                report.recent_scans.forEach((scan) => {
+                  const article = document.createElement("article");
+                  article.className = "scan-card";
+                  article.innerHTML = `
+                    <strong>${scan.scanned_at}</strong>
+                    <p>${scan.user_agent || "Unknown device"}</p>
+                    ${scan.referrer ? `<p>Referrer: ${scan.referrer}</p>` : ""}
+                    ${scan.ip_address ? `<p>IP: ${scan.ip_address}</p>` : ""}
+                  `;
+                  detailScans.appendChild(article);
+                });
+              }
+              detailOverlay.classList.add("active");
+              fetch(`/admin/mark-viewed/${encodeURIComponent(report.code)}`, { method: "POST" })
+                .then((response) => response.ok ? response.json() : null)
+                .then((data) => {
+                  if (!data || !data.ok) return;
+                  const card = qrList.querySelector(`[data-code="${CSS.escape(report.code)}"]`);
+                  if (card) {
+                    card.classList.add("viewed");
+                    card.dataset.unread = "false";
+                    const status = card.querySelector(".meta-grid .meta:last-child");
+                    if (status) status.innerHTML = "<span>Status</span>Viewed";
+                  }
+                })
+                .catch(() => {});
+            }
+
+            qrList.addEventListener("click", (event) => {
+              const card = event.target.closest(".qr-card");
+              if (!card) return;
+              const report = reportByCode.get(card.dataset.code);
+              if (report) renderDetail(report);
+            });
+            searchInput.addEventListener("input", applyFilters);
+            filterButtons.forEach((button) => {
+              button.addEventListener("click", () => {
+                currentFilter = button.dataset.filter;
+                filterButtons.forEach((item) => item.classList.toggle("active", item === button));
+                applyFilters();
+              });
+            });
+            closeDetail.addEventListener("click", () => detailOverlay.classList.remove("active"));
+            detailOverlay.addEventListener("click", (event) => {
+              if (event.target === detailOverlay) detailOverlay.classList.remove("active");
+            });
+            copySmartUrl.addEventListener("click", async () => {
+              if (!activeReport) return;
+              await navigator.clipboard.writeText(activeReport.smart_url);
+              copySmartUrl.textContent = "Copied";
+              window.setTimeout(() => { copySmartUrl.textContent = "Copy smart URL"; }, 1200);
+            });
+          </script>
         </body>
         </html>
         """,
         overview=overview,
-        qr_rows=qr_rows,
+        qr_cards=qr_cards,
         scan_rows=scan_rows,
-        recent_events=recent_events,
-        consent_records=consent_records,
-        public_base=PUBLIC_SMART_BASE,
     )
+
+
+@app.post("/admin/mark-viewed/<code>")
+def admin_mark_viewed(code):
+    auth_error = admin_login_required_json()
+    if auth_error:
+        return auth_error
+
+    clean_code = clean_text(code, 12)
+    db = get_db()
+    row = db.execute("SELECT 1 FROM qr_links WHERE code = ?", (clean_code,)).fetchone()
+    if row is None:
+        return jsonify(ok=False, error="QR code not found."), 404
+
+    viewed_at = utc_now()
+    db.execute(
+        "UPDATE qr_links SET admin_viewed_at = ? WHERE code = ?",
+        (viewed_at, clean_code),
+    )
+    db.commit()
+    return jsonify(ok=True, code=clean_code, admin_viewed_at=viewed_at)
 
 
 @app.get("/admin/logout")
