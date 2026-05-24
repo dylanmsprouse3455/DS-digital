@@ -1,13 +1,14 @@
 import secrets
 import sqlite3
 import string
-from functools import wraps
+from hmac import compare_digest
 from datetime import datetime, timezone
 from os import environ
 from pathlib import Path
 from urllib.parse import urlparse
 
-from flask import Flask, Response, g, jsonify, redirect, render_template_string, request
+from flask import g, jsonify, redirect, render_template_string, request, session
+from flask import Flask
 from flask_cors import CORS
 
 
@@ -15,6 +16,7 @@ APP_DIR = Path(__file__).resolve().parent
 DB_PATH = APP_DIR / "ds_smart_qr.db"
 PUBLIC_SMART_BASE = environ.get("PUBLIC_SMART_BASE", "https://kali.tail768496.ts.net").rstrip("/")
 ADMIN_PASSWORD = environ.get("ADMIN_PASSWORD", "")
+SECRET_KEY = environ.get("SECRET_KEY") or secrets.token_urlsafe(32)
 ALPHABET = string.ascii_letters + string.digits
 CONSENT_VERSION = "2026-05-24"
 SAFE_EVENT_TYPES = {
@@ -28,6 +30,14 @@ SAFE_EVENT_TYPES = {
 }
 
 app = Flask(__name__)
+# Production should set SECRET_KEY in the service environment so admin sessions
+# survive restarts and are signed with a stable private value.
+app.secret_key = SECRET_KEY
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=True,
+)
 CORS(
     app,
     resources={
@@ -289,25 +299,6 @@ def record_scan(db, code):
             consent_status="necessary",
         )
     db.commit()
-
-
-def require_admin(view):
-    @wraps(view)
-    def wrapped(*args, **kwargs):
-        if not ADMIN_PASSWORD:
-            return view(*args, **kwargs)
-
-        auth = request.authorization
-        if auth and auth.username == "admin" and auth.password == ADMIN_PASSWORD:
-            return view(*args, **kwargs)
-
-        return Response(
-            "Authentication required",
-            401,
-            {"WWW-Authenticate": 'Basic realm="DS Digital QR Admin"'},
-        )
-
-    return wrapped
 
 
 @app.before_request
@@ -600,10 +591,134 @@ REDIRECT_TEMPLATE = """
 """
 
 
-@app.get("/admin")
-@require_admin
+ADMIN_AUTH_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{% if missing_password %}Admin Not Configured{% else %}Admin Login{% endif %} | DS Digital QR</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #111827;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.16), transparent 30rem),
+        linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    }
+    main {
+      width: min(430px, 100%);
+      padding: 28px;
+      border: 1px solid #dbe3ef;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 24px 70px rgba(15, 23, 42, 0.14);
+    }
+    .badge {
+      width: 58px;
+      height: 58px;
+      display: inline-grid;
+      place-items: center;
+      margin-bottom: 16px;
+      border-radius: 16px;
+      color: #ffffff;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      font-weight: 900;
+    }
+    p { margin: 10px 0 0; color: #64748b; line-height: 1.55; }
+    h1 { margin: 0; font-size: 32px; letter-spacing: 0; }
+    label { display: block; margin-top: 20px; color: #344054; font-size: 14px; font-weight: 850; }
+    input {
+      width: 100%;
+      min-height: 50px;
+      margin-top: 8px;
+      padding: 12px 13px;
+      border: 1px solid #d0d5dd;
+      border-radius: 12px;
+      font: inherit;
+    }
+    button {
+      width: 100%;
+      min-height: 50px;
+      margin-top: 16px;
+      border: 0;
+      border-radius: 12px;
+      color: white;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .error {
+      padding: 10px 12px;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      color: #991b1b;
+      background: #fef2f2;
+      font-weight: 800;
+    }
+    .warning {
+      padding: 12px;
+      border: 1px solid #fed7aa;
+      border-radius: 12px;
+      color: #9a3412;
+      background: #fff7ed;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <span class="badge">DS</span>
+    {% if missing_password %}
+      <h1>Admin password is not configured.</h1>
+      <p class="warning">ADMIN_PASSWORD must be set on the server before the admin dashboard can be viewed.</p>
+      <p>Set ADMIN_PASSWORD and SECRET_KEY in the ds-digital-qr systemd service environment, then restart the service.</p>
+    {% else %}
+      <h1>Admin Login</h1>
+      <p>Enter the DS Digital QR admin password to view QR records and analytics.</p>
+      {% if error %}<p class="error">{{ error }}</p>{% endif %}
+      <form method="post" action="/admin">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required autofocus>
+        <button type="submit">Login</button>
+      </form>
+    {% endif %}
+  </main>
+</body>
+</html>
+"""
+
+
+@app.route("/admin", methods=["GET", "POST"])
 def admin():
     # TODO: Keep /admin password-protected before public promotion.
+    if not ADMIN_PASSWORD:
+        session.pop("admin_authenticated", None)
+        return render_template_string(ADMIN_AUTH_TEMPLATE, missing_password=True, error=""), 503
+
+    error = ""
+    if request.method == "POST":
+        password = request.form.get("password", "")
+        if compare_digest(password, ADMIN_PASSWORD):
+            session["admin_authenticated"] = True
+            return redirect("/admin")
+        error = "Incorrect password."
+
+    if not session.get("admin_authenticated"):
+        return render_template_string(
+            ADMIN_AUTH_TEMPLATE,
+            missing_password=False,
+            error=error,
+        )
+
     db = get_db()
     today = utc_now()[:10]
     overview = {
@@ -734,6 +849,7 @@ def admin():
             p { color: #64748b; }
             .note { padding: 12px 14px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 12px; color: #9a3412; font-weight: 800; }
             .danger { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+            .logout { display: inline-flex; margin-top: 8px; color: #2563eb; font-weight: 900; }
             .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 18px 0 10px; }
             .metric { padding: 16px; background: white; border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05); }
             .metric span { display: block; color: #64748b; font-size: 12px; font-weight: 900; text-transform: uppercase; }
@@ -756,12 +872,9 @@ def admin():
               <div>
                 <p>DS Digital Designs</p>
                 <h1>DS Digital QR Admin</h1>
+                <a class="logout" href="/admin/logout">Log out</a>
               </div>
-              {% if admin_password_set %}
-                <p class="note">Admin password protection is enabled.</p>
-              {% else %}
-                <p class="note danger">Admin is not password protected.</p>
-              {% endif %}
+              <p class="note">Admin password protection is enabled.</p>
             </div>
             <section class="cards" aria-label="Overview">
               <div class="metric"><span>Total QR codes</span><strong>{{ overview.total_qr }}</strong></div>
@@ -873,8 +986,13 @@ def admin():
         recent_events=recent_events,
         consent_records=consent_records,
         public_base=PUBLIC_SMART_BASE,
-        admin_password_set=bool(ADMIN_PASSWORD),
     )
+
+
+@app.get("/admin/logout")
+def admin_logout():
+    session.pop("admin_authenticated", None)
+    return redirect("/admin")
 
 
 if __name__ == "__main__":
