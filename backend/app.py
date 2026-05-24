@@ -62,6 +62,9 @@ def init_db():
             qr_color TEXT,
             bg_color TEXT,
             size TEXT,
+            qr_type TEXT,
+            card_title TEXT,
+            caption TEXT,
             created_at TEXT,
             scan_count INTEGER DEFAULT 0
         );
@@ -76,6 +79,21 @@ def init_db():
         );
         """
     )
+    existing_columns = {
+        row["name"] for row in db.execute("PRAGMA table_info(qr_links)").fetchall()
+    }
+    optional_columns = {
+        "qr_type": "TEXT",
+        "design": "TEXT",
+        "qr_color": "TEXT",
+        "bg_color": "TEXT",
+        "size": "TEXT",
+        "card_title": "TEXT",
+        "caption": "TEXT",
+    }
+    for column, column_type in optional_columns.items():
+        if column not in existing_columns:
+            db.execute(f"ALTER TABLE qr_links ADD COLUMN {column} {column_type}")
     db.commit()
 
 
@@ -162,6 +180,9 @@ def create_qr():
         return jsonify(ok=False, error=str(error)), 500
 
     title = clean_text(data.get("title"), 80)
+    card_title = clean_text(data.get("card_title") or title, 80)
+    caption = clean_text(data.get("caption"), 180)
+    qr_type = clean_text(data.get("qr_type") or "website", 40)
     design = clean_text(data.get("design"), 30)
     qr_color = clean_text(data.get("qr_color"), 20)
     bg_color = clean_text(data.get("bg_color"), 20)
@@ -171,10 +192,22 @@ def create_qr():
     db.execute(
         """
         INSERT INTO qr_links
-            (code, destination_url, title, design, qr_color, bg_color, size, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            (code, destination_url, title, design, qr_color, bg_color, size, qr_type, card_title, caption, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
-        (code, destination_url, title, design, qr_color, bg_color, size, utc_now()),
+        (
+            code,
+            destination_url,
+            title,
+            design,
+            qr_color,
+            bg_color,
+            size,
+            qr_type,
+            card_title,
+            caption,
+            utc_now(),
+        ),
     )
     db.commit()
 
@@ -343,9 +376,19 @@ def admin():
     # TODO: Add password protection before any public release.
     rows = get_db().execute(
         """
-        SELECT code, destination_url, title, created_at, scan_count
-        FROM qr_links
-        ORDER BY id DESC
+        SELECT
+            q.code,
+            q.destination_url,
+            q.title,
+            q.qr_type,
+            q.design,
+            q.created_at,
+            q.scan_count,
+            MAX(s.scanned_at) AS last_scanned
+        FROM qr_links q
+        LEFT JOIN qr_scans s ON s.code = q.code
+        GROUP BY q.id
+        ORDER BY q.id DESC
         LIMIT 200
         """
     ).fetchall()
@@ -361,13 +404,13 @@ def admin():
           <style>
             * { box-sizing: border-box; }
             body { margin: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; color: #111827; }
-            main { width: min(1120px, 100%); margin: 0 auto; padding: 28px 18px 60px; }
+            main { width: min(1280px, 100%); margin: 0 auto; padding: 28px 18px 60px; }
             .header { display: flex; justify-content: space-between; gap: 16px; align-items: end; margin-bottom: 18px; }
             h1 { margin: 0; font-size: clamp(30px, 6vw, 46px); }
             p { color: #64748b; }
             .note { padding: 12px 14px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 12px; color: #9a3412; font-weight: 700; }
             .table-wrap { overflow-x: auto; background: white; border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06); }
-            table { width: 100%; border-collapse: collapse; min-width: 780px; }
+            table { width: 100%; border-collapse: collapse; min-width: 1120px; }
             th, td { padding: 14px 12px; border-bottom: 1px solid #e5e7eb; text-align: left; vertical-align: top; }
             th { color: #344054; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; background: #f8fafc; }
             td { font-size: 14px; }
@@ -391,23 +434,29 @@ def admin():
                 <thead>
                   <tr>
                     <th>Code</th>
-                    <th>Destination URL</th>
-                    <th>Title</th>
+                    <th>Smart URL</th>
+                    <th>Destination / Content</th>
+                    <th>QR Type</th>
+                    <th>Design</th>
                     <th>Created</th>
                     <th>Scans</th>
+                    <th>Last Scanned</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for row in rows %}
                   <tr>
                     <td class="code">{{ row.code }}</td>
+                    <td><a href="{{ public_base }}/q/{{ row.code }}" target="_blank" rel="noopener">{{ public_base }}/q/{{ row.code }}</a></td>
                     <td><a href="{{ row.destination_url }}" target="_blank" rel="noopener">{{ row.destination_url }}</a></td>
-                    <td>{{ row.title or "" }}</td>
+                    <td>{{ row.qr_type or "website" }}</td>
+                    <td>{{ row.design or "" }}</td>
                     <td>{{ row.created_at or "" }}</td>
                     <td class="count">{{ row.scan_count }}</td>
+                    <td>{{ row.last_scanned or "" }}</td>
                   </tr>
                   {% else %}
-                  <tr><td colspan="5">No QR records yet.</td></tr>
+                  <tr><td colspan="8">No QR records yet.</td></tr>
                   {% endfor %}
                 </tbody>
               </table>
@@ -417,6 +466,7 @@ def admin():
         </html>
         """,
         rows=rows,
+        public_base=PUBLIC_SMART_BASE,
     )
 
 
