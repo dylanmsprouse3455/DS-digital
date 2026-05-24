@@ -560,3 +560,269 @@ summary:focus-visible {
     height: 218px;
   }
 }
+
+
+
+/* DS_QR_DESKTOP_POLISH_V1 */
+
+/* Desktop polish for public DS Digital QR maker */
+@media (min-width: 900px) {
+  body {
+    background:
+      radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 32%),
+      radial-gradient(circle at bottom right, rgba(124, 58, 237, 0.12), transparent 34%),
+      #f5f8ff;
+  }
+
+  .page,
+  main,
+  .wrap,
+  .qr-page {
+    width: min(1180px, calc(100vw - 64px));
+    max-width: 1180px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  header,
+  .hero,
+  .qr-hero {
+    margin-top: 22px;
+    margin-bottom: 22px;
+    padding: 34px;
+    border-radius: 34px;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,0.96), rgba(248,251,255,0.94));
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    box-shadow: 0 28px 80px rgba(15, 23, 42, 0.12);
+  }
+
+  h1 {
+    font-size: clamp(56px, 6vw, 86px);
+    line-height: 0.88;
+    letter-spacing: -0.08em;
+    max-width: 760px;
+  }
+
+  .hero p,
+  .qr-hero p,
+  header p {
+    max-width: 680px;
+    font-size: 18px;
+    line-height: 1.55;
+  }
+
+  .tool,
+  .qr-tool,
+  .builder,
+  .qr-builder {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 420px;
+    gap: 22px;
+    align-items: start;
+  }
+
+  .panel,
+  .card,
+  .form-card,
+  .preview-panel,
+  .qr-preview-card {
+    border-radius: 30px;
+    background: rgba(255,255,255,0.94);
+    border: 1px solid rgba(226,232,240,0.95);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.11);
+  }
+
+  .form-card,
+  .panel {
+    padding: 24px;
+  }
+
+  .preview-panel,
+  .qr-preview-card {
+    position: sticky;
+    top: 22px;
+    padding: 24px;
+  }
+
+  label {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    font-weight: 900;
+    color: #344054;
+  }
+
+  input,
+  textarea,
+  select {
+    min-height: 50px;
+    border-radius: 16px;
+    border: 1px solid #d9e2ef;
+    background: #f9fafb;
+    font-size: 16px;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12);
+    outline: none;
+  }
+
+  .style-grid,
+  .design-grid,
+  .preset-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .style-btn,
+  .design-btn,
+  .preset-btn {
+    min-height: 92px;
+    border-radius: 20px;
+    padding: 14px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 24px rgba(15,23,42,0.05);
+    transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+  }
+
+  .style-btn:hover,
+  .design-btn:hover,
+  .preset-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 38px rgba(15,23,42,0.10);
+    border-color: rgba(37,99,235,0.25);
+  }
+
+  .style-btn.active,
+  .design-btn.active,
+  .preset-btn.active,
+  .selected {
+    border-color: rgba(124, 58, 237, 0.55);
+    background: #f5f3ff;
+    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.11);
+  }
+
+  .button-row,
+  .actions,
+  .qr-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  button,
+  .btn {
+    min-height: 52px;
+    border-radius: 16px;
+    font-weight: 950;
+  }
+
+  .primary,
+  .btn.primary,
+  .generate-btn {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: white;
+    box-shadow: 0 18px 38px rgba(37, 99, 235, 0.24);
+  }
+
+  .secondary,
+  .btn.secondary,
+  .copy-btn {
+    background: #eef2ff;
+    color: #6d28d9;
+    border: 1px solid rgba(124, 58, 237, 0.18);
+  }
+
+  .preview-frame,
+  .qr-frame,
+  .download-card {
+    border-radius: 28px;
+  }
+
+  .download-card {
+    width: min(360px, 100%);
+    margin: 0 auto;
+    padding: 22px;
+    box-shadow: 0 22px 60px rgba(15, 23, 42, 0.12);
+  }
+
+  .qr-box,
+  .qr-output,
+  #qrPreview,
+  #qrCard {
+    display: grid;
+    place-items: center;
+  }
+
+  .advanced,
+  details,
+  .advanced-options {
+    border-radius: 24px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+  }
+}
+
+/* Big desktop: give the tool more breathing room */
+@media (min-width: 1200px) {
+  .tool,
+  .qr-tool,
+  .builder,
+  .qr-builder {
+    grid-template-columns: minmax(0, 1fr) 460px;
+    gap: 28px;
+  }
+
+  .form-card,
+  .panel {
+    padding: 28px;
+  }
+
+  .preview-panel,
+  .qr-preview-card {
+    padding: 28px;
+  }
+}
+
+/* Keep iPhone clean */
+@media (max-width: 899px) {
+  .page,
+  main,
+  .wrap,
+  .qr-page {
+    width: min(94vw, 720px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .tool,
+  .qr-tool,
+  .builder,
+  .qr-builder {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .preview-panel,
+  .qr-preview-card {
+    position: static;
+  }
+
+  .style-grid,
+  .design-grid,
+  .preset-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .button-row,
+  .actions,
+  .qr-actions {
+    grid-template-columns: 1fr;
+  }
+}
