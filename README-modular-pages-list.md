@@ -9,6 +9,7 @@
 - components/footer.html
 
 ## Modular page files
+- qr/index.html
 - portfolio-v3.html
 - services-v2.html
 - contact-v2.html
@@ -23,6 +24,7 @@
 ## Current shared nav routes
 - Home -> index.html
 - Services -> services-v2.html
+- DS Digital QR -> /qr/
 - Quote -> quote-v2.html
 - Contact -> contact-v2.html
 - Blog -> blog.html (can be changed to blog-v2.html later)

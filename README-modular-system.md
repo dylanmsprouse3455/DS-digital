@@ -25,6 +25,7 @@
 - Current modular nav paths:
   - Home -> `index.html`
   - Services -> `services-v2.html`
+  - DS Digital QR -> `/qr/`
   - Quote -> `quote-v2.html`
   - Contact -> `contact-v2.html`
   - Portfolio -> `portfolio-v3.html`
@@ -34,6 +35,10 @@
 
 ## C1 - MODULAR PORTFOLIO
 - `portfolio-v3.html`
+
+## QR - DS DIGITAL QR
+- `qr/index.html`
+- Public free QR code maker linked from the main navigation and homepage.
 
 ## C2 - MODULAR SERVICES
 - `services-v2.html`
