@@ -788,6 +788,7 @@ def admin():
     recent_scans = db.execute(
         """
         SELECT
+            s.id,
             s.scanned_at,
             s.code,
             COALESCE(q.destination_domain, '') AS destination_domain,
@@ -797,8 +798,8 @@ def admin():
             s.ip_address
         FROM qr_scans s
         LEFT JOIN qr_links q ON q.code = s.code
-        ORDER BY s.id DESC
-        LIMIT 100
+        ORDER BY s.code, s.scanned_at ASC, s.id ASC
+        LIMIT 2000
         """
     ).fetchall()
     recent_events = db.execute(
@@ -820,11 +821,13 @@ def admin():
 
     scan_rows = [
         {
+            "id": row["id"],
             "scanned_at": row["scanned_at"],
             "code": row["code"],
             "destination_domain": row["destination_domain"],
             "title": row["title"],
             "user_agent": user_agent_summary(row["user_agent"]),
+            "user_agent_full": clean_text(row["user_agent"], 500),
             "referrer": row["referrer"],
             "ip_address": row["ip_address"],
         }
@@ -833,6 +836,13 @@ def admin():
     scans_by_code = {}
     for row in scan_rows:
         scans_by_code.setdefault(row["code"], []).append(row)
+    numbered_scans_by_code = {}
+    for code, rows in scans_by_code.items():
+        total = len(rows)
+        numbered_scans_by_code[code] = [
+            {**row, "scan_number": index}
+            for index, row in zip(range(total, 0, -1), reversed(rows))
+        ]
     qr_cards = []
     for row in qr_rows:
         last_scanned = row["last_scanned_at"] or row["scan_last_scanned"] or ""
@@ -852,9 +862,10 @@ def admin():
                 "last_scanned": last_scanned,
                 "admin_viewed_at": admin_viewed_at,
                 "unread": unread,
-                "recent_scans": scans_by_code.get(row["code"], [])[:8],
+                "recent_scans": numbered_scans_by_code.get(row["code"], []),
             }
         )
+    recent_scan_cards = sorted(scan_rows, key=lambda item: (item["scanned_at"], item["id"]), reverse=True)
     consent_records = [
         {
             "created_at": row["created_at"],
@@ -1010,27 +1021,72 @@ def admin():
             .meta { padding: 9px; border-radius: 12px; background: #f8fafc; color: #475467; font-size: 12px; font-weight: 800; overflow-wrap: anywhere; }
             .meta span { display: block; color: #94a3b8; font-size: 10px; text-transform: uppercase; }
             .smart-url { margin-top: 10px; color: #64748b; font-size: 12px; overflow-wrap: anywhere; }
+            .view-scans {
+              min-height: 42px;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              margin-top: 12px;
+              padding: 9px 12px;
+              border-radius: 12px;
+              color: white;
+              background: linear-gradient(135deg, #2563eb, #7c3aed);
+              font-size: 14px;
+              font-weight: 900;
+            }
             .scan-card { padding: 14px; }
             .scan-card strong { display: block; font-size: 16px; overflow-wrap: anywhere; }
             .scan-card p { margin: 6px 0 0; color: #64748b; font-size: 13px; overflow-wrap: anywhere; }
+            .scan-card details { margin-top: 8px; color: #475467; font-size: 12px; overflow-wrap: anywhere; }
+            .scan-card summary { min-height: 34px; display: flex; align-items: center; color: #2563eb; font-weight: 900; cursor: pointer; }
+            .scan-number {
+              width: max-content;
+              margin-bottom: 8px;
+              padding: 5px 9px;
+              border-radius: 999px;
+              color: #1d4ed8;
+              background: #eff6ff;
+              font-size: 12px;
+              font-weight: 950;
+            }
             .empty { padding: 18px; color: #64748b; text-align: center; }
             .detail-overlay {
               position: fixed;
               inset: 0;
               z-index: 40;
               display: none;
-              padding: 14px;
-              overflow: auto;
               background: rgba(15, 23, 42, 0.42);
             }
-            .detail-overlay.active { display: grid; place-items: start center; }
+            .detail-overlay.active { display: flex; align-items: stretch; justify-content: center; }
             .detail-panel {
               width: min(720px, 100%);
-              margin: 18px auto;
-              padding: 16px;
+              height: 100dvh;
+              display: flex;
+              flex-direction: column;
+              margin: 0;
+              overflow: hidden;
             }
-            .detail-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+            .detail-head {
+              position: sticky;
+              top: 0;
+              z-index: 2;
+              display: grid;
+              grid-template-columns: 1fr auto;
+              gap: 12px;
+              padding: 16px;
+              border-bottom: 1px solid #e5e7eb;
+              background: rgba(255, 255, 255, 0.98);
+            }
             .detail-head h2 { margin: 0; }
+            .detail-summary { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+            .detail-pill { padding: 6px 9px; border-radius: 999px; color: #475467; background: #f1f5f9; font-size: 12px; font-weight: 900; }
+            .detail-body {
+              flex: 1;
+              min-height: 0;
+              overflow-y: auto;
+              padding: 0 16px 16px;
+              scroll-behavior: smooth;
+            }
             .close-detail {
               min-width: 44px;
               min-height: 44px;
@@ -1044,9 +1100,8 @@ def admin():
             .detail-item { padding: 11px; border: 1px solid #edf2f7; border-radius: 13px; background: #f8fafc; overflow-wrap: anywhere; }
             .detail-item span { display: block; color: #64748b; font-size: 11px; font-weight: 900; text-transform: uppercase; }
             .copy-btn {
-              width: 100%;
               min-height: 46px;
-              margin-top: 12px;
+              padding: 0 12px;
               border: 0;
               border-radius: 12px;
               color: white;
@@ -1055,6 +1110,27 @@ def admin():
               font-weight: 900;
               cursor: pointer;
             }
+            .detail-footer {
+              position: sticky;
+              bottom: 0;
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 10px;
+              padding: 12px 16px;
+              border-top: 1px solid #e5e7eb;
+              background: rgba(255, 255, 255, 0.98);
+            }
+            .jump-btn {
+              min-height: 44px;
+              border: 1px solid #dbe3ef;
+              border-radius: 12px;
+              background: white;
+              color: #2563eb;
+              font: inherit;
+              font-weight: 900;
+              cursor: pointer;
+            }
+            .jump-btn:disabled { color: #98a2b3; background: #f8fafc; cursor: not-allowed; }
             @media (min-width: 760px) {
               main { padding: 26px 22px 70px; }
               .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -1063,6 +1139,8 @@ def admin():
               .filter-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
               .qr-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
               .detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+              .detail-overlay.active { align-items: center; padding: 18px; }
+              .detail-panel { height: min(860px, calc(100dvh - 36px)); border-radius: 22px; }
             }
           </style>
         </head>
@@ -1127,6 +1205,7 @@ def admin():
                     <span class="meta"><span>Status</span>{% if row.unread %}New activity{% else %}Viewed{% endif %}</span>
                   </span>
                   <span class="smart-url">{{ row.smart_url }}</span>
+                  <span class="view-scans">View scans</span>
                 </button>
                 {% else %}
                 <div class="empty">No QR records yet.</div>
@@ -1137,7 +1216,7 @@ def admin():
             <section aria-label="Recent scans">
               <h2>Recent Scans</h2>
               <div class="scan-list">
-                {% for row in scan_rows[:20] %}
+                {% for row in recent_scan_cards[:20] %}
                 <article class="scan-card">
                   <strong>{{ row.scanned_at }} · {{ row.code }}</strong>
                   <p>{{ row.title }} · {{ row.destination_domain or "No domain" }}</p>
@@ -1158,13 +1237,23 @@ def admin():
                 <div>
                   <p class="eyebrow" id="detailCode"></p>
                   <h2 id="detailTitle">QR Report</h2>
+                  <div class="detail-summary">
+                    <span class="detail-pill" id="detailTotalScans">0 scans</span>
+                    <span class="detail-pill" id="detailLastScanned">No scans</span>
+                  </div>
                 </div>
                 <button class="close-detail" id="closeDetail" type="button" aria-label="Close report">×</button>
               </div>
-              <div class="detail-grid" id="detailGrid"></div>
-              <button class="copy-btn" id="copySmartUrl" type="button">Copy smart URL</button>
-              <h2>Recent scans for this QR</h2>
-              <div class="scan-list" id="detailScans"></div>
+              <div class="detail-body" id="detailBody">
+                <div class="detail-grid" id="detailGrid"></div>
+                <button class="copy-btn" id="copySmartUrl" type="button">Copy smart URL</button>
+                <h2>Scan history</h2>
+                <div class="scan-list" id="detailScans"></div>
+              </div>
+              <div class="detail-footer">
+                <button class="jump-btn" id="previousScan" type="button">Previous</button>
+                <button class="jump-btn" id="nextScan" type="button">Next</button>
+              </div>
             </section>
           </div>
 
@@ -1178,11 +1267,17 @@ def admin():
             const closeDetail = document.getElementById("closeDetail");
             const detailCode = document.getElementById("detailCode");
             const detailTitle = document.getElementById("detailTitle");
+            const detailTotalScans = document.getElementById("detailTotalScans");
+            const detailLastScanned = document.getElementById("detailLastScanned");
+            const detailBody = document.getElementById("detailBody");
             const detailGrid = document.getElementById("detailGrid");
             const detailScans = document.getElementById("detailScans");
             const copySmartUrl = document.getElementById("copySmartUrl");
+            const previousScan = document.getElementById("previousScan");
+            const nextScan = document.getElementById("nextScan");
             let currentFilter = "all";
             let activeReport = null;
+            let activeScanIndex = 0;
 
             function matchesFilter(card) {
               if (currentFilter === "unread") return card.dataset.unread === "true";
@@ -1212,14 +1307,44 @@ def admin():
             function detailItem(label, value) {
               const div = document.createElement("div");
               div.className = "detail-item";
-              div.innerHTML = `<span>${label}</span>${value || "Not available"}`;
+              div.innerHTML = `<span>${escapeHtml(label)}</span>${escapeHtml(value || "Not available")}`;
               return div;
+            }
+
+            function escapeHtml(value) {
+              return String(value || "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+            }
+
+            function scanCards() {
+              return Array.from(detailScans.querySelectorAll(".scan-card"));
+            }
+
+            function updateJumpButtons() {
+              const cards = scanCards();
+              previousScan.disabled = !cards.length || activeScanIndex <= 0;
+              nextScan.disabled = !cards.length || activeScanIndex >= cards.length - 1;
+            }
+
+            function jumpToScan(index) {
+              const cards = scanCards();
+              if (!cards.length) return;
+              activeScanIndex = Math.max(0, Math.min(index, cards.length - 1));
+              cards[activeScanIndex].scrollIntoView({ behavior: "smooth", block: "start" });
+              updateJumpButtons();
             }
 
             function renderDetail(report) {
               activeReport = report;
+              activeScanIndex = 0;
               detailCode.textContent = report.code;
               detailTitle.textContent = report.title || "Untitled QR";
+              detailTotalScans.textContent = `${report.scan_count} scan${Number(report.scan_count) === 1 ? "" : "s"}`;
+              detailLastScanned.textContent = report.last_scanned ? `Last: ${report.last_scanned}` : "No scans";
               detailGrid.innerHTML = "";
               [
                 ["Full destination URL", report.destination_url],
@@ -1237,16 +1362,22 @@ def admin():
                 report.recent_scans.forEach((scan) => {
                   const article = document.createElement("article");
                   article.className = "scan-card";
+                  article.id = `scan-${report.code}-${scan.scan_number}`;
                   article.innerHTML = `
-                    <strong>${scan.scanned_at}</strong>
-                    <p>${scan.user_agent || "Unknown device"}</p>
-                    ${scan.referrer ? `<p>Referrer: ${scan.referrer}</p>` : ""}
-                    ${scan.ip_address ? `<p>IP: ${scan.ip_address}</p>` : ""}
+                    <div class="scan-number">Scan #${escapeHtml(scan.scan_number)}</div>
+                    <strong>${escapeHtml(scan.scanned_at)}</strong>
+                    <p>${escapeHtml(report.title || "Untitled QR")} · ${escapeHtml(report.destination_domain || "No domain")}</p>
+                    <p>${escapeHtml(scan.user_agent || "Unknown device")}</p>
+                    ${scan.referrer ? `<p>Referrer: ${escapeHtml(scan.referrer)}</p>` : ""}
+                    ${scan.ip_address ? `<p>IP: ${escapeHtml(scan.ip_address)}</p>` : ""}
+                    ${scan.user_agent_full ? `<details><summary>User agent details</summary>${escapeHtml(scan.user_agent_full)}</details>` : ""}
                   `;
                   detailScans.appendChild(article);
                 });
               }
               detailOverlay.classList.add("active");
+              detailBody.scrollTop = 0;
+              updateJumpButtons();
               fetch(`/admin/mark-viewed/${encodeURIComponent(report.code)}`, { method: "POST" })
                 .then((response) => response.ok ? response.json() : null)
                 .then((data) => {
@@ -1286,13 +1417,31 @@ def admin():
               copySmartUrl.textContent = "Copied";
               window.setTimeout(() => { copySmartUrl.textContent = "Copy smart URL"; }, 1200);
             });
+            previousScan.addEventListener("click", () => jumpToScan(activeScanIndex - 1));
+            nextScan.addEventListener("click", () => jumpToScan(activeScanIndex + 1));
+            detailBody.addEventListener("scroll", () => {
+              const cards = scanCards();
+              if (!cards.length) return;
+              const bodyTop = detailBody.getBoundingClientRect().top;
+              let closestIndex = 0;
+              let closestDistance = Infinity;
+              cards.forEach((card, index) => {
+                const distance = Math.abs(card.getBoundingClientRect().top - bodyTop - 8);
+                if (distance < closestDistance) {
+                  closestDistance = distance;
+                  closestIndex = index;
+                }
+              });
+              activeScanIndex = closestIndex;
+              updateJumpButtons();
+            }, { passive: true });
           </script>
         </body>
         </html>
         """,
         overview=overview,
         qr_cards=qr_cards,
-        scan_rows=scan_rows,
+        recent_scan_cards=recent_scan_cards,
     )
 
 
