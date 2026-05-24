@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Create free smart and static QR code cards with DS Digital QR.">
+  <meta name="description" content="Create a free polished QR card with DS Digital QR.">
   <link rel="canonical" href="https://dsdigitaldesigns.org/qr/">
-  <title>DS Digital QR | QR Design Studio</title>
+  <title>DS Digital QR | Free QR Code Maker</title>
   <link rel="stylesheet" href="theme.css">
 </head>
 <body>
@@ -17,106 +17,75 @@
   </header>
 
   <main class="page-shell">
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">DS Digital QR</p>
-        <h1>QR design studio.</h1>
-        <p class="lead">Build polished branded QR cards for links, Wi-Fi, contact details, messages, events, and more.</p>
-      </div>
-      <div class="notice-card">
-        <strong id="modeNoticeTitle">Smart Link mode tracks scans.</strong>
-        <p id="modeNoticeText">URL-based QR codes use the DS redirect route at https://kali.tail768496.ts.net/q/&lt;code&gt;.</p>
-      </div>
+    <section class="intro" aria-labelledby="pageTitle">
+      <p class="product-name">DS Digital QR</p>
+      <h1 id="pageTitle">Create a free QR code in seconds.</h1>
+      <p class="lead">Paste a link, pick a style, and download a polished QR card.</p>
     </section>
 
-    <section class="tool-grid" aria-label="QR maker">
-      <form class="maker-card" id="qrForm">
-        <fieldset class="field-group">
-          <legend>QR type</legend>
-          <div class="type-grid" id="typeGrid">
-            <button type="button" class="type-btn active" data-type="website">Website URL</button>
-            <button type="button" class="type-btn" data-type="text">Plain Text</button>
-            <button type="button" class="type-btn" data-type="email">Email</button>
-            <button type="button" class="type-btn" data-type="phone">Phone</button>
-            <button type="button" class="type-btn" data-type="sms">SMS</button>
-            <button type="button" class="type-btn" data-type="wifi">Wi-Fi</button>
-            <button type="button" class="type-btn" data-type="contact">Contact Card</button>
-            <button type="button" class="type-btn" data-type="event">Event Details</button>
-            <button type="button" class="type-btn" data-type="review">Review Link</button>
-            <button type="button" class="type-btn" data-type="payment">Payment Link</button>
-          </div>
-        </fieldset>
-
-        <div class="mode-strip">
-          <span id="modeLabel">Smart Link mode</span>
-          <small id="modeDescription">Creates a backend record, tracks scans, and encodes the DS smart link.</small>
+    <section class="main-card" aria-label="QR maker">
+      <form class="qr-form" id="qrForm">
+        <div class="field-group">
+          <label for="destinationUrl">Destination URL</label>
+          <input id="destinationUrl" name="destination_url" type="text" inputmode="url" autocomplete="url" placeholder="example.com/menu" required>
         </div>
-
-        <div class="dynamic-fields" id="dynamicFields"></div>
 
         <div class="field-group">
           <label for="cardTitle">Card title</label>
           <input id="cardTitle" name="card_title" type="text" maxlength="80" placeholder="Scan to visit our menu">
         </div>
 
-        <div class="field-group">
-          <label for="caption">Subtitle / caption</label>
-          <input id="caption" name="caption" type="text" maxlength="180" placeholder="Fresh updates, hours, and specials">
-        </div>
-
-        <div class="toggle-row">
-          <label><input id="scanLabelToggle" type="checkbox" checked> Show Scan Me label</label>
-          <label><input id="destinationToggle" type="checkbox" checked> Show destination</label>
-        </div>
-
         <fieldset class="field-group">
-          <legend>Design preset</legend>
-          <div class="preset-grid" id="presetGrid">
-            <button type="button" class="preset-btn active" data-design="classic-black">Classic Black</button>
-            <button type="button" class="preset-btn" data-design="ds-purple">DS Purple</button>
-            <button type="button" class="preset-btn" data-design="blue-pro">Blue Pro</button>
-            <button type="button" class="preset-btn" data-design="dark-card">Dark Card</button>
-            <button type="button" class="preset-btn" data-design="soft-lavender">Soft Lavender</button>
-            <button type="button" class="preset-btn" data-design="emerald-fresh">Emerald Fresh</button>
-            <button type="button" class="preset-btn" data-design="neon-night">Neon Night</button>
-            <button type="button" class="preset-btn" data-design="minimal-white">Minimal White</button>
-            <button type="button" class="preset-btn" data-design="sticker-style">Sticker Style</button>
-            <button type="button" class="preset-btn" data-design="digital-receipt">Digital Receipt</button>
-            <button type="button" class="preset-btn" data-design="menu-card">Menu Card</button>
-            <button type="button" class="preset-btn" data-design="business-card">Business Card</button>
+          <legend>Style</legend>
+          <div class="style-grid" id="presetGrid">
+            <button type="button" class="style-btn active" data-design="classic">Classic</button>
+            <button type="button" class="style-btn" data-design="ds-purple">DS Purple</button>
+            <button type="button" class="style-btn" data-design="dark">Dark</button>
+            <button type="button" class="style-btn" data-design="soft">Soft</button>
           </div>
         </fieldset>
 
-        <div class="color-row">
-          <div class="field-group compact">
-            <label for="qrColor">QR color</label>
-            <input id="qrColor" name="qr_color" type="color" value="#111827">
-          </div>
-          <div class="field-group compact">
-            <label for="bgColor">QR background</label>
-            <input id="bgColor" name="bg_color" type="color" value="#ffffff">
-          </div>
-        </div>
+        <details class="advanced-options">
+          <summary>Advanced options</summary>
+          <div class="advanced-inner">
+            <div class="color-row">
+              <div class="field-group compact">
+                <label for="qrColor">QR color</label>
+                <input id="qrColor" name="qr_color" type="color" value="#111827">
+              </div>
+              <div class="field-group compact">
+                <label for="bgColor">Background color</label>
+                <input id="bgColor" name="bg_color" type="color" value="#ffffff">
+              </div>
+            </div>
 
-        <div class="field-group">
-          <label for="qrSize">Download size</label>
-          <select id="qrSize" name="size">
-            <option value="900">Large PNG</option>
-            <option value="720" selected>Standard PNG</option>
-            <option value="560">Small PNG</option>
-          </select>
-        </div>
+            <div class="field-group">
+              <label for="qrSize">Download size</label>
+              <select id="qrSize" name="size">
+                <option value="900">Large PNG</option>
+                <option value="720" selected>Standard PNG</option>
+                <option value="560">Small PNG</option>
+              </select>
+            </div>
 
-        <div class="button-row">
-          <button class="primary-btn" type="submit" id="generateBtn">Generate QR</button>
-          <button class="secondary-btn" type="button" id="clearBtn">Clear form</button>
-        </div>
+            <div class="field-group">
+              <label for="caption">Subtitle / caption</label>
+              <input id="caption" name="caption" type="text" maxlength="180" placeholder="Fresh updates, hours, and specials">
+            </div>
+
+            <div class="toggle-row">
+              <label><input id="destinationToggle" type="checkbox"> Show destination</label>
+              <label><input id="scanLabelToggle" type="checkbox" checked> Scan Me label</label>
+            </div>
+          </div>
+        </details>
+
+        <button class="primary-btn" type="submit" id="generateBtn">Generate QR</button>
         <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
       </form>
 
-      <aside class="preview-card" aria-label="QR preview">
+      <aside class="preview-panel" aria-label="QR preview">
         <div class="qr-card" id="qrCard">
-          <div class="accent-label" id="accentLabel">Smart QR</div>
           <div class="qr-card-head">
             <span class="mini-badge">DS</span>
             <div>
@@ -124,21 +93,24 @@
               <h2 id="previewTitle">Your QR code</h2>
             </div>
           </div>
-          <p class="preview-caption" id="previewCaption">Choose a type, add your content, and generate a QR.</p>
+          <p class="preview-caption" id="previewCaption">Ready when you are.</p>
           <p class="scan-label" id="scanLabel">Scan Me</p>
           <div class="qr-box" id="qrBox">
             <div id="qrcode" aria-hidden="true"></div>
-            <p class="empty-state" id="emptyState">Generate a QR to preview it here.</p>
+            <p class="empty-state" id="emptyState">Your QR preview will appear here.</p>
           </div>
-          <p class="destination-display" id="destinationDisplay">https://kali.tail768496.ts.net/q/...</p>
+          <p class="destination-display" id="destinationDisplay"></p>
           <p class="qr-footer">Free QR code made on dsdigitaldesigns.org</p>
         </div>
+
         <div class="preview-actions">
           <button class="secondary-btn" type="button" id="downloadBtn" disabled>Download QR Card PNG</button>
-          <button class="secondary-btn" type="button" id="copyBtn" disabled>Copy Smart Link</button>
+          <button class="secondary-btn" type="button" id="copyBtn" hidden disabled>Copy Smart Link</button>
         </div>
       </aside>
     </section>
+
+    <p class="behavior-note">Smart QR links may open a short DS Digital Designs redirect screen before continuing to the destination.</p>
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
