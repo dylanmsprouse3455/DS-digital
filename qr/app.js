@@ -1,5 +1,4 @@
 const API_BASE = "https://kali.tail768496.ts.net"; // For production, replace with your public tunnel/backend URL.
-const SMART_BASE = "https://dsdigitaldesigns.org/qr/redirect.html";
 
 const presets = {
   classic: { qr: "#111827", bg: "#ffffff", card: "#ffffff", accent: "#2563eb", text: "#111827" },
@@ -202,7 +201,7 @@ form.addEventListener("submit", async (event) => {
       throw new Error(data.error || "Unable to create QR code.");
     }
 
-    const smartUrl = `${SMART_BASE}?c=${encodeURIComponent(data.code)}`;
+    const smartUrl = data.smart_url || `${API_BASE}/q/${encodeURIComponent(data.code)}`;
     latestQr = {
       code: data.code,
       smartUrl,

@@ -15,7 +15,7 @@ python app.py
 The API runs on:
 
 ```text
-http://127.0.0.1:5050
+http://127.0.0.1:5051
 ```
 
 The SQLite database is created automatically at:
@@ -27,6 +27,7 @@ backend/ds_smart_qr.db
 ## Endpoints
 
 - `POST /api/create` creates a smart QR record.
+- `GET /q/<code>` records a scan, shows the DS Digital QR intro, and redirects server-side.
 - `GET /api/resolve/<code>` records a scan and returns the destination URL.
 - `GET /admin` shows a local testing dashboard.
 

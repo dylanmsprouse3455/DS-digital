@@ -22,6 +22,7 @@
   </main>
 
   <script>
+    // Fallback only. New DS Digital QR scans should go directly to the backend /q/<code> route.
     const API_BASE = "https://kali.tail768496.ts.net"; // For production, replace with your public tunnel/backend URL.
     const params = new URLSearchParams(window.location.search);
     const code = params.get("c");
