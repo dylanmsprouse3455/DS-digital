@@ -3,6 +3,31 @@ const CONSENT_VERSION = "2026-05-24";
 const CONSENT_CHOICE_KEY = "dsDigitalQrConsentStatus";
 const CONSENT_ID_KEY = "dsDigitalQrConsentId";
 
+function $(id) {
+  return document.getElementById(id);
+}
+
+function setText(id, value) {
+  const el = $(id);
+  if (el) el.textContent = value ?? "";
+}
+
+function setValue(id, value) {
+  const el = $(id);
+  if (el) el.value = value ?? "";
+}
+
+function showEl(id, display = "") {
+  const el = $(id);
+  if (el) el.style.display = display;
+}
+
+function hideEl(id) {
+  const el = $(id);
+  if (el) el.style.display = "none";
+}
+
+
 const presets = {
   classic: {
     qr: "#111827",
@@ -236,8 +261,8 @@ function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
 }
 
 function updatePreviewText() {
-  previewTitle.textContent = currentTitle();
-  previewCaption.textContent = currentCaption();
+  if (previewTitle) previewTitle.textContent = currentTitle();
+  if (previewCaption) previewCaption.textContent = currentCaption();
   scanLabel.style.display = scanLabelToggle.checked ? "inline-flex" : "none";
   destinationDisplay.style.display = destinationToggle.checked ? "block" : "none";
 
@@ -335,7 +360,7 @@ function resetGeneratedState() {
   setStatus("");
 }
 
-document.getElementById("presetGrid").addEventListener("click", (event) => {
+if (document.getElementById("presetGrid")) document.getElementById("presetGrid").addEventListener("click", (event) => {
   const button = event.target.closest(".style-btn");
   if (!button) return;
   activePreset(button.dataset.design);
