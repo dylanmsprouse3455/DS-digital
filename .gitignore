@@ -2,3 +2,4 @@ __pycache__/
 *.py[cod]
 backend/venv/
 backend/ds_smart_qr.db
+backups/

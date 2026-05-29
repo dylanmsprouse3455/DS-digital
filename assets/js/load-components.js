@@ -16,6 +16,7 @@ const componentFallbacks = {
   <a href="index.html">Home</a>
   <a href="services-v2.html">Services</a>
   <a href="tools/website-clarity-snapshot/index.html">Website Scanner</a>
+  <a href="free-tools.html">Free Tools</a>
   <a href="quote-v2.html">Get a Quote</a>
   <a href="contact-v2.html">Contact</a>
   <a href="blog-v2.html">Blog</a>
