@@ -6,65 +6,45 @@
 
   <title>QR Maker | DS Digital Designs</title>
 
-  <!-- Client-side QR generator. No backend needed. -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <!-- Working browser-only QR library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
     :root {
       --bg: #080b14;
-      --bg-soft: #101626;
       --card: rgba(255, 255, 255, 0.08);
-      --card-strong: rgba(255, 255, 255, 0.12);
       --border: rgba(255, 255, 255, 0.14);
       --text: #ffffff;
       --muted: rgba(255, 255, 255, 0.68);
-      --muted-2: rgba(255, 255, 255, 0.48);
       --accent: #4da3ff;
-      --accent-2: #7c5cff;
+      --accent2: #7c5cff;
       --success: #53e2a8;
       --danger: #ff5c7a;
-      --shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       color: var(--text);
       background:
         radial-gradient(circle at top left, rgba(77, 163, 255, 0.25), transparent 34%),
         radial-gradient(circle at bottom right, rgba(124, 92, 255, 0.22), transparent 35%),
-        linear-gradient(135deg, #060914 0%, #0b1020 45%, #080b14 100%);
-      padding: 0;
-    }
-
-    a {
-      color: inherit;
-    }
-
-    .page {
-      width: 100%;
-      min-height: 100vh;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
+        #080b14;
+      padding: 22px;
     }
 
     .nav {
       width: 100%;
-      max-width: 1180px;
-      margin: 0 auto 28px;
+      max-width: 1100px;
+      margin: 0 auto 24px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       gap: 16px;
     }
 
@@ -73,93 +53,60 @@
       align-items: center;
       gap: 12px;
       text-decoration: none;
+      color: white;
     }
 
     .brand-mark {
       width: 44px;
       height: 44px;
       border-radius: 15px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
       display: grid;
       place-items: center;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 14px 35px rgba(77, 163, 255, 0.22);
-      font-weight: 950;
-      color: #fff;
-      letter-spacing: -0.08em;
-    }
-
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.1;
+      font-weight: 900;
     }
 
     .brand-text strong {
-      font-size: 0.98rem;
-      letter-spacing: -0.02em;
+      display: block;
+      font-size: 1rem;
     }
 
     .brand-text span {
-      margin-top: 4px;
+      display: block;
       color: var(--muted);
-      font-size: 0.8rem;
+      font-size: 0.82rem;
+      margin-top: 3px;
     }
 
     .home-link {
+      color: white;
       text-decoration: none;
-      padding: 11px 16px;
+      padding: 10px 15px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.09);
+      background: rgba(255,255,255,0.1);
       border: 1px solid var(--border);
-      color: rgba(255, 255, 255, 0.86);
+      font-weight: 700;
       font-size: 0.9rem;
-      font-weight: 750;
-      transition: transform 0.18s ease, background 0.18s ease;
-    }
-
-    .home-link:hover {
-      transform: translateY(-2px);
-      background: rgba(255, 255, 255, 0.13);
     }
 
     .wrap {
       width: 100%;
-      max-width: 1180px;
-      margin: auto;
+      max-width: 1100px;
+      margin: 0 auto;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 420px;
-      gap: 26px;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
       align-items: stretch;
     }
 
     .panel {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 30px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      overflow: hidden;
-    }
-
-    .main-panel {
-      padding: clamp(24px, 5vw, 46px);
-      position: relative;
-    }
-
-    .main-panel::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 38%),
-        radial-gradient(circle at 20% 20%, rgba(77, 163, 255, 0.18), transparent 34%);
-      pointer-events: none;
-    }
-
-    .main-inner {
-      position: relative;
-      z-index: 1;
+      border-radius: 28px;
+      padding: 30px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.35);
     }
 
     .eyebrow {
@@ -171,90 +118,78 @@
       border-radius: 999px;
       background: rgba(77, 163, 255, 0.12);
       border: 1px solid rgba(77, 163, 255, 0.22);
-      color: rgba(255, 255, 255, 0.88);
       font-size: 0.78rem;
-      font-weight: 850;
+      font-weight: 800;
       letter-spacing: 0.12em;
       text-transform: uppercase;
     }
 
-    .eyebrow-dot {
+    .dot {
       width: 8px;
       height: 8px;
-      border-radius: 999px;
+      border-radius: 99px;
       background: var(--success);
-      box-shadow: 0 0 20px rgba(83, 226, 168, 0.9);
+      box-shadow: 0 0 16px rgba(83,226,168,0.8);
     }
 
     h1 {
       margin: 0;
-      max-width: 760px;
-      font-size: clamp(2.4rem, 7vw, 5.6rem);
-      line-height: 0.88;
-      letter-spacing: -0.085em;
+      font-size: clamp(2.4rem, 7vw, 5rem);
+      line-height: 0.9;
+      letter-spacing: -0.07em;
     }
 
-    .gradient-text {
-      background: linear-gradient(135deg, #ffffff, #9ecfff 50%, #b2a7ff);
+    .gradient {
+      background: linear-gradient(135deg, #fff, #9ecfff, #b2a7ff);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
     }
 
     .lead {
-      max-width: 650px;
       margin: 22px 0 0;
+      max-width: 640px;
       color: var(--muted);
-      font-size: clamp(1rem, 2vw, 1.13rem);
       line-height: 1.7;
+      font-size: 1.05rem;
     }
 
     .form {
-      margin-top: 34px;
-      display: grid;
-      gap: 16px;
-    }
-
-    .field {
-      display: grid;
-      gap: 8px;
+      margin-top: 32px;
     }
 
     label {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 0.92rem;
+      display: block;
+      margin-bottom: 8px;
       font-weight: 800;
     }
 
     input {
       width: 100%;
       min-height: 56px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 18px;
-      outline: none;
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      color: white;
       padding: 0 16px;
       font-size: 1rem;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      outline: none;
     }
 
     input::placeholder {
-      color: rgba(255, 255, 255, 0.38);
+      color: rgba(255,255,255,0.4);
     }
 
     input:focus {
-      border-color: rgba(77, 163, 255, 0.8);
-      background: rgba(255, 255, 255, 0.105);
-      box-shadow: 0 0 0 5px rgba(77, 163, 255, 0.12);
+      border-color: rgba(77,163,255,0.8);
+      box-shadow: 0 0 0 5px rgba(77,163,255,0.12);
     }
 
-    .button-row {
+    .buttons {
       display: flex;
-      flex-wrap: wrap;
       gap: 12px;
-      margin-top: 2px;
+      flex-wrap: wrap;
+      margin-top: 16px;
     }
 
     button,
@@ -263,55 +198,38 @@
       border: 0;
       border-radius: 999px;
       padding: 0 18px;
+      cursor: pointer;
+      font-weight: 850;
+      font-size: 0.95rem;
+      text-decoration: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 9px;
-      cursor: pointer;
-      font-size: 0.95rem;
-      font-weight: 850;
-      text-decoration: none;
-      transition: transform 0.18s ease, opacity 0.18s ease, background 0.18s ease;
-      user-select: none;
-    }
-
-    button:hover,
-    .button:hover {
-      transform: translateY(-2px);
-      opacity: 0.94;
-    }
-
-    button:disabled,
-    .button[aria-disabled="true"] {
-      opacity: 0.45;
-      cursor: not-allowed;
-      transform: none;
     }
 
     .primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #fff;
-      box-shadow: 0 14px 32px rgba(77, 163, 255, 0.22);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
     }
 
     .secondary {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: white;
     }
 
     .notes {
       margin-top: 28px;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
     }
 
     .note {
       padding: 14px;
       border-radius: 18px;
-      background: rgba(255, 255, 255, 0.065);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
     .note strong {
@@ -321,87 +239,86 @@
     }
 
     .note span {
-      display: block;
       color: var(--muted);
       font-size: 0.82rem;
       line-height: 1.45;
     }
 
     .preview-panel {
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      text-align: center;
     }
 
     .preview-title {
       margin: 0 0 16px;
-      text-align: center;
-      font-size: 1.1rem;
-      letter-spacing: -0.02em;
+      font-size: 1.15rem;
     }
 
     .qr-frame {
       width: 100%;
       aspect-ratio: 1 / 1;
-      border-radius: 28px;
+      border-radius: 26px;
       background: #ffffff;
       padding: 22px;
       display: grid;
       place-items: center;
-      box-shadow:
-        inset 0 0 0 1px rgba(0, 0, 0, 0.08),
-        0 18px 45px rgba(0, 0, 0, 0.28);
+      margin-bottom: 18px;
     }
 
-    #qrCanvas {
+    #qrcode {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+    }
+
+    #qrcode img,
+    #qrcode canvas {
       width: 100% !important;
       height: auto !important;
       display: block;
     }
 
-    .empty-qr {
+    .empty {
+      color: rgba(0,0,0,0.45);
+      border: 2px dashed rgba(0,0,0,0.18);
+      border-radius: 18px;
       width: 100%;
       height: 100%;
-      border-radius: 18px;
       display: grid;
       place-items: center;
-      border: 2px dashed rgba(0, 0, 0, 0.18);
-      color: rgba(0, 0, 0, 0.42);
-      text-align: center;
-      padding: 18px;
-      font-weight: 850;
-      line-height: 1.35;
+      padding: 20px;
+      font-weight: 800;
     }
 
     .result {
-      margin-top: 18px;
+      margin-top: 16px;
       padding: 14px;
       border-radius: 18px;
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid rgba(255, 255, 255, 0.11);
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.11);
       overflow-wrap: anywhere;
+      text-align: left;
     }
 
-    .result-label {
+    .result span {
       display: block;
-      margin-bottom: 6px;
-      color: var(--muted-2);
+      color: rgba(255,255,255,0.45);
       font-size: 0.74rem;
       font-weight: 900;
       letter-spacing: 0.12em;
       text-transform: uppercase;
+      margin-bottom: 6px;
     }
 
     #finalUrl {
-      color: rgba(255, 255, 255, 0.88);
+      color: rgba(255,255,255,0.9);
       font-size: 0.9rem;
       line-height: 1.45;
     }
 
     .status {
-      min-height: 22px;
       margin-top: 12px;
+      min-height: 22px;
       color: var(--muted);
       font-size: 0.9rem;
       line-height: 1.4;
@@ -416,31 +333,36 @@
     }
 
     .preview-actions {
-      margin-top: 16px;
       display: grid;
       gap: 10px;
+      margin-top: 16px;
     }
 
-    .full {
+    .preview-actions button,
+    .preview-actions a {
       width: 100%;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
     .footer {
-      width: 100%;
-      max-width: 1180px;
-      margin: 28px auto 0;
-      color: rgba(255, 255, 255, 0.45);
-      font-size: 0.82rem;
+      max-width: 1100px;
+      margin: 26px auto 0;
+      color: rgba(255,255,255,0.45);
       text-align: center;
+      font-size: 0.82rem;
     }
 
-    @media (max-width: 920px) {
+    @media (max-width: 900px) {
       .wrap {
         grid-template-columns: 1fr;
       }
 
       .preview-panel {
-        max-width: 500px;
+        max-width: 480px;
         width: 100%;
         margin: 0 auto;
       }
@@ -451,171 +373,135 @@
     }
 
     @media (max-width: 560px) {
-      .page {
+      body {
         padding: 16px;
-      }
-
-      .nav {
-        align-items: flex-start;
-      }
-
-      .brand-mark {
-        width: 40px;
-        height: 40px;
       }
 
       .brand-text span {
         display: none;
       }
 
-      .home-link {
-        padding: 10px 13px;
-        font-size: 0.82rem;
-      }
-
-      .main-panel,
-      .preview-panel {
+      .panel {
+        padding: 24px;
         border-radius: 24px;
       }
 
-      .main-panel {
-        padding: 24px;
-      }
-
-      .button-row {
+      .buttons {
         display: grid;
-        grid-template-columns: 1fr;
       }
 
       button,
       .button {
         width: 100%;
       }
-
-      .qr-frame {
-        border-radius: 24px;
-        padding: 18px;
-      }
     }
   </style>
 </head>
 
 <body>
-  <main class="page">
-    <nav class="nav" aria-label="Main navigation">
-      <a class="brand" href="../index.html" aria-label="Back to DS Digital Designs homepage">
-        <div class="brand-mark">DS</div>
-        <div class="brand-text">
-          <strong>DS Digital Designs</strong>
-          <span>QR Maker</span>
+  <nav class="nav">
+    <a class="brand" href="../index.html">
+      <div class="brand-mark">DS</div>
+      <div class="brand-text">
+        <strong>DS Digital Designs</strong>
+        <span>QR Maker</span>
+      </div>
+    </a>
+
+    <a class="home-link" href="../index.html">Back Home</a>
+  </nav>
+
+  <main class="wrap">
+    <section class="panel">
+      <p class="eyebrow">
+        <span class="dot"></span>
+        Browser-Based Tool
+      </p>
+
+      <h1>
+        Make a QR code that
+        <span class="gradient">actually works.</span>
+      </h1>
+
+      <p class="lead">
+        Type or paste a website link below. This QR maker works fully in the browser.
+        No backend, no localhost, no redirect system, and no broken API.
+      </p>
+
+      <form class="form" id="qrForm">
+        <label for="urlInput">Destination URL</label>
+
+        <input
+          id="urlInput"
+          type="text"
+          inputmode="url"
+          autocomplete="url"
+          placeholder="example.com or https://example.com"
+          value="https://dsdigitaldesigns.org"
+        />
+
+        <div class="buttons">
+          <button class="primary" type="submit">Generate QR Code</button>
+          <button class="secondary" type="button" id="clearBtn">Clear</button>
         </div>
-      </a>
+      </form>
 
-      <a class="home-link" href="../index.html">Back Home</a>
-    </nav>
+      <div class="notes">
+        <div class="note">
+          <strong>No backend</strong>
+          <span>This QR directly stores the link you enter.</span>
+        </div>
 
-    <section class="wrap">
-      <div class="panel main-panel">
-        <div class="main-inner">
-          <p class="eyebrow">
-            <span class="eyebrow-dot"></span>
-            Browser-Based Tool
-          </p>
+        <div class="note">
+          <strong>Printable</strong>
+          <span>Download the PNG and place it on flyers, signs, or cards.</span>
+        </div>
 
-          <h1>
-            Make a QR code that
-            <span class="gradient-text">actually works.</span>
-          </h1>
+        <div class="note">
+          <strong>Test first</strong>
+          <span>Always scan it with your phone before printing.</span>
+        </div>
+      </div>
+    </section>
 
-          <p class="lead">
-            Type or paste a website link below. This page generates the QR code directly in your browser,
-            so there is no backend, no localhost, and no smart redirect system to break.
-          </p>
+    <aside class="panel preview-panel">
+      <h2 class="preview-title">QR Preview</h2>
 
-          <form class="form" id="qrForm">
-            <div class="field">
-              <label for="urlInput">Destination URL</label>
-              <input
-                id="urlInput"
-                type="text"
-                inputmode="url"
-                autocomplete="url"
-                placeholder="example.com or https://example.com"
-                value="https://dsdigitaldesigns.org"
-              />
-            </div>
-
-            <div class="button-row">
-              <button class="primary" type="submit">
-                Generate QR Code
-              </button>
-
-              <button class="secondary" type="button" id="clearBtn">
-                Clear
-              </button>
-            </div>
-          </form>
-
-          <div class="notes" aria-label="QR code notes">
-            <div class="note">
-              <strong>No backend</strong>
-              <span>This QR directly stores the URL you enter.</span>
-            </div>
-
-            <div class="note">
-              <strong>Printable</strong>
-              <span>Download the PNG and place it on signs, flyers, or cards.</span>
-            </div>
-
-            <div class="note">
-              <strong>Test first</strong>
-              <span>Always scan it on your phone before printing.</span>
-            </div>
-          </div>
+      <div class="qr-frame">
+        <div id="qrcode">
+          <div class="empty">Your QR code will show here.</div>
         </div>
       </div>
 
-      <aside class="panel preview-panel" aria-label="QR preview">
-        <h2 class="preview-title">QR Preview</h2>
+      <div class="result">
+        <span>Final URL</span>
+        <div id="finalUrl">Nothing generated yet.</div>
+      </div>
 
-        <div class="qr-frame" id="qrFrame">
-          <div class="empty-qr" id="emptyQr">
-            Your QR code will show here.
-          </div>
-          <canvas id="qrCanvas" hidden></canvas>
-        </div>
+      <div class="status" id="statusText">
+        Enter a link, generate the QR, then scan it to test.
+      </div>
 
-        <div class="result">
-          <span class="result-label">Final URL</span>
-          <div id="finalUrl">Nothing generated yet.</div>
-        </div>
+      <div class="preview-actions">
+        <button class="primary" type="button" id="downloadBtn" disabled>
+          Download PNG
+        </button>
 
-        <div class="status" id="statusText">
-          Enter a link, generate the QR, then scan it to test.
-        </div>
-
-        <div class="preview-actions">
-          <button class="primary full" type="button" id="downloadBtn" disabled>
-            Download PNG
-          </button>
-
-          <a class="button secondary full" id="openBtn" href="#" target="_blank" rel="noopener noreferrer" aria-disabled="true">
-            Open Final URL
-          </a>
-        </div>
-      </aside>
-    </section>
-
-    <footer class="footer">
-      Built for DS Digital Designs. Simple QR generation first. Smart redirects and analytics later.
-    </footer>
+        <a class="button secondary" id="openBtn" href="#" target="_blank" rel="noopener noreferrer">
+          Open Final URL
+        </a>
+      </div>
+    </aside>
   </main>
+
+  <footer class="footer">
+    Built for DS Digital Designs. Simple QR generation first. Smart redirects and analytics later.
+  </footer>
 
   <script>
     const form = document.getElementById("qrForm");
     const urlInput = document.getElementById("urlInput");
-    const canvas = document.getElementById("qrCanvas");
-    const emptyQr = document.getElementById("emptyQr");
+    const qrcodeBox = document.getElementById("qrcode");
     const finalUrl = document.getElementById("finalUrl");
     const statusText = document.getElementById("statusText");
     const downloadBtn = document.getElementById("downloadBtn");
@@ -627,9 +513,7 @@
     function normalizeUrl(value) {
       let url = value.trim();
 
-      if (!url) {
-        return "";
-      }
+      if (!url) return "";
 
       if (!/^https?:\/\//i.test(url)) {
         url = "https://" + url;
@@ -638,11 +522,11 @@
       return url;
     }
 
-    function isProbablyValidUrl(url) {
+    function isValidUrl(url) {
       try {
         const parsed = new URL(url);
         return parsed.protocol === "http:" || parsed.protocol === "https:";
-      } catch {
+      } catch (error) {
         return false;
       }
     }
@@ -651,49 +535,46 @@
       statusText.textContent = message;
       statusText.className = "status";
 
-      if (type === "good") {
-        statusText.classList.add("good");
-      }
-
-      if (type === "bad") {
-        statusText.classList.add("bad");
-      }
+      if (type === "good") statusText.classList.add("good");
+      if (type === "bad") statusText.classList.add("bad");
     }
 
-    function setOpenButton(url) {
-      openBtn.href = url || "#";
+    function generateQr(url) {
+      qrcodeBox.innerHTML = "";
 
-      if (url) {
-        openBtn.setAttribute("aria-disabled", "false");
-      } else {
-        openBtn.setAttribute("aria-disabled", "true");
-      }
-    }
-
-    async function generateQr(url) {
-      const size = 1024;
-
-      await QRCode.toCanvas(canvas, url, {
-        width: size,
-        margin: 2,
-        color: {
-          dark: "#000000",
-          light: "#ffffff"
-        },
-        errorCorrectionLevel: "H"
+      new QRCode(qrcodeBox, {
+        text: url,
+        width: 900,
+        height: 900,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
       });
-
-      canvas.hidden = false;
-      emptyQr.hidden = true;
 
       currentUrl = url;
       finalUrl.textContent = url;
+      openBtn.href = url;
       downloadBtn.disabled = false;
-      setOpenButton(url);
-      setStatus("QR code generated. Scan it before printing.", "good");
+
+      setStatus("QR generated. Scan it before printing.", "good");
     }
 
-    form.addEventListener("submit", async (event) => {
+    function getQrImageData() {
+      const img = qrcodeBox.querySelector("img");
+      const canvas = qrcodeBox.querySelector("canvas");
+
+      if (canvas) {
+        return canvas.toDataURL("image/png");
+      }
+
+      if (img) {
+        return img.src;
+      }
+
+      return null;
+    }
+
+    form.addEventListener("submit", function (event) {
       event.preventDefault();
 
       const url = normalizeUrl(urlInput.value);
@@ -703,27 +584,23 @@
         return;
       }
 
-      if (!isProbablyValidUrl(url)) {
+      if (!isValidUrl(url)) {
         finalUrl.textContent = url;
         setStatus("That does not look like a valid URL.", "bad");
         return;
       }
 
-      try {
-        await generateQr(url);
-      } catch (error) {
-        console.error(error);
-        setStatus("QR failed to generate. Check the URL and try again.", "bad");
-      }
+      generateQr(url);
     });
 
-    downloadBtn.addEventListener("click", () => {
-      if (!currentUrl) {
+    downloadBtn.addEventListener("click", function () {
+      const imageData = getQrImageData();
+
+      if (!imageData || !currentUrl) {
         setStatus("Generate a QR code first.", "bad");
         return;
       }
 
-      const link = document.createElement("a");
       const cleanName = currentUrl
         .replace(/^https?:\/\//i, "")
         .replace(/[^a-z0-9]+/gi, "-")
@@ -731,36 +608,38 @@
         .toLowerCase()
         .slice(0, 60) || "qr-code";
 
-      link.download = `ds-digital-qr-${cleanName}.png`;
-      link.href = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = imageData;
+      link.download = "ds-digital-qr-" + cleanName + ".png";
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
 
-      setStatus("PNG downloaded. Test scan it before using it with a client.", "good");
+      setStatus("PNG downloaded. Test it before using it with a client.", "good");
     });
 
-    clearBtn.addEventListener("click", () => {
+    clearBtn.addEventListener("click", function () {
       urlInput.value = "";
-      currentUrl = "";
+      qrcodeBox.innerHTML = '<div class="empty">Your QR code will show here.</div>';
       finalUrl.textContent = "Nothing generated yet.";
+      currentUrl = "";
+      openBtn.href = "#";
       downloadBtn.disabled = true;
-      setOpenButton("");
-      canvas.hidden = true;
-      emptyQr.hidden = false;
       setStatus("Cleared. Enter a new link to generate a QR code.");
       urlInput.focus();
     });
 
-    openBtn.addEventListener("click", (event) => {
+    openBtn.addEventListener("click", function (event) {
       if (!currentUrl) {
         event.preventDefault();
         setStatus("Generate a QR code first.", "bad");
       }
     });
 
-    window.addEventListener("load", () => {
+    window.addEventListener("load", function () {
       const startingUrl = normalizeUrl(urlInput.value);
 
-      if (startingUrl && isProbablyValidUrl(startingUrl)) {
+      if (startingUrl && isValidUrl(startingUrl)) {
         generateQr(startingUrl);
       }
     });
