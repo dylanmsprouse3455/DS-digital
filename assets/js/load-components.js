@@ -15,7 +15,8 @@ const componentFallbacks = {
 <nav class="site-nav" id="menu">
   <a href="index.html">Home</a>
   <a href="services-v2.html">Services</a>
-  <a href="tools/website-clarity-snapshot/index.html">Website Scanner</a>
+  <a href="templates.html">Templates</a>
+  <a href="/qr/">DS Digital QR</a>
   <a href="free-tools.html">Free Tools</a>
   <a href="quote-v2.html">Get a Quote</a>
   <a href="contact-v2.html">Contact</a>
@@ -29,7 +30,7 @@ const componentFallbacks = {
 </footer>`
 };
 
-const shellVersion = '2026-04-26-menu-seo';
+const shellVersion = '2026-07-26-templates';
 
 function componentUrl(path) {
   const separator = path.includes('?') ? '&' : '?';
