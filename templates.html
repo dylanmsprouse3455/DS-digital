@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-H8GZQ24Y81"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-H8GZQ24Y81');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Templates | DS Digital Designs</title>
+  <meta name="description" content="Browse website template directions for local services, creative businesses, pet care, beauty and wellness, professional services, and quote-driven businesses.">
+  <link rel="canonical" href="https://dsdigitaldesigns.org/templates.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Website Templates | DS Digital Designs">
+  <meta property="og:description" content="Explore flexible website starting points built around different business types and customer journeys.">
+  <meta property="og:url" content="https://dsdigitaldesigns.org/templates.html">
+  <meta property="og:image" content="https://dsdigitaldesigns.org/0193CA57-3463-4528-AE1F-50F2BCD64BFB.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <style>
+    .template-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr);
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .template-hero .hero-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 370px;
+    }
+
+    .template-guide {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .template-guide h2,
+    .template-card h3,
+    .template-cta h2 {
+      margin: 0;
+    }
+
+    .template-guide p,
+    .template-card p,
+    .template-cta p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .guide-list {
+      display: grid;
+      gap: 10px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .guide-list li {
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 13px 14px;
+    }
+
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .template-card {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform .22s ease, border-color .22s ease;
+    }
+
+    .template-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--blue);
+    }
+
+    .template-card.hidden {
+      display: none;
+    }
+
+    .template-preview {
+      min-height: 235px;
+      overflow: hidden;
+      border-radius: 17px;
+      border: 1px solid rgba(15, 23, 42, .12);
+      position: relative;
+      padding: 38px 16px 16px;
+      background: white;
+    }
+
+    .browser-bar {
+      position: absolute;
+      inset: 0 0 auto;
+      height: 28px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      padding: 0 10px;
+      background: rgba(255,255,255,.82);
+      border-bottom: 1px solid rgba(15, 23, 42, .1);
+      backdrop-filter: blur(8px);
+    }
+
+    .browser-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, .24);
+    }
+
+    .mock-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .mock-logo {
+      width: 76px;
+      height: 12px;
+      border-radius: 999px;
+      background: currentColor;
+      opacity: .9;
+    }
+
+    .mock-links {
+      display: flex;
+      gap: 5px;
+    }
+
+    .mock-links span {
+      width: 18px;
+      height: 5px;
+      border-radius: 999px;
+      background: currentColor;
+      opacity: .38;
+    }
+
+    .mock-hero {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .mock-copy,
+    .mock-visual,
+    .mock-tile,
+    .mock-line,
+    .mock-button,
+    .mock-circle {
+      border-radius: 10px;
+    }
+
+    .mock-copy {
+      min-height: 112px;
+      padding: 14px;
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(255,255,255,.62);
+    }
+
+    .mock-line {
+      height: 8px;
+      margin-bottom: 8px;
+      background: currentColor;
+      opacity: .75;
+    }
+
+    .mock-line.short { width: 58%; }
+    .mock-line.medium { width: 80%; }
+    .mock-line.tiny { width: 42%; height: 5px; opacity: .35; }
+
+    .mock-button {
+      width: 64px;
+      height: 20px;
+      margin-top: 14px;
+      background: currentColor;
+    }
+
+    .mock-visual {
+      min-height: 112px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.55);
+      background: rgba(255,255,255,.3);
+    }
+
+    .mock-circle {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.72);
+      box-shadow: 18px 12px 0 rgba(255,255,255,.28);
+    }
+
+    .mock-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .mock-tile {
+      height: 42px;
+      background: rgba(255,255,255,.58);
+      border: 1px solid rgba(255,255,255,.45);
+    }
+
+    .preview-local {
+      color: #f8fafc;
+      background: linear-gradient(135deg, #111827, #9a3412);
+    }
+
+    .preview-creative {
+      color: #3b0764;
+      background:
+        radial-gradient(circle at 18% 20%, rgba(251,191,36,.9), transparent 24%),
+        radial-gradient(circle at 84% 72%, rgba(236,72,153,.75), transparent 25%),
+        linear-gradient(135deg, #fdf4ff, #c4b5fd);
+    }
+
+    .preview-pet {
+      color: #134e4a;
+      background: linear-gradient(135deg, #99f6e4, #fef3c7);
+    }
+
+    .preview-wellness {
+      color: #713f12;
+      background: linear-gradient(145deg, #fff7ed, #fbcfe8);
+    }
+
+    .preview-professional {
+      color: #eff6ff;
+      background: linear-gradient(135deg, #0f172a, #1d4ed8);
+    }
+
+    .preview-smart {
+      color: #172554;
+      background: linear-gradient(135deg, #dbeafe, #e0e7ff);
+    }
+
+    .template-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .template-number {
+      flex: 0 0 auto;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--blue);
+      background: rgba(37,99,235,.1);
+      padding: 6px 9px;
+      border-radius: 999px;
+    }
+
+    .template-features {
+      display: grid;
+      gap: 8px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      color: var(--dark);
+      font-size: 14px;
+    }
+
+    .template-features li {
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .template-features li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--blue);
+      font-weight: 900;
+    }
+
+    .template-card .links {
+      margin-top: auto;
+    }
+
+    .template-cta {
+      margin-top: 52px;
+      padding: 30px;
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .template-cta > div:first-child {
+      max-width: 720px;
+    }
+
+    @media (max-width: 900px) {
+      .template-hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .template-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .template-preview {
+        min-height: 215px;
+      }
+
+      .mock-hero {
+        grid-template-columns: 1fr 105px;
+      }
+
+      .template-cta {
+        padding: 24px 20px;
+      }
+
+      .template-cta .links,
+      .template-cta .link {
+        width: 100%;
+      }
+
+      .template-cta .link {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="nav-slot"></div>
+
+  <main class="page-wrap">
+    <section class="template-hero">
+      <div class="hero-panel">
+        <div class="kicker">Website starting points</div>
+        <h1 class="page-title">Choose the structure before choosing the colors.</h1>
+        <p class="page-intro">
+          These are flexible website directions built around how different businesses actually get customers.
+          Pick the flow that feels closest, then DS Digital Designs customizes the branding, content, pages, and tools around your business.
+        </p>
+        <div class="hero-actions">
+          <a class="link primary" href="#template-gallery">Browse Templates</a>
+          <a class="link" href="quote-v2.html">Start a Website Quote</a>
+        </div>
+      </div>
+
+      <aside class="surface-card template-guide">
+        <div class="kicker">How to use this page</div>
+        <h2>Do not look for an exact copy of your business.</h2>
+        <p>Look for the customer journey that makes the most sense.</p>
+        <ul class="guide-list">
+          <li><strong>Need calls and quotes?</strong><br>Start with Local Service or Smart Quote.</li>
+          <li><strong>Need to show visual work?</strong><br>Start with Creative Portfolio.</li>
+          <li><strong>Need trust and appointments?</strong><br>Start with Care, Wellness, or Professional.</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="section-head" id="template-gallery">
+      <div>
+        <h2>Website template directions</h2>
+        <p>Filter by the kind of business experience you want to create.</p>
+      </div>
+    </section>
+
+    <div class="filter-bar" aria-label="Filter website templates">
+      <button class="chip active" type="button" data-filter="all">All</button>
+      <button class="chip" type="button" data-filter="service">Local Service</button>
+      <button class="chip" type="button" data-filter="creative">Creative</button>
+      <button class="chip" type="button" data-filter="care">Care & Wellness</button>
+      <button class="chip" type="button" data-filter="professional">Professional</button>
+      <button class="chip" type="button" data-filter="tool">Tool-Driven</button>
+    </div>
+
+    <section class="template-grid" aria-label="Website template options">
+      <article class="surface-card template-card" data-category="service">
+        <div class="template-preview preview-local" aria-label="Local service website preview">
+          <div class="browser-bar"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span></div>
+          <div class="mock-nav"><span class="mock-logo"></span><span class="mock-links"><span></span><span></span><span></span></span></div>
+          <div class="mock-hero">
+            <div class="mock-copy">
+              <div class="mock-line"></div><div class="mock-line medium"></div><div class="mock-line tiny"></div><div class="mock-button"></div>
+            </div>
+            <div class="mock-visual"><div class="mock-circle"></div></div>
+          </div>
+          <div class="mock-grid"><div class="mock-tile"></div><div class="mock-tile"></div><div class="mock-tile"></div></div>
+        </div>
+        <div class="template-topline">
+          <div><h3>Local Service</h3><p>Built to turn nearby visitors into calls and quote requests.</p></div>
+          <span class="template-number">01</span>
+        </div>
+        <div class="meta"><span class="tag">Contractors</span><span class="tag">Hauling</span><span class="tag">Landscaping</span></div>
+        <ul class="template-features">
+          <li>Strong service-area messaging</li>
+          <li>Tap-to-call mobile actions</li>
+          <li>Services, reviews, and quote path</li>
+        </ul>
+        <div class="links"><a class="link primary" href="quote-v2.html">Choose This Direction</a></div>
+      </article>
+
+      <article class="surface-card template-card" data-category="creative">
+        <div class="template-preview preview-creative" aria-label="Creative portfolio website preview">
+          <div class="browser-bar"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span></div>
+          <div class="mock-nav"><span class="mock-logo"></span><span class="mock-links"><span></span><span></span><span></span></span></div>
+          <div class="mock-hero">
+            <div class="mock-copy">
+              <div class="mock-line"></div><div class="mock-line short"></div><div class="mock-line tiny"></div><div class="mock-button"></div>
+            </div>
+            <div class="mock-visual"><div class="mock-circle"></div></div>
+          </div>
+          <div class="mock-grid"><div class="mock-tile"></div><div class="mock-tile"></div><div class="mock-tile"></div></div>
+        </div>
+        <div class="template-topline">
+          <div><h3>Creative Portfolio</h3><p>Visual-first structure that lets the work sell the service.</p></div>
+          <span class="template-number">02</span>
+        </div>
+        <div class="meta"><span class="tag">Artists</span><span class="tag">Photographers</span><span class="tag">Designers</span></div>
+        <ul class="template-features">
+          <li>Large visual portfolio sections</li>
+          <li>Project categories and galleries</li>
+          <li>Story, process, and inquiry form</li>
+        </ul>
+        <div class="links"><a class="link primary" href="quote-v2.html">Choose This Direction</a></div>
+      </article>
+
+      <article class="surface-card template-card" data-category="care">
+        <div class="template-preview preview-pet" aria-label="Pet care website preview">
+          <div class="browser-bar"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span></div>
+          <div class="mock-nav"><span class="mock-logo"></span><span class="mock-links"><span></span><span></span><span></span></span></div>
+          <div class="mock-hero">
+            <div class="mock-copy">
+              <div class="mock-line"></div><div class="mock-line medium"></div><div class="mock-line tiny"></div><div class="mock-button"></div>
+            </div>
+            <div class="mock-visual"><div class="mock-circle"></div></div>
+          </div>
+          <div class="mock-grid"><div class="mock-tile"></div><div class="mock-tile"></div><div class="mock-tile"></div></div>
+        </div>
+        <div class="template-topline">
+          <div><h3>Pet Care</h3><p>Friendly, trust-heavy design for businesses caring for animals.</p></div>
+          <span class="template-number">03</span>
+        </div>
+        <div class="meta"><span class="tag">Daycare</span><span class="tag">Boarding</span><span class="tag">Grooming</span></div>
+        <ul class="template-features">
+          <li>Service and policy explanations</li>
+          <li>Crew, facility, and pet photos</li>
+          <li>Booking-system integration</li>
+        </ul>
+        <div class="links"><a class="link primary" href="quote-v2.html">Choose This Direction</a></div>
+      </article>
+
+      <article class="surface-card template-card" data-category="care">
+        <div class="template-preview preview-wellness" aria-label="Beauty and wellness website preview">
+          <div class="browser-bar"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span></div>
+          <div class="mock-nav"><span class="mock-logo"></span><span class="mock-links"><span></span><span></span><span></span></span></div>
+          <div class="mock-hero">
+            <div class="mock-copy">
+              <div class="mock-line"></div><div class="mock-line short"></div><div class="mock-line tiny"></div><div class="mock-button"></div>
+            </div>
+            <div class="mock-visual"><div class="mock-circle"></div></div>
+          </div>
+          <div class="mock-grid"><div class="mock-tile"></div><div class="mock-tile"></div><div class="mock-tile"></div></div>
+        </div>
+        <div class="template-topline">
+          <div><h3>Beauty & Wellness</h3><p>Calm, polished structure focused on services and appointments.</p></div>
+          <span class="template-number">04</span>
+        </div>
+        <div class="meta"><span class="tag">Salons</span><span class="tag">Barbers</span><span class="tag">Massage</span></div>
+        <ul class="template-features">
+          <li>Service menu and provider profiles</li>
+          <li>Appointment-focused calls to action</li>
+          <li>Reviews, hours, and location details</li>
+        </ul>
+        <div class="links"><a class="link primary" href="quote-v2.html">Choose This Direction</a></div>
+      </article>
+
+      <article class="surface-card template-card" data-category="professional">
+        <div class="template-preview preview-professional" aria-label="Professional services website preview">
+          <div class="browser-bar"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span></div>
+          <div class="mock-nav"><span class="mock-logo"></span><span class="mock-links"><span></span><span></span><span></span></span></div>
+          <div class="mock-hero">
+            <div class="mock-copy">
+              <div class="mock-line"></div><div class="mock-line medium"></div><div class="mock-line tiny"></div><div class="mock-button"></div>
+            </div>
+            <div class="mock-visual"><div class="mock-circle"></div></div>
+          </div>
+          <div class="mock-grid"><div class="mock-tile"></div><div class="mock-tile"></div><div class="mock-tile"></div></div>
+        </div>
+        <div class="template-topline">
+          <div><h3>Professional Service</h3><p>Credibility-first design for businesses selling knowledge and trust.</p></div>
+          <span class="template-number">05</span>
+        </div>
+        <div class="meta"><span class="tag">Consultants</span><span class="tag">Real Estate</span><span class="tag">Financial</span></div>
+        <ul class="template-features">
+          <li>Clear positioning and expertise</li>
+          <li>Case studies or client outcomes</li>
+          <li>Consultation and contact funnels</li>
+        </ul>
+        <div class="links"><a class="link primary" href="quote-v2.html">Choose This Direction</a></div>
+      </article>
+
+      <article class="surface-card template-card" data-category="tool service">
+        <div class="template-preview preview-smart" aria-label="Smart quote and booking website preview">
+          <div class="browser-bar"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span></div>
+          <div class="mock-nav"><span class="mock-logo"></span><span class="mock-links"><span></span><span></span><span></span></span></div>
+          <div class="mock-hero">
+            <div class="mock-copy">
+              <div class="mock-line"></div><div class="mock-line medium"></div><div class="mock-line tiny"></div><div class="mock-button"></div>
+            </div>
+            <div class="mock-visual"><div class="mock-circle"></div></div>
+          </div>
+          <div class="mock-grid"><div class="mock-tile"></div><div class="mock-tile"></div><div class="mock-tile"></div></div>
+        </div>
+        <div class="template-topline">
+          <div><h3>Smart Quote & Booking</h3><p>A website built around an interactive intake or decision tool.</p></div>
+          <span class="template-number">06</span>
+        </div>
+        <div class="meta"><span class="tag">Quote Wizards</span><span class="tag">Lead Sorting</span><span class="tag">Bookings</span></div>
+        <ul class="template-features">
+          <li>Questions that adapt to customer answers</li>
+          <li>Lead details collected before contact</li>
+          <li>Custom routing, summaries, and follow-up</li>
+        </ul>
+        <div class="links"><a class="link primary" href="quote-v2.html">Choose This Direction</a></div>
+      </article>
+    </section>
+
+    <section class="surface-card template-cta">
+      <div>
+        <h2>Every template is a starting system—not a copied website.</h2>
+        <p>
+          Your final site gets its own branding, wording, photos, pages, and customer flow.
+          The template simply gives us a faster, clearer starting point.
+        </p>
+      </div>
+      <div class="links">
+        <a class="link primary" href="quote-v2.html">Build From a Template</a>
+        <a class="link" href="contact-v2.html">Ask About a Custom Direction</a>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-slot"></div>
+
+  <script src="assets/js/shell.js"></script>
+  <script src="assets/js/load-components.js?v=2026-07-26-templates"></script>
+  <script>
+    const filterButtons = document.querySelectorAll('[data-filter]');
+    const templateCards = document.querySelectorAll('[data-category]');
+
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter;
+
+        filterButtons.forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+
+        templateCards.forEach((card) => {
+          const categories = card.dataset.category.split(' ');
+          card.classList.toggle('hidden', filter !== 'all' && !categories.includes(filter));
+        });
+      });
+    });
+  </script>
+</body>
+</html>
