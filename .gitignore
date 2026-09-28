@@ -3,3 +3,6 @@ __pycache__/
 backend/venv/
 backend/ds_smart_qr.db
 backups/
+
+node_modules/
+test-results/

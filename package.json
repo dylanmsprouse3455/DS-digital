@@ -1,0 +1,12 @@
+{
+  "name": "ds-digital-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/check-invoice-build.mjs",
+    "test": "node --test --test-isolation=none tests/invoice-maker/model.test.mjs",
+    "test:browser": "node tests/invoice-maker/browser.mjs",
+    "test:challenge": "node tests/invoice-maker/challenge.mjs"
+  },
+  "devDependencies": { "jspdf": "4.2.1", "playwright": "1.58.2" }
+}
