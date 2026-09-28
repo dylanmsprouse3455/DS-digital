@@ -25,3 +25,27 @@ input,textarea,select{font-weight:400}.step-content{scroll-margin-bottom:90px}.t
 
 .mode-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:520px;margin:0 0 16px}.mode-picker button{text-align:left;padding:11px 13px;display:grid;gap:1px}.mode-picker strong{font-size:13px}.mode-picker small{font-size:10px;color:var(--invoice-muted);font-weight:400}.mode-picker button[aria-pressed=true]{border-color:var(--blue);background:#edf4ff;box-shadow:inset 0 0 0 1px var(--blue)}
 @media(max-width:760px){.mode-picker{max-width:none;margin-bottom:12px}.mode-picker button{padding:9px 10px;min-height:50px}.mode-picker strong{font-size:12px}.mode-picker small{font-size:9px}}
+
+
+/* Mobile polish — keep navigation and mode labels readable */
+.header-links a{display:inline-flex;align-items:center}
+.mode-picker strong,.mode-picker small{display:block;line-height:1.25}
+@media(max-width:760px){
+  .invoice-header{align-items:center}
+  .brand{min-width:0;flex:1}
+  .brand span{min-width:0}
+  .header-links{flex:0 0 auto;gap:0}
+  .header-links .back-tools{font-size:11px;padding:6px 7px}
+  .header-links .back-tools + .back-tools{border-left:1px solid var(--invoice-border);margin-left:3px;padding-left:10px}
+  .mode-picker{grid-template-columns:1fr;gap:8px}
+  .mode-picker button{width:100%;min-height:58px;padding:10px 13px}
+  .mode-picker strong{font-size:14px}
+  .mode-picker small{font-size:11px;margin-top:2px}
+}
+@media(max-width:420px){
+  .invoice-header{padding:0 10px;gap:6px}
+  .brand{font-size:12px}
+  .brand small{display:none}
+  .brand img{width:32px;height:32px}
+  .header-links .back-tools{font-size:10px;padding-left:6px;padding-right:6px}
+}
