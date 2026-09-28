@@ -2,9 +2,21 @@ import {demoInvoice,newInvoice,validateInvoice,validPerson,DESIGNS} from './mode
 const NAME='ds-digital-invoices';
 const STORES=['profiles','customers','invoices','drafts','preferences','numbering'];
 let connection;
+const OPEN_TIMEOUT=2500;
 export function openDB(){
  if(connection)return Promise.resolve(connection);
- return new Promise((resolve,reject)=>{const r=indexedDB.open(NAME,1);r.onupgradeneeded=()=>{for(const s of STORES)r.result.createObjectStore(s);};r.onerror=()=>reject(r.error);r.onblocked=()=>reject(new Error('Close other Invoice Maker tabs to finish opening storage.'));r.onsuccess=()=>{connection=r.result;connection.onversionchange=()=>{connection.close();connection=null;};resolve(connection);};});
+ if(!('indexedDB' in globalThis))return Promise.reject(new Error('Local invoice storage is not supported by this browser.'));
+ return new Promise((resolve,reject)=>{
+  let settled=false;
+  const finish=(fn,value)=>{if(settled)return;settled=true;clearTimeout(timer);fn(value);};
+  const timer=setTimeout(()=>finish(reject,new Error('Local storage took too long to open. You can still create and download this invoice.')),OPEN_TIMEOUT);
+  let r;
+  try{r=indexedDB.open(NAME,1);}catch(e){finish(reject,e);return;}
+  r.onupgradeneeded=()=>{for(const s of STORES)if(!r.result.objectStoreNames.contains(s))r.result.createObjectStore(s);};
+  r.onerror=()=>finish(reject,r.error||new Error('Local invoice storage could not be opened.'));
+  r.onblocked=()=>finish(reject,new Error('Local storage is blocked by another Invoice Maker tab.'));
+  r.onsuccess=()=>{if(settled){r.result.close();return;}connection=r.result;connection.onversionchange=()=>{connection.close();connection=null;};finish(resolve,connection);};
+ });
 }
 async function transaction(names,mode,work){const db=await openDB();return new Promise((resolve,reject)=>{const t=db.transaction(names,mode);let result;try{result=work(t);}catch(e){t.abort();reject(e);return;}t.oncomplete=()=>resolve(typeof result==='function'?result():result);t.onerror=()=>reject(t.error);t.onabort=()=>reject(t.error||new Error('Storage transaction failed.'));});}
 export const get=(store,key)=>transaction([store],'readonly',t=>{let value;const r=t.objectStore(store).get(key);r.onsuccess=()=>value=r.result;return()=>value;});
