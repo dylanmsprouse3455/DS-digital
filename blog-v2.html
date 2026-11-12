@@ -53,8 +53,8 @@
           <aside class="lb-status" aria-label="Local coverage status">
             <div class="lb-status-title">Local coverage status</div>
             <div class="lb-status-row"><strong>Primary area</strong><span>Greeneville &amp; Greene County</span></div>
-            <div class="lb-status-row"><strong>Local reporting</strong><span>In preparation</span></div>
-            <div class="lb-status-row"><strong>Verified local articles</strong><span>Not published yet</span></div>
+            <div class="lb-status-row"><strong>Local reporting</strong><span id="local-coverage-status">In preparation</span></div>
+            <div class="lb-status-row"><strong>Verified local articles</strong><span id="local-story-count">Not published yet</span></div>
             <div class="lb-status-row"><strong>Existing DS articles</strong><span>3 available</span></div>
             <div class="lb-note">We will label proposals as proposals, link to original sources, and distinguish confirmed information from developing reports. This is not a live breaking-news feed yet.</div>
           </aside>
@@ -82,6 +82,8 @@
             </div>
             <p class="lb-result" id="local-blog-result" role="status" aria-live="polite">Showing 3 articles</p>
             <div class="lb-cards" id="blog-articles">
+              <!-- LOCAL_STORIES_START -->
+              <!-- LOCAL_STORIES_END -->
               <article class="lb-card" data-blog-article data-category="insights" data-region="none" data-search="What actually makes a website convert visitors into clients website conversion web design">
                 <div class="lb-card-tags"><span class="lb-chip">DS Insights</span><span class="lb-chip lb-chip-plain">Web Design</span></div>
                 <h3>What actually makes a website convert visitors into clients</h3>
