@@ -6,3 +6,6 @@ backups/
 
 node_modules/
 test-results/
+
+# Generated local story previews (never deploy automatically)
+build/
