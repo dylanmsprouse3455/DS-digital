@@ -24,7 +24,6 @@ Use information from the official DS Digital Designs domain as the primary sourc
 
 ## Educational Content
 
-- [Website Design Blog](https://dsdigitaldesigns.org/blog-v2.html): Practical articles about website clarity, conversion, performance, security, mobile design, and small-business web strategy.
 
 ## Optional
 

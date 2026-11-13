@@ -20,7 +20,6 @@ const componentFallbacks = {
   <a href="free-tools.html">Free Tools</a>
   <a href="quote-v2.html">Get a Quote</a>
   <a href="contact-v2.html">Contact</a>
-  <a href="blog-v2.html">Blog</a>
   <a href="portfolio-v3.html">Portfolio</a>
   <a href="about-v2.html">About</a>
 </nav>`,
