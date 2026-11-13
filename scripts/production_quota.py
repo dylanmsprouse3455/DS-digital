@@ -171,7 +171,7 @@ class ProductionLedger:
             intents=[dict(r) for r in db.execute(
                 "SELECT release_id,story_id,slug,kind,status,local_day FROM release_intents ORDER BY created_at")]
             state=db.execute("SELECT value FROM control WHERE key='verified_main_sha'").fetchone()
-        return {"mode":"GUARDED_NOT_DEPLOYED","date_eastern":day,
+        return {"mode":"LIVE_VERIFIED_PILOT" if live > 0 else "GUARDED_NO_LIVE_RELEASE_YET","date_eastern":day,
                 "slots_reserved_or_live":ct,"new_verified_live":live,
                 "daily_new_cap":MAX_DAILY_NEW,
                 "remaining_slots":max(0,MAX_DAILY_NEW-ct),
@@ -320,6 +320,38 @@ class ProductionLedger:
         return {"release_id":release_id,"public_main_sha":observed,
                 "verified_url":url,"page_sha256":expected_hash,
                 "public_http":proof["response_code"]}
+
+    def mark_notified(self,release_id: str,outbox_db: Path,at: datetime) -> dict:
+        """Close the release only after the private Gmail outbox confirms send.
+
+        Does not call Gmail; reads the outbox's actual persisted sent receipt.
+        """
+        path=Path(outbox_db)
+        if not path.is_file() or path.is_symlink():
+            raise QuotaBlocked("Gmail outbox receipt database unavailable")
+        with closing(sqlite3.connect("file:"+str(path.resolve())+"?mode=ro",uri=True)) as mail_db:
+            mail_db.row_factory=sqlite3.Row
+            mail_db.execute("PRAGMA query_only=ON")
+            receipt=mail_db.execute(
+                "SELECT * FROM notifications WHERE release_id=?",(release_id,)).fetchone()
+            if (not receipt or receipt["status"]!="sent" or
+                    not receipt["gmail_message_id"]):
+                raise QuotaBlocked("no confirmed Gmail sent-message receipt")
+            with self.tx() as db:
+                db.execute("BEGIN IMMEDIATE")
+                row=db.execute("SELECT * FROM release_intents WHERE release_id=?",(release_id,)).fetchone()
+                if not row or row["status"] not in ("live_verified","notified"):
+                    raise QuotaBlocked("live article must be verified before notification completes")
+                if (receipt["url"]!=row["proposed_url"] or
+                        receipt["expected_sha256"]!=row["desired_html_sha"]):
+                    raise QuotaBlocked("sent email does not refer to the verified article")
+                if row["status"]=="live_verified":
+                    db.execute("UPDATE release_intents SET status='notified',updated_at=? WHERE release_id=?",
+                               (utc_text(at),release_id))
+                    db.execute("INSERT INTO audit(release_id,action,at,main_sha,detail) VALUES(?,'notified',?,?,'Gmail sent receipt cross-checked with verified page')",
+                               (release_id,utc_text(at),row["candidate_commit_sha"]))
+                return {"release_id":release_id,"status":"notified",
+                        "gmail_receipt_id_present":True,"public_url":row["proposed_url"]}
 
     def abort_unsubmitted(self,release_id: str,reason: str,at: datetime) -> None:
         if not isinstance(reason,str) or len(reason)<8:
