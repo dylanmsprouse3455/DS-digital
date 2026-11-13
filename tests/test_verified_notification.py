@@ -65,6 +65,47 @@ class DeliveryTests(unittest.TestCase):
             self.outbox.verify_and_queue(RID,URL,"0"*64,"Synthetic Test",fetch=fake_fetch)
         self.assertEqual(self.outbox.status(),[])
 
+    def test_known_cloudflare_injection_normalizes_but_preserves_exact_hash(self):
+        injection=(b"<script>(function(){function c(){"
+                   b"window.__CF$cv$params={r:'DYNAMIC'};"
+                   b"'/cdn-cgi/challenge-platform/scripts/jsd/main.js'"
+                   b"}})();</script>")
+        page=HTML.replace(b"</body>",injection+b"</body>")
+        result=read_public_article(URL,CONTENT_HASH,fetch=lambda *_a,**_kw:FakeResponse(body=page))
+        self.assertEqual(result["sha256"],CONTENT_HASH)
+
+    def test_cloudflare_challenge_plus_web_analytics_beacon(self):
+        injection=(b"<script>(function(){function c(){"
+                   b"window.__CF$cv$params={r:'DYNAMIC'};"
+                   b"'/cdn-cgi/challenge-platform/scripts/jsd/main.js'"
+                   b"}})();</script>"
+                   b'<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e" '
+                   b"""integrity="sha512-EXAMPLE" data-cf-beacon='{"version":"2024.11.0"}' crossorigin="anonymous"></script>""")
+        page=HTML.replace(b"</body>",injection+b"</body>")
+        result=read_public_article(URL,CONTENT_HASH,fetch=lambda *_a,**_kw:FakeResponse(body=page))
+        self.assertEqual(result["sha256"],CONTENT_HASH)
+
+    def test_cloudflare_beacon_before_challenge_with_extra_line(self):
+        article = HTML.replace(b"</body></html>", b"\n</body>\n</html>")
+        expected=sha256(article).hexdigest()
+        beacon=(b"""<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e" integrity="sha512-EXAMPLE" data-cf-beacon='{"version":"2024.11.0"}' crossorigin="anonymous"></script>\n""")
+        challenge=(b"<script>(function(){function c(){"
+                   b"window.__CF$cv$params={r:'DYNAMIC'};"
+                   b"'/cdn-cgi/challenge-platform/scripts/jsd/main.js'"
+                   b"}})();</script>")
+        corrupted=article.replace(b"</body>",beacon+challenge+b"</body>")
+        result=read_public_article(URL,expected,fetch=lambda *_a,**_kw:FakeResponse(body=corrupted))
+        self.assertEqual(result["sha256"],expected)
+
+    def test_unknown_or_altered_cloudflare_like_content_still_fails(self):
+        injection=(b"<script>(function(){function c(){"
+                   b"window.__CF$cv$params={r:'DYNAMIC'};"
+                   b"'/cdn-cgi/challenge-platform/scripts/jsd/main.js'"
+                   b"}})();</script>")
+        page=HTML.replace(b"</body>",injection+b"</body>").replace(b"Verified fictional test",b"MISLEADING DIFFERENT STORY")
+        with self.assertRaisesRegex(DeliveryBlocker,"bytes differ"):
+            read_public_article(URL,CONTENT_HASH,fetch=lambda *_a,**_kw:FakeResponse(body=page))
+
     def test_non_200_does_not_queue(self):
         with self.assertRaisesRegex(DeliveryBlocker,"HTTP 200"):
             read_public_article(URL,CONTENT_HASH,fetch=lambda *_a,**_kw:FakeResponse(status=404))
