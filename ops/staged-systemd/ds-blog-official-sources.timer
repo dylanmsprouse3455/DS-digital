@@ -1,0 +1,13 @@
+# STAGED ONLY. No timer activation authorized in checkpoint 008.
+[Unit]
+Description=DS Digital Designs official sources every two hours ahead of Writer
+
+[Timer]
+OnCalendar=*-*-* 00/2:45:00
+Persistent=true
+AccuracySec=1min
+RandomizedDelaySec=0
+Unit=ds-blog-official-sources.service
+
+[Install]
+WantedBy=timers.target

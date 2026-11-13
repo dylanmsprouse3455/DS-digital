@@ -1,0 +1,28 @@
+# STAGED ONLY. Do not install or enable without separate owner authorization.
+[Unit]
+Description=DS Digital Designs bounded official public-page source collection
+Documentation=https://github.com/dylanmsprouse3455/DS-digital
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=kali-ai-remote
+Group=kali-ai-remote
+WorkingDirectory=/var/lib/kali-ai-remote/ds-blog-continuous-checkpoint-008
+ExecStart=/usr/bin/python3 /var/lib/kali-ai-remote/ds-blog-continuous-checkpoint-008/scripts/source_cycle.py run --execute
+TimeoutStartSec=150
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryMax=256M
+ReadWritePaths=/var/lib/kali-ai-remote/ds-local-intelligence-checkpoint-003/state /var/lib/kali-ai-remote/ds-blog-continuous-private-008
+
+[Install]
+WantedBy=multi-user.target
