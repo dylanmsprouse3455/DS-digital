@@ -261,6 +261,29 @@ class ProductionQuotaTests(unittest.TestCase):
                 fetch=lambda req,timeout:FakeHTTP(req.full_url,b"wrong article"))
         self.assertEqual(self.ledger.inspect(T0)["new_verified_live"],0)
 
+    def test_gmail_receipt_is_required_for_notified_state(self):
+        from verified_notification import NotificationOutbox
+        self.init();r=self.reserve(self.approve())
+        payload=fake_release_page(r["url"])
+        self.ledger.prepared(r["release_id"],"a"*40,sha256(payload).hexdigest(),T0)
+        self.ledger.publishing(r["release_id"],T0)
+        self.ledger.live_verified(r["release_id"],T0,
+            remote_main_getter=lambda:"a"*40,
+            fetch=lambda req,timeout:FakeHTTP(req.full_url,payload))
+        outbox=NotificationOutbox(self.root/"outbox-private")
+        with self.assertRaisesRegex(QuotaBlocked,"no confirmed Gmail"):
+            self.ledger.mark_notified(r["release_id"],outbox.path,T0)
+        outbox.verify_and_queue(r["release_id"],r["url"],sha256(payload).hexdigest(),
+                                "Synthetic local event preview",
+                                fetch=lambda req,timeout:FakeHTTP(req.full_url,payload))
+        outbox.claim(r["release_id"])
+        outbox.record_sent(r["release_id"],"MOCK_GMAIL_TEST_123456789")
+        result=self.ledger.mark_notified(r["release_id"],outbox.path,T0)
+        self.assertEqual(result["status"],"notified")
+        self.assertEqual(self.ledger.inspect(T0)["intents"][0]["status"],"notified")
+        self.assertEqual(self.ledger.inspect(T0)["new_verified_live"],1)
+        self.assertEqual(self.ledger.mark_notified(r["release_id"],outbox.path,T0)["status"],"notified")
+
     def test_database_is_private(self):
         self.assertEqual(self.ledger.root.stat().st_mode&0o777,0o700)
         self.assertEqual(self.ledger.path.stat().st_mode&0o777,0o600)
