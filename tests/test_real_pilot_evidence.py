@@ -47,8 +47,14 @@ class RealPilotEvidenceTests(unittest.TestCase):
         self.assertEqual(self.story["publication_status"],"draft")
         self.assertFalse(self.story["sensitive"])
         with closing(sqlite3.connect(f"file:{EDITOR}?mode=ro",uri=True)) as db:
-            self.assertEqual(db.execute("SELECT count(*) FROM reviews").fetchone()[0],0)
-            self.assertEqual(db.execute("SELECT count(*) FROM releases").fetchone()[0],0)
+            # The pilot's separate manual editorial pass may now have run.
+            # A review must never be attributed to the original writer.
+            reviewers=db.execute("SELECT reviewer_id,verdict FROM reviews").fetchall()
+            self.assertFalse(any(r[0]=="ds-local-blog-writer-pilot" for r in reviewers))
+            self.assertTrue(all(r[1] in ("approved","rejected") for r in reviewers))
+            # This is a private simulation queue, NOT the production receipt.
+            states=db.execute("SELECT DISTINCT mode FROM releases").fetchall()
+            self.assertTrue(all(x[0]=="simulation" for x in states))
 
     def test_calendar_date_and_no_decision_claimed(self):
         self.assertIn("Nov. 17",self.story["title"])
